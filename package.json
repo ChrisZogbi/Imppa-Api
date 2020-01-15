@@ -1,0 +1,29 @@
+{
+  "name": "imppaapi",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "start": "node start.js"
+  },
+  "author": "Chris",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@babel/polyfill": "^7.8.3",
+    "babel-register": "^6.26.0",
+    "express": "^4.17.1",
+    "msnodesqlv8": "^0.8.6",
+    "mssql": "^5.1.0",
+    "mysql2": "^1.7.0",
+    "request": "^2.88.0",
+    "sequelize": "^5.21.3"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.3",
+    "@babel/core": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
+    "@babel/register": "^7.8.3",
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1"
+  }
+}
