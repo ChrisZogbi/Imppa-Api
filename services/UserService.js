@@ -2,7 +2,7 @@ import app from "../app.js";
 import { pool } from "./index";
 
 export function getUserByMailContrasenia (req, res) {
-    var query = `SELECT * FROM Usuarios where Mail = ? and Contrasenia = ?`;
+    var query = `SELECT * FROM usuarios where Mail = ? and Contrasenia = ?`;
     pool.promise().query(query, [req.body.Mail, req.body.Pass])
         .then( ([rows,fields]) => {
             console.log(query);
@@ -37,17 +37,18 @@ export function getUsers(req, res)
     var query = `SELECT * FROM Usuarios`;
 
     pool.promise().query(query)
-        .then( ([rows,fields]) => {
+        .then(([rows,fields]) => {
             console.log(rows);
             res.json(rows);
             })
-        .catch(res.json('Se cago todo.'))
+        .catch((err) => { res.json(err) });
+        
 }
 
 export function getUser(req, res)
 {
 
-    var query = `SELECT * FROM Usuarios WHERE ID = ?`
+    var query = `SELECT * FROM usuarios WHERE ID = ?`
     var idUsuario = req.body.IDUsuario;
 
     pool.promise().query(query, [idUsuario])
@@ -55,14 +56,14 @@ export function getUser(req, res)
             console.log(rows);
             res.json(rows);
             })
-        .catch(res.json('Se cago todo.'))
+        .catch(res.json(message))
 }
 
 export function addUser(req, res)
 {
     var Usuario = req.body;
 
-    var query =  `INSERT INTO Usuarios SET ?`
+    var query =  `INSERT INTO usuarios SET ?`
 
     console.log(query);
     pool.promise().query(query, [Usuario])
@@ -98,7 +99,7 @@ export function deleteUser(req, res)
 {
     var UserId = req.body.Id;
 
-    var query = `DELETE FROM  [dbo].[Usuarios]
+    var query = `DELETE FROM  [dbo].[usuarios]
                 WHERE [ID] = ?`; 
 
     pool.promise().query(query, [UserId])
