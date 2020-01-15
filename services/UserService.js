@@ -41,7 +41,7 @@ export function getUsers(req, res)
             console.log(rows);
             res.json(rows);
             })
-        .catch(console.log)
+        .catch(res.json('Se cago todo.'))
 }
 
 export function getUser(req, res)
@@ -55,7 +55,7 @@ export function getUser(req, res)
             console.log(rows);
             res.json(rows);
             })
-        .catch(console.log)
+        .catch(res.json('Se cago todo.'))
 }
 
 export function addUser(req, res)
