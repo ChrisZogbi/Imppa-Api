@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "start": "node start.js"
+    "start": "node_modules/.bin/babel-node start.js",
+    "compile": "./node_modules/.bin/babel ./app -d ./compiled"
   },
   "author": "Chris",
   "license": "ISC",
