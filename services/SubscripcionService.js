@@ -9,9 +9,9 @@ export function getTipoUsuario(req, res)
     pool.promise().query(query)
         .then( ([rows,fields]) => {
             console.log(rows);
-            res.json(rows);
+            res.status(200).json(rows);
             })
-        .catch(console.log)
+        .catch((err) => { res.status(500).json(err)});
 }
 
 export function getTipoUsuarioById(req, res)
@@ -21,9 +21,9 @@ export function getTipoUsuarioById(req, res)
     pool.promise().query(query, [req.query.Id])
         .then( ([rows,fields]) => {
             console.log(rows);
-            res.json(rows);
+            res.status(200).json(rows);
             })
-        .catch(console.log)
+        .catch((err) => { res.status(500).json(err)});
 }
 
 export function addTipoUsuario(req, res)
@@ -33,9 +33,9 @@ export function addTipoUsuario(req, res)
     pool.promise().query(query, [req.body.NuevaSubscripcion])
         .then( ([rows,fields]) => {
             console.log(rows);
-            res.json('Se agrego correctamente el Tipo de Usuario');
+            res.status(200).json({'Mensaje':'Se agrego correctamente el Tipo de Usuario'});
             })
-        .catch(console.log)
+        .catch((err) => { res.status(500).json(err)});
 }
 export function updateTipoUsuario(req, res)
 {
@@ -50,9 +50,9 @@ export function updateTipoUsuario(req, res)
         pool.promise().query(query)
         .then( ([rows,fields]) => {
             console.log(rows);
-            res.json('Se actualizó correctamente el Tipo de Usuario');
+            res.status(200).json({'Mensaje':'Se actualizó correctamente el Tipo de Usuario'});
             })
-        .catch(console.log)
+        .catch((err) => { res.status(500).json(err)});
 }
 
 export function deleteTipoUsuario(req, res)
@@ -65,7 +65,7 @@ export function deleteTipoUsuario(req, res)
     pool.promise().query(query)
     .then( ([rows,fields]) => {
         console.log(rows);
-        res.json('Se eliminó correctamente el Tipo de Usuario');
+        res.status(200).json({'Mensaje':'Se eliminó correctamente el Tipo de Usuario'});
         })
-    .catch(console.log)
+    .catch((err) => { res.status(500).json(err)});
 }

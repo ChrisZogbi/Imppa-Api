@@ -17,7 +17,7 @@ var TipoUsuarioService  = require('../services/TipoUsuarioService');
 
  exports.addTipoUsuario = function(req, res) {
     console.log(req.body);
-    return(TipoUsuarioServicepo.addTipoUsuario(req, res));
+    return(TipoUsuarioService.addTipoUsuario(req, res));
 };
 
 exports.updateTipoUsuario = function(req, res) {

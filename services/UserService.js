@@ -27,9 +27,9 @@ export function getUserByMailContrasenia (req, res) {
                 console.log(data);
             }
             
-            res.json(data);
+            res.status(200).json(data);
         })
-        .catch("Error:" + console.log)
+        .catch((err) => { res.status(500).json(err)});
 }
 
 export function getUsers(req, res)
@@ -39,9 +39,9 @@ export function getUsers(req, res)
     pool.promise().query(query)
         .then(([rows,fields]) => {
             console.log(rows);
-            res.json(rows);
+            res.status(200).json(rows);
             })
-        .catch((err) => { res.json(err) });
+        .catch((err) => { res.status(500).json(err)});
         
 }
 
@@ -54,9 +54,9 @@ export function getUser(req, res)
     pool.promise().query(query, [idUsuario])
         .then( ([rows,fields]) => {
             console.log(rows);
-            res.json(rows);
+            res.status(200).json(rows);
             })
-        .catch(res.json(message))
+            .catch((err) => { res.status(500).json(err)});
 }
 
 export function addUser(req, res)
@@ -68,9 +68,9 @@ export function addUser(req, res)
     console.log(query);
     pool.promise().query(query, [Usuario])
         .then( ([rows,fields]) => {
-            res.status(200).json("Ok.")
+            res.status(200).json({'Mensaje':"Ok."})
         })
-        .catch(console.log)
+        .catch((err) => { res.status(500).json(err)});
 }
 
 export function updateUser(req, res)
@@ -90,9 +90,9 @@ export function updateUser(req, res)
     console.log(query);
     pool.promise().query(query, [Usuario])
         .then( ([rows,fields]) => {
-            res.status(200).json("Se actualizo correctamente el Usuario.")
+            res.status(200).json({'Mensaje':"Se actualizo correctamente el Usuario."})
         })
-        .catch(console.log)
+        .catch((err) => { res.status(500).json(err)});
 }
 
 export function deleteUser(req, res)
@@ -104,7 +104,7 @@ export function deleteUser(req, res)
 
     pool.promise().query(query, [UserId])
         .then( ([rows,fields]) => {
-            res.status(200).json("Se elimino correctamente el Usuario.")
+            res.status(200).json({'Mensaje':"Se elimino correctamente el Usuario."})
         })
-        .catch(console.log)
+        .catch((err) => { res.status(500).json(err)});
 }

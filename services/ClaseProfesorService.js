@@ -13,9 +13,9 @@ export function getClaseByIdUsuario(req, res)
     pool.promise().query(query, idUsuario)
         .then( ([rows,fields]) => {
             console.log(rows);
-            res.json(rows);
+            res.status(200).json(rows);
             })
-        .catch(console.log)
+        .catch((err) => { res.status(500).json(err)});
 }
 
 export function getClaseByID(req, res)
@@ -26,9 +26,9 @@ export function getClaseByID(req, res)
     pool.promise().query(query, [idClase])
         .then( ([rows,fields]) => {
             console.log(rows);
-            res.json(rows);
+            res.status(200).json(rows);
             })
-        .catch(console.log)
+        .catch((err) => { res.status(500).json(err)});
 }
 
 export function addClaseProfesor(req, res)
@@ -45,7 +45,7 @@ export function addClaseProfesor(req, res)
             idClaseCreada = fields.insertId;
             next();
         })
-        .catch(console.log)
+        .catch((err) => { res.status(500).json(err)});
     
     var ClaseXUsuario = {
         "IDUsuario": idUsuario,
@@ -56,9 +56,9 @@ export function addClaseProfesor(req, res)
 
     pool.promise().query(query2, [ClaseXUsuario])
         .then( ([rows,fields]) => {
-            res.status(200).json("Ok.")
+            res.status(200).json({'Mensaje':"Ok."})
         })
-        .catch(console.log)
+        .catch((err) => { res.status(500).json(err)});
 }
 
 //Falta cambiar ClaseProfesor
@@ -73,9 +73,9 @@ export function updateClaseProfesor(req, res)
     console.log(query);
     pool.promise().query(query)
         .then( ([rows,fields]) => {
-            res.status(200).json("Se actualizo correctamente la Clase.")
+            res.status(200).json({'Mensaje':"Se actualizo correctamente la Clase."})
         })
-        .catch(console.log)
+        .catch((err) => { res.status(500).json(err)});
 }
 
 export function deleteClaseProfesor(req, res)
@@ -91,14 +91,14 @@ export function deleteClaseProfesor(req, res)
     .then( ([rows,fields]) => {
         next()
     })
-    .catch(console.log)
+    .catch((err) => { res.status(500).json(err)});
 
     var query2 = `DELETE FROM  [dbo].[ClaseXUsuario]
     WHERE [IDUsuario] = ? AND IDClaseProfesor = ?`; 
 
     pool.promise().query(query2, [idUsuario, idClaseProfesor])
     .then( ([rows,fields]) => {
-        res.status(200).json("Se elimino correctamente la Clase.")
+        res.status(200).json({'Mensaje':"Se elimino correctamente la Clase."})
     })
-    .catch(console.log)
+    .catch((err) => { res.status(500).json(err)});
 }

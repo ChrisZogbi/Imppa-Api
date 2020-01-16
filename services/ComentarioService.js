@@ -10,9 +10,9 @@ export function getComentariosByIdProfesor(req, res)
     pool.promise().query(query, [idProfesor])
         .then( ([rows,fields]) => {
             console.log(rows);
-            res.json(rows);
+            res.status(200).json(rows);
             })
-        .catch(console.log)
+        .catch((err) => { res.status(500).json(err)});
 }
 
 export function getComentarioById(req, res)
@@ -23,9 +23,9 @@ export function getComentarioById(req, res)
     pool.promise().query(query, [idUsuario])
         .then( ([rows,fields]) => {
             console.log(rows);
-            res.json(rows);
+            res.status(200).json(rows);
             })
-        .catch(console.log)
+        .catch((err) => { res.status(500).json(err)});
 }
 
 export function addComentario(req, res)
@@ -37,9 +37,9 @@ export function addComentario(req, res)
     console.log(query);
     pool.promise().query(query, [Comentario])
         .then( ([rows,fields]) => {
-            res.status(200).json("Ok.")
+            res.status(200).json({'Mensaje':"Ok."})
         })
-        .catch(console.log)
+        .catch((err) => { res.status(500).json(err)});
 }
 export function updateComentario(req, res)
 {
@@ -52,9 +52,9 @@ export function updateComentario(req, res)
     console.log(query);
     pool.promise().query(query)
         .then( ([rows,fields]) => {
-            res.status(200).json("Se actualizo correctamente el Comentarios.")
+            res.status(200).json({'Mensaje':"Se actualizo correctamente el Comentarios."})
         })
-        .catch(console.log)
+        .catch((err) => { res.status(500).json(err)});
 }
 
 export function deleteComentario(req, res)
@@ -66,7 +66,7 @@ export function deleteComentario(req, res)
 
     pool.promise().query(query, [idComentario])
     .then( ([rows,fields]) => {
-        res.status(200).json("Se eliminó correctamente el comentario.")
+        res.status(200).json({'Mensaje':"Se eliminó correctamente el comentario."})
     })
-    .catch(console.log)
+    .catch((err) => { res.status(500).json(err)});
 }
