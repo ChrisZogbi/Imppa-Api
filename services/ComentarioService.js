@@ -5,7 +5,7 @@ export function getComentariosByIdProfesor(req, res)
 {
     var idProfesor = req.body.IdProfesor
 
-    var query = `SELECT * FROM Comentarios WHERE IDProfesor = ?`;
+    var query = `SELECT * FROM comentarios WHERE IDProfesor = ?`;
 
     pool.promise().query(query, [idProfesor])
         .then( ([rows,fields]) => {
@@ -17,7 +17,7 @@ export function getComentariosByIdProfesor(req, res)
 
 export function getComentarioById(req, res)
 {
-    var query = `SELECT * FROM Comentarios WHERE ID = ?`
+    var query = `SELECT * FROM comentarios WHERE ID = ?`
     var idUsuario = req.body.IDUsuario;
 
     pool.promise().query(query, [idUsuario])
@@ -32,7 +32,7 @@ export function addComentario(req, res)
 {
     var Comentario = req.body;
 
-    var query =  `INSERT INTO Comentarios SET ?`
+    var query =  `INSERT INTO comentarios SET ?`
 
     console.log(query);
     pool.promise().query(query, [Comentario])
@@ -45,14 +45,14 @@ export function updateComentario(req, res)
 {
     var ComentarioData = req.body;
 
-    var query = `UPDATE [dbo].[Comentarios]
+    var query = `UPDATE [comentarios]
                     SET [Comentario] = ${ComentarioData.Comentario}
                     ,[Puntaje] = '${ComentarioData.Puntaje}'
                 WHERE [ID] = ${ComentarioData.IdComentario}`; 
     console.log(query);
     pool.promise().query(query)
         .then( ([rows,fields]) => {
-            res.status(200).json({'Mensaje':"Se actualizo correctamente el Comentarios."})
+            res.status(200).json({'Mensaje':"Se actualizo correctamente el Comentario."})
         })
         .catch((err) => { res.status(500).json(err)});
 }
@@ -61,7 +61,7 @@ export function deleteComentario(req, res)
 {
     var idComentario = req.body.IdComentario;
 
-    var query = `DELETE FROM  [dbo].[Comentario]
+    var query = `DELETE FROM  [comentarios]
                 WHERE [ID] = ?`; 
 
     pool.promise().query(query, [idComentario])

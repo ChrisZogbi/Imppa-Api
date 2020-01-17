@@ -52,11 +52,13 @@ export function addClaseProfesor(req, res)
         "IDClaseProfesor":idClaseCreada
     };
 
+    res.json(ClaseXUsuario);
+
     query2 = `INSERT INTO ClaseXUsuario SET ?`
 
     pool.promise().query(query2, [ClaseXUsuario])
         .then( ([rows,fields]) => {
-            res.status(200).json({'Mensaje':"Ok."})
+            next();
         })
         .catch((err) => { res.status(500).json(err)});
 }
@@ -83,20 +85,10 @@ export function deleteClaseProfesor(req, res)
     var idUsuario = req.body.IdUsuario;
     var idClaseProfesor = req.body.IdClaseProfesor;
 
-
     var query = `DELETE FROM  [dbo].[ClaseProfesor]
                 WHERE [ID] = ?`; 
 
     pool.promise().query(query, [IdClaseProfesor])
-    .then( ([rows,fields]) => {
-        next()
-    })
-    .catch((err) => { res.status(500).json(err)});
-
-    var query2 = `DELETE FROM  [dbo].[ClaseXUsuario]
-    WHERE [IDUsuario] = ? AND IDClaseProfesor = ?`; 
-
-    pool.promise().query(query2, [idUsuario, idClaseProfesor])
     .then( ([rows,fields]) => {
         res.status(200).json({'Mensaje':"Se elimino correctamente la Clase."})
     })
