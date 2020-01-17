@@ -1,5 +1,5 @@
 import express from 'express';
-import { getTipoUsuarioById, getTipoUsuario, addTipoUsuario, updateTipoUsuario, deleteTipoUsuario } from '../services/TipoUsuarioService';
+var TipoUsuarioService  = require('../services/TipoUsuarioService');
 import LogError from './ErrorLogController';
 
  export function getTipoUsuario(req, res) {
@@ -8,11 +8,11 @@ import LogError from './ErrorLogController';
     console.log(req.query.Id);
     if(req.query.Id)
     {
-       var data = getTipoUsuarioById(req, res);
+       var data = TipoUsuarioService.getTipoUsuarioById(req, res);
     }
     else
     {
-       var data = getTipoUsuario(req, res);
+       var data = TipoUsuarioService.getTipoUsuario(req, res);
     }
     
     return(data);
@@ -27,15 +27,15 @@ import LogError from './ErrorLogController';
 
  export function addTipoUsuario(req, res) {
     console.log(req.body);
-    return(addTipoUsuario(req, res));
+    return(TipoUsuarioService.addTipoUsuario(req, res));
 }
 
 export function updateTipoUsuario(req, res) {
   console.log(req.body);
-  return(updateTipoUsuario(req, res));
+  return(TipoUsuarioService.updateTipoUsuario(req, res));
 }
 
 export function deleteTipoUsuario(req, res) {
   console.log(req.body);
-  return(deleteTipoUsuario(req, res));
+  return(TipoUsuarioServicedeleteTipoUsuario(req, res));
 }
