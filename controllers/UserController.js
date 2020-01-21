@@ -1,36 +1,36 @@
-var express = require('express');
-var UserService  = require('../services/UserService');
+import express from 'express';
+import {getUserByMailContraseniaService, getUserService, getUsersService, updateUserService, deleteUserService} from '../services/UserService';
 
- exports.getUsers = function(req, res) {
+ export function getUsers(req, res) {
    console.log(req.body);
    if(req.body.UserId != null)
    {
-      var data = UserService.getUser(req, res);
+      var data = getUserService(req, res);
    }
    else
    {
-      var data = UserService.getUsers(req, res);
+      var data = getUsersService(req, res);
    }
    
    return(data);
- };
+ }
 
- exports.addUser = function(req, res) {
+ export function addUser(req, res) {
     console.log(req.body);
-    return(UserService.addUser(req, res));
-};
+    return(addUserService(req, res));
+}
 
-exports.updateUser = function(req, res) {
+export function updateUser(req, res) {
   console.log(req.body);
-  return(UserService.updateUser(req, res));
-};
+  return(updateUserService(req, res));
+}
 
-exports.deleteUser = function(req, res) {
+export function deleteUser(req, res) {
   console.log(req.body);
-  return(UserService.deleteUser(req, res));
-};
+  return(deleteUserService(req, res));
+}
 
-exports.loginUser = (req, res) => {
+export function loginUser(req, res) {
   console.log("LoginUser UserController  " + req.query.Mail);
-  return(UserService.getUserByMailContrasenia(req, res))
-};
+  return(getUserByMailContraseniaService(req, res))
+}

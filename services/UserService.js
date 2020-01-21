@@ -1,7 +1,7 @@
 import app from "../app.js";
 import { pool } from "./index";
 
-export function getUserByMailContrasenia (req, res) {
+export function getUserByMailContraseniaService (req, res) {
     var query = `SELECT * FROM usuarios where Mail = ? and Contrasenia = ?`;
     pool.promise().query(query, [req.body.Mail, req.body.Pass])
         .then( ([rows,fields]) => {
@@ -32,7 +32,7 @@ export function getUserByMailContrasenia (req, res) {
         .catch((err) => { res.status(500).json(err)});
 }
 
-export function getUsers(req, res)
+export function getUsersService(req, res)
 {
     var query = `SELECT * FROM Usuarios`;
 
@@ -45,7 +45,7 @@ export function getUsers(req, res)
         
 }
 
-export function getUser(req, res)
+export function getUserService(req, res)
 {
 
     var query = `SELECT * FROM usuarios WHERE ID = ?`
@@ -59,7 +59,7 @@ export function getUser(req, res)
             .catch((err) => { res.status(500).json(err)});
 }
 
-export function addUser(req, res)
+export function addUserService(req, res)
 {
     var Usuario = req.body;
 
@@ -73,7 +73,7 @@ export function addUser(req, res)
         .catch((err) => { res.status(500).json(err)});
 }
 
-export function updateUser(req, res)
+export function updateUserService(req, res)
 {
     var UserData = req.body;
 
@@ -95,7 +95,7 @@ export function updateUser(req, res)
         .catch((err) => { res.status(500).json(err)});
 }
 
-export function deleteUser(req, res)
+export function deleteUserService(req, res)
 {
     var UserId = req.body.Id;
 

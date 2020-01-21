@@ -2,9 +2,9 @@ import app from "../app.js";
 import { pool } from "./index";
 //import { Request } from "mssql";
 
-export function getTipoUsuario(req, res)
+export function getTipoUsuarioService(req, res)
 {
-    var query = `SELECT * FROM TipoUsuario`;
+    var query = `SELECT * FROM tipousuario`;
     console.log(query);
     pool.promise().query(query)
         .then( ([rows,fields]) => {
@@ -14,7 +14,7 @@ export function getTipoUsuario(req, res)
         .catch((err) => { res.status(500).json(err)});
 }
 
-export function getTipoUsuarioById(req, res)
+export function getTipoUsuarioByIdService(req, res)
 {
     var query = `SELECT * FROM TipoUsuario WHERE ID = ?`;
 
@@ -26,7 +26,7 @@ export function getTipoUsuarioById(req, res)
         .catch((err) => { res.status(500).json(err)});
 }
 
-export function addTipoUsuario(req, res)
+export function addTipoUsuarioService(req, res)
 {
     var query = `INSERT INTO tipousuario (tipo) VALUES (?) `;
 
@@ -37,7 +37,7 @@ export function addTipoUsuario(req, res)
             })
         .catch((err) => { res.status(500).json(err)});
 }
-export function updateTipoUsuario(req, res)
+export function updateTipoUsuarioService(req, res)
 {
     var DatosActualizar = req.body;
 
@@ -53,7 +53,7 @@ export function updateTipoUsuario(req, res)
         .catch((err) => { res.status(500).json(err)});
 }
 
-export function deleteTipoUsuario(req, res)
+export function deleteTipoUsuarioService(req, res)
 {
     var IdTipoUsuario = req.body.IdTipoUsuario;
 
