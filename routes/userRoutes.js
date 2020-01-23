@@ -1,23 +1,23 @@
-var UserController = require('../controllers/UserController');
+import { getUsersController, addUserController, updateUserController, deleteUserController, loginUserController } from '../controllers/UserController';
 
-exports.getUsers = (req, res) => {
+export async function getUsers(req, res) {
     console.log("GetUsers Route inicio");
-    return(UserController.getUsers(req,res));
+    return(getUsersController(req,res));
 }
 
-exports.addUser = (req, res) => {
-    return(UserController.addUser(req, res));
+export async function addUser(req, res) {
+    return(addUserController(req, res));
 }
 
-exports.updateUser = (req, res) => {
-    return(UserController.updateUser(req, res));
+export async function updateUser(req, res) {
+    return(updateUserController(req, res));
 }
 
-exports.deleteUser = (req, res) => {
-    return(UserController.deleteUser(req, res));
+export async function deleteUser(req, res) {
+    return(deleteUserController(req, res));
 }
 
-exports.loginUser = (req, res) => {
+export async function loginUser(req, res) {
     console.log("Llego");
-    return(UserController.loginUser(req, res));
+    return(loginUserController(req, res));
 }

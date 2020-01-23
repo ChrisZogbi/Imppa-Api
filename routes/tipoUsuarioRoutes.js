@@ -1,18 +1,18 @@
-import {getTipoUsuario, addTipoUsuario, updateTipoUsuario, deleteTipoUsuario} from '../controllers/TipoUsuarioController';
+import {getTipoUsuarioController, addTipoUsuarioController, updateTipoUsuarioController, deleteTipoUsuarioController} from '../controllers/TipoUsuarioController';
 
-exports.getTipoUsuario = (req, res) => {
+export let getTipoUsuario = async (req, res) => {
     console.log("GetUsers Route inicio" + req.baseUrl);
-    return(getTipoUsuario(req,res));
+    return(getTipoUsuarioController(req,res));
 }
 
-exports.addTipoUsuario = (req, res) => {
-    return(addTipoUsuario(req, res));
+export let  addTipoUsuario = async (req, res) => {
+    return(addTipoUsuarioController(req, res));
 }
 
-exports.updateTipoUsuario = (req, res) => {
-    return(updateTipoUsuario(req, res));
+export let updateTipoUsuario = async (req, res) => {
+    return(updateTipoUsuarioController(req, res));
 }
 
-exports.deleteTipoUsuario = (req, res) => {
-    return(deleteTipoUsuario(req, res));
-}
+export let deleteTipoUsuario = async (req, res) => {
+    return(deleteTipoUsuarioController(req, res));
+} 

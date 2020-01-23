@@ -1,7 +1,7 @@
 import express from 'express';
 import {getUserByMailContraseniaService, getUserService, getUsersService, updateUserService, deleteUserService} from '../services/UserService';
 
- export function getUsers(req, res) {
+ export function getUsersController(req, res) {
    console.log(req.body);
    if(req.body.UserId != null)
    {
@@ -15,22 +15,22 @@ import {getUserByMailContraseniaService, getUserService, getUsersService, update
    return(data);
  }
 
- export function addUser(req, res) {
+ export function addUserController(req, res) {
     console.log(req.body);
     return(addUserService(req, res));
 }
 
-export function updateUser(req, res) {
+export function updateUserController(req, res) {
   console.log(req.body);
   return(updateUserService(req, res));
 }
 
-export function deleteUser(req, res) {
+export function deleteUserController(req, res) {
   console.log(req.body);
   return(deleteUserService(req, res));
 }
 
-export function loginUser(req, res) {
+export function loginUserController(req, res) {
   console.log("LoginUser UserController  " + req.query.Mail);
   return(getUserByMailContraseniaService(req, res))
 }
