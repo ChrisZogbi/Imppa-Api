@@ -22,6 +22,9 @@ import {LogError} from './ErrorLogController';
         res.status(500).json(response.Data);
       }
 
+    })
+    .catch((err) => {
+      console.log(err);
     });
   }
 } 
