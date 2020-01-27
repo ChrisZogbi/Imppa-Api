@@ -1,17 +1,28 @@
 import app from "../app.js";
 import { pool } from "./index";
+import { json } from "express";
+import { NText } from "mssql";
 //import { Request } from "mssql";
 
-export function getTipoUsuarioService(req, res)
+export function getTipoUsuarioService(req)
 {
-    var query = `SELECT * FROM tipousuario`;
+    var query = `SELECT * FROM ipousuario`;
     console.log(query);
-    pool.promise().query(query)
+    return pool.promise().query(query)
         .then( ([rows,fields]) => {
             console.log(rows);
-            res.status(200).json(rows);
+            return ({
+                Success: true,
+                Data: rows
             })
-        .catch((err) => { res.status(500).json(err)});
+        })
+        .catch((err) => { 
+            console.log("error");
+            return ({
+                Success: false,
+                Data: err
+            });
+        });
 }
 
 export function getTipoUsuarioByIdService(req, res)
