@@ -29,17 +29,18 @@ import {LogError} from './ErrorLogController';
   }
 } 
   
-export function addTipoUsuarioController(req, res) {
+export async function addTipoUsuarioController(req, res) {
     console.log(req.body);
-    return(addTipoUsuarioService(req, res));
+    let response = await addTipoUsuarioService(req);
+    
 }
 
 export function updateTipoUsuarioController(req, res) {
   console.log(req.body);
-  return(updateTipoUsuarioService(req, res));
+  return(updateTipoUsuarioService(req));
 }
 
 export function deleteTipoUsuarioController(req, res) {
   console.log(req.body);
-  return(deleteTipoUsuarioService(req, res));
+  return(deleteTipoUsuarioService(req));
 }

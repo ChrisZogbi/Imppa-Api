@@ -2,42 +2,24 @@ import app from "../app.js";
 import { pool } from "./index";
 //import { Request } from "mssql";
 
-export function getTipoUsuario(req, res)
+export function getTipoClaseService(req, res)
 {
     var query = `SELECT * FROM TipoClase`;
     console.log(query);
-    pool.promise().query(query)
-        .then( ([rows,fields]) => {
-            console.log(rows);
-            res.status(200).json(rows);
-            })
-        .catch((err) => { res.status(500).json(err)});
+    return pool.promise().query(query)
+            .then(([rows]) => { if(rows.length == 1) { return ({Success: true, Data: rows})}})
+            .catch((err) => { return ({Success: false, Data: err})});
 }
 
-export function getTipoUsuarioById(req, res)
-{
-    var query = `SELECT * FROM TipoClase WHERE ID = ?`;
-
-    pool.promise().query(query, [req.query.Id])
-        .then( ([rows,fields]) => {
-            console.log(rows);
-            res.status(200).json(rows);
-            })
-        .catch((err) => { res.status(500).json(err)});
-}
-
-export function addTipoUsuario(req, res)
+export function addTipoClaseService(req, res)
 {
     var query = `INSER INTO TipoClase VALUES (?) `;
 
-    pool.promise().query(query, [req.body.NuevoTipoClase])
-        .then( ([rows,fields]) => {
-            console.log(rows);
-            res.status(200).json({'Mensaje':'Se agrego correctamente el Tipo de Usuario'});
-            })
-        .catch((err) => { res.status(500).json(err)});
+    return pool.promise().query(query, [req.body.NuevoTipoClase])
+            .then( () => {return ({Success: true})})
+            .catch((err) => { return ({Success: false, Data: err})});
 }
-export function updateTipoUsuario(req, res)
+export function updateTipoClaseService(req, res)
 {
     var DatosActualizar = req.body;
 
@@ -45,25 +27,19 @@ export function updateTipoUsuario(req, res)
                     SET [Tipo] = ${DatosActualizar.Tipo}
                 WHERE [ID] = ${DatosActualizar.Id}`; 
         
-        pool.promise().query(query)
-        .then( ([rows,fields]) => {
-            console.log(rows);
-            res.status(200).json({'Mensaje':'Se actualizó correctamente el Tipo de Usuario'});
-            })
-        .catch((err) => { res.status(500).json(err)});
+    return pool.promise().query(query)
+            .then( () => {return ({Success: true})})
+            .catch((err) => { return ({Success: false, Data: err})});
 }
 
-export function deleteTipoUsuario(req, res)
+export function deleteTipoClaseService(req, res)
 {
-    var IdTipoUsuario = req.body.IdTipoClase;
+    var IdTipoClase = req.body.IdTipoClase;
 
     var query = `DELETE FROM  [dbo].[TipoClase]
                 WHERE [ID] = ${IdTipoClase}`; 
 
-    pool.promise().query(query)
-    .then( ([rows,fields]) => {
-        console.log(rows);
-        res.status(200).json({'Mensaje':'Se eliminó correctamente el Tipo de Usuario'});
-        })
-    .catch((err) => { res.status(500).json(err)});
+    return pool.promise().query(query)
+            .then( () => {return ({Success: true})})
+            .catch((err) => { return ({Success: false, Data: err})});
 }

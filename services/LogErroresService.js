@@ -11,11 +11,7 @@ export function addLogErrores(LugarError, Mensaje)
     var query = `INSERT INTO logErrores (IDUsuario, FechaError, MensajeError) VALUES (1, '${date}', "${MensajeError}") `;
     console.log(date);
 
-    pool.promise().query(query, [1, '2019-01-26', MensajeError])
-        .then( ([rows,fields]) => {
-            return({Success: true});
-        })
-        .catch((err) => {
-            return ({Success:false, Mensaje: err});
-        });
+    pool.promise().query(query)
+        .then( ([rows,fields]) => { return({Success: true}); })
+        .catch((err) => { return({Success:false, Mensaje: err}); });
 }
