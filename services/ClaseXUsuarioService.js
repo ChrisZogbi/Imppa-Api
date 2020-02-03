@@ -6,48 +6,36 @@ export function getClaseXUsuario(req, res)
 {
     var query = `SELECT * FROM clasexusuario`;
     console.log(query);
-    pool.promise().query(query)
-        .then( ([rows,fields]) => {
-            console.log(rows);
-            res.status(200).json(rows);
-            })
-        .catch((err) => { res.status(500).json(err)});
+    return pool.promise().query(query)
+            .then(([rows]) => {return ({Success: true, Data: rows})})
+            .catch((err) => { return ({Success: false, Data: err})});
 }
 
 export function getClaseXUsuarioByIdUsuario(req, res)
 {
     var query = `SELECT * FROM clasexusuario WHERE IDUsuario = ?`;
 
-    pool.promise().query(query, [req.query.IDUsuario])
-        .then( ([rows,fields]) => {
-            console.log(rows);
-            res.status(200).json(rows);
-            })
-        .catch((err) => { res.status(500).json(err)});
+    return pool.promise().query(query, [req.query.IDUsuario])
+            .then(([rows]) => {return ({Success: true, Data: rows})})
+            .catch((err) => { return ({Success: false, Data: err})});
 }
 
 export function getClaseXUsuarioByIdClase(req, res)
 {
     var query = `SELECT * FROM clasexusuario WHERE IDClase = ?`;
 
-    pool.promise().query(query, [req.query.IDClase])
-        .then( ([rows,fields]) => {
-            console.log(rows);
-            res.status(200).json(rows);
-            })
-        .catch((err) => { res.status(500).json(err)});
+    return pool.promise().query(query, [req.query.IDClase])
+            .then(() => {return ({Success: true, Data: rows})})
+            .catch((err) => { return ({Success: false, Data: err})});   
 }
 
 export function addClaseXUsuario(req, res, ClaseXUsuario)
 {
     var query = `INSERT INTO clasexusuario (IDUsuario, IDClaseProfesor) VALUES (?) `;
 
-    pool.promise().query(query, [req.body])
-        .then( ([rows,fields]) => {
-            console.log(rows);
-            res.status(200).json({'Mensaje':'Se agrego correctamente la ClaseXUsuario'});
-            })
-        .catch((err) => { res.status(500).json(err)});
+    return pool.promise().query(query, [req.body])
+            .then(() => {return ({Success: true})})
+            .catch((err) => { return ({Success: false, Data: err})});
 }
 export function updateClaseXUsuario(req, res)
 {
@@ -58,13 +46,10 @@ export function updateClaseXUsuario(req, res)
                     [IDClaseProfesor] = ${DatosActualizar.IDClaseProfesor}
                 WHERE [ID] = ${DatosActualizar.Id}`; 
         
-        pool.promise().query(query)
-        .then( ([rows,fields]) => {
-            console.log(rows);
-            res.status(200).json({'Mensaje':'Se actualizó correctamente ela ClaseXUsuario'});
-            })
-        .catch((err) => { res.status(500).json(err)});
-}
+    return pool.promise().query(query)
+            .then(() => {return ({Success: true})})
+            .catch((err) => { return ({Success: false, Data: err})});   
+    }
 
 export function deleteClaseXUsuario(req, res)
 {
@@ -73,10 +58,7 @@ export function deleteClaseXUsuario(req, res)
     var query = `DELETE FROM  [dbo].[clasexusuario]
                 WHERE [ID] = ${IdClaseXUsuario}`;
 
-    pool.promise().query(query)
-    .then( ([rows,fields]) => {
-        console.log(rows);
-        res.status(200).json({'Mensaje':'Se eliminó correctamente la ClaseXUsuario'});
-        })
-    .catch((err) => { res.status(500).json(err)});
+    return pool.promise().query(query)
+            .then(() => {return ({Success: true})})
+            .catch((err) => { return ({Success: false, Data: err})});
 }

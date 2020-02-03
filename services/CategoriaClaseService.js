@@ -6,36 +6,27 @@ export function getCategoriaClase(req, res)
 {
     var query = `SELECT * FROM categoriaclase`;
     console.log(query);
-    pool.promise().query(query)
-        .then( ([rows,fields]) => {
-            console.log(rows);
-            res.status(200).json(rows);
-            })
-        .catch((err) => { res.status(500).json(err)});
+    return pool.promise().query(query)
+            .then(([rows]) => {return ({Success: true, Data: rows})})
+            .catch((err) => { return ({Success: false, Data: err})});
 }
 
 export function getCategoriaClaseByNombreCategoria(req, res)
 {
     var query = `SELECT * FROM categoriaclase WHERE NombreCategoria = ?`;
 
-    pool.promise().query(query, [req.query.Id])
-        .then( ([rows,fields]) => {
-            console.log(rows);
-            res.status(200).json(rows);
-            })
-        .catch((err) => { res.status(500).json(err)});
+    return pool.promise().query(query, [req.query.Id])
+            .then(([rows]) => {return ({Success: true, Data: rows})})
+            .catch((err) => { return ({Success: false, Data: err})});
 }
 
 export function addCategoriaClase(req, res)
 {
     var query = `INSERT INTO categoriaclase (NombreCategoria, Habilitado) VALUES (?) `;
 
-    pool.promise().query(query, [req.body.Tipo])
-        .then( ([rows,fields]) => {
-            console.log(rows);
-            res.status(200).json({'Mensaje':'Se agrego correctamente la Categoria'});
-            })
-        .catch((err) => { res.status(500).json(err)});
+    return pool.promise().query(query, [req.body.Tipo])
+            .then(() => {return ({Success: true})})
+            .catch((err) => { return ({Success: false, Data: err})});
 }
 
 export function updateCategoriaClase(req, res)
@@ -47,12 +38,9 @@ export function updateCategoriaClase(req, res)
                     [Habilitado] = ${DatosActualizar.Habilitado}
                 WHERE [ID] = ${DatosActualizar.Id}`; 
         
-        pool.promise().query(query)
-        .then( ([rows,fields]) => {
-            console.log(rows);
-            res.status(200).json({'Mensaje':'Se actualizó correctamente ela Categoria'});
-            })
-        .catch((err) => { res.status(500).json(err)});
+    return pool.promise().query(query)
+            .then(() => {return ({Success: true})})
+            .catch((err) => { return ({Success: false, Data: err})});
 }
 
 export function deleteCategoriaClase(req, res)
@@ -62,10 +50,7 @@ export function deleteCategoriaClase(req, res)
     var query = `DELETE FROM  [dbo].[categoriaclase]
                 WHERE [ID] = ${Idcategoriaclase}`;
 
-    pool.promise().query(query)
-    .then( ([rows,fields]) => {
-        console.log(rows);
-        res.status(200).json({'Mensaje':'Se eliminó correctamente la Categoria'});
-        })
-    .catch((err) => { res.status(500).json(err)});
+    return pool.promise().query(query)
+            .then(() => {return ({Success: true})})
+            .catch((err) => { return ({Success: false, Data: err})});
 }

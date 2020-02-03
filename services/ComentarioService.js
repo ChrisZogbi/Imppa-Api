@@ -7,12 +7,9 @@ export function getComentariosByIdProfesor(req, res)
 
     var query = `SELECT * FROM comentarios WHERE IDProfesor = ?`;
 
-    pool.promise().query(query, [idProfesor])
-        .then( ([rows,fields]) => {
-            console.log(rows);
-            res.status(200).json(rows);
-            })
-        .catch((err) => { res.status(500).json(err)});
+    return pool.promise().query(query, [idProfesor])
+            .then(([rows]) => {return ({Success: true, Data: rows})})
+            .catch((err) => { return ({Success: false, Data: err})});
 }
 
 export function getComentarioById(req, res)
@@ -20,26 +17,21 @@ export function getComentarioById(req, res)
     var query = `SELECT * FROM comentarios WHERE ID = ?`
     var idUsuario = req.body.IDUsuario;
 
-    pool.promise().query(query, [idUsuario])
-        .then( ([rows,fields]) => {
-            console.log(rows);
-            res.status(200).json(rows);
-            })
-        .catch((err) => { res.status(500).json(err)});
+    return pool.promise().query(query, [idUsuario])
+            .then(([rows]) => {return ({Success: true, Data: rows})})
+            .catch((err) => { return ({Success: false, Data: err})});   
 }
 
 export function addComentario(req, res)
 {
-    var Comentario = req.body;
+    var Data = req.body;
 
-    var query =  `INSERT INTO comentarios SET ?`
+    var query =  `INSERT INTO comentarios VALUES (?, ?)`
 
     console.log(query);
-    pool.promise().query(query, [Comentario])
-        .then( ([rows,fields]) => {
-            res.status(200).json({'Mensaje':"Ok."})
-        })
-        .catch((err) => { res.status(500).json(err)});
+    return pool.promise().query(query, [Data.IdProfresor, Data.Comentario, Data.Puntaje])
+            .then(() => {return ({Success: true})})
+            .catch((err) => { return ({Success: false, Data: err})});
 }
 export function updateComentario(req, res)
 {
@@ -50,11 +42,9 @@ export function updateComentario(req, res)
                     ,[Puntaje] = '${ComentarioData.Puntaje}'
                 WHERE [ID] = ${ComentarioData.IdComentario}`; 
     console.log(query);
-    pool.promise().query(query)
-        .then( ([rows,fields]) => {
-            res.status(200).json({'Mensaje':"Se actualizo correctamente el Comentario."})
-        })
-        .catch((err) => { res.status(500).json(err)});
+    return pool.promise().query(query)
+            .then( () => {return ({Success: true})})
+            .catch((err) => { return ({Success: false, Data: err})});
 }
 
 export function deleteComentario(req, res)
@@ -64,9 +54,7 @@ export function deleteComentario(req, res)
     var query = `DELETE FROM  [comentarios]
                 WHERE [ID] = ?`; 
 
-    pool.promise().query(query, [idComentario])
-    .then( ([rows,fields]) => {
-        res.status(200).json({'Mensaje':"Se eliminó correctamente el comentario."})
-    })
-    .catch((err) => { res.status(500).json(err)});
+    return pool.promise().query(query, [idComentario])
+            .then( () => {return ({Success: true})})
+            .catch((err) => { return ({Success: false, Data: err})});
 }
