@@ -2,7 +2,7 @@ import app from "../app.js";
 import { pool } from "./index";
 //import { Request } from "mssql";
 
-export function getCategoriaClase(req, res)
+export function getCategoriaClaseService(req, res)
 {
     var query = `SELECT * FROM categoriaclase`;
     console.log(query);
@@ -11,7 +11,7 @@ export function getCategoriaClase(req, res)
             .catch((err) => { return ({Success: false, Data: err})});
 }
 
-export function getCategoriaClaseByNombreCategoria(req, res)
+export function getCategoriaClaseByNombreCategoriaService(req, res)
 {
     var query = `SELECT * FROM categoriaclase WHERE NombreCategoria = ?`;
 
@@ -20,7 +20,7 @@ export function getCategoriaClaseByNombreCategoria(req, res)
             .catch((err) => { return ({Success: false, Data: err})});
 }
 
-export function addCategoriaClase(req, res)
+export function addCategoriaClaseService(req, res)
 {
     var query = `INSERT INTO categoriaclase (NombreCategoria, Habilitado) VALUES (?) `;
 
@@ -29,7 +29,7 @@ export function addCategoriaClase(req, res)
             .catch((err) => { return ({Success: false, Data: err})});
 }
 
-export function updateCategoriaClase(req, res)
+export function updateCategoriaClaseService(req, res)
 {
     var DatosActualizar = req.body;
 
@@ -43,7 +43,7 @@ export function updateCategoriaClase(req, res)
             .catch((err) => { return ({Success: false, Data: err})});
 }
 
-export function deleteCategoriaClase(req, res)
+export function deleteCategoriaClaseService(req, res)
 {
     var Idcategoriaclase = req.body.Idcategoriaclase;
 

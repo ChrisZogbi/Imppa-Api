@@ -1,7 +1,7 @@
 import app from "../app.js";
 import { pool } from "./index";
 
-export function getComentariosByIdProfesor(req, res)
+export function getComentariosByIdProfesorService(req, res)
 {
     var idProfesor = req.body.IdProfesor
 
@@ -12,7 +12,7 @@ export function getComentariosByIdProfesor(req, res)
             .catch((err) => { return ({Success: false, Data: err})});
 }
 
-export function getComentarioById(req, res)
+export function getComentarioByIdService(req, res)
 {
     var query = `SELECT * FROM comentarios WHERE ID = ?`
     var idUsuario = req.body.IDUsuario;
@@ -22,7 +22,7 @@ export function getComentarioById(req, res)
             .catch((err) => { return ({Success: false, Data: err})});   
 }
 
-export function addComentario(req, res)
+export function addComentarioService(req, res)
 {
     var Data = req.body;
 
@@ -33,7 +33,7 @@ export function addComentario(req, res)
             .then(() => {return ({Success: true})})
             .catch((err) => { return ({Success: false, Data: err})});
 }
-export function updateComentario(req, res)
+export function updateComentarioService(req, res)
 {
     var ComentarioData = req.body;
 
@@ -47,7 +47,7 @@ export function updateComentario(req, res)
             .catch((err) => { return ({Success: false, Data: err})});
 }
 
-export function deleteComentario(req, res)
+export function deleteComentarioService(req, res)
 {
     var idComentario = req.body.IdComentario;
 

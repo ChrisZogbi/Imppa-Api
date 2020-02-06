@@ -2,7 +2,7 @@ import app from "../app.js";
 import { pool } from "./index";
 //import { Request } from "mssql";
 
-export function getClaseXUsuario(req, res)
+export function getClaseXUsuarioService(req, res)
 {
     var query = `SELECT * FROM clasexusuario`;
     console.log(query);
@@ -11,7 +11,7 @@ export function getClaseXUsuario(req, res)
             .catch((err) => { return ({Success: false, Data: err})});
 }
 
-export function getClaseXUsuarioByIdUsuario(req, res)
+export function getClaseXUsuarioByIdUsuarioService(req, res)
 {
     var query = `SELECT * FROM clasexusuario WHERE IDUsuario = ?`;
 
@@ -20,7 +20,7 @@ export function getClaseXUsuarioByIdUsuario(req, res)
             .catch((err) => { return ({Success: false, Data: err})});
 }
 
-export function getClaseXUsuarioByIdClase(req, res)
+export function getClaseXUsuarioByIdClaseService(req, res)
 {
     var query = `SELECT * FROM clasexusuario WHERE IDClase = ?`;
 
@@ -29,7 +29,7 @@ export function getClaseXUsuarioByIdClase(req, res)
             .catch((err) => { return ({Success: false, Data: err})});   
 }
 
-export function addClaseXUsuario(req, res, ClaseXUsuario)
+export function addClaseXUsuarioService(req, res, ClaseXUsuario)
 {
     var query = `INSERT INTO clasexusuario (IDUsuario, IDClaseProfesor) VALUES (?) `;
 
@@ -37,7 +37,7 @@ export function addClaseXUsuario(req, res, ClaseXUsuario)
             .then(() => {return ({Success: true})})
             .catch((err) => { return ({Success: false, Data: err})});
 }
-export function updateClaseXUsuario(req, res)
+export function updateClaseXUsuarioService(req, res)
 {
     var DatosActualizar = req.body;
 
@@ -51,7 +51,7 @@ export function updateClaseXUsuario(req, res)
             .catch((err) => { return ({Success: false, Data: err})});   
     }
 
-export function deleteClaseXUsuario(req, res)
+export function deleteClaseXUsuarioService(req, res)
 {
     var IdClaseXUsuario = req.body.Id;
 

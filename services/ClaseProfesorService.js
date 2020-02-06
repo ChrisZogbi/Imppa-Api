@@ -1,7 +1,7 @@
 import app from "../app.js";
 import { pool } from "./index";
 
-export function getClaseByIdUsuario(req, res)
+export function getClaseByIdUsuarioService(req, res)
 {
     var idUsuario = req.body.IdUsuario
 
@@ -15,7 +15,7 @@ export function getClaseByIdUsuario(req, res)
             .catch((err) => { return ({Success: false, Data: err})});
 }
 
-export function getClaseByID(req, res)
+export function getClaseByIDService(req, res)
 {
     var query = `SELECT * FROM ClaseProfesor WHERE ID = ?`
     var idClase = req.body.IdClase;
@@ -25,7 +25,7 @@ export function getClaseByID(req, res)
             .catch((err) => { return ({Success: false, Data: err})});
 }
 
-export function addClaseProfesor(req, res)
+export function addClaseProfesorService(req, res)
 {
     var ClaseProfesor = req.body;
     var idUsuario = req.body.IdUsuario;
@@ -54,7 +54,7 @@ export function addClaseProfesor(req, res)
         .catch((err) => { res.status(500).json(err)});
 }
 
-export function updateClaseProfesor(req, res)
+export function updateClaseProfesorService(req, res)
 {
     var ClaseProfesorData = req.body;
 
@@ -68,7 +68,7 @@ export function updateClaseProfesor(req, res)
             .catch((err) => { return ({Success: false, Data: err})});
 }
 
-export function deleteClaseProfesor(req, res)
+export function deleteClaseProfesorService(req, res)
 {
     var idUsuario = req.body.IdUsuario;
     var idClaseProfesor = req.body.IdClaseProfesor;
