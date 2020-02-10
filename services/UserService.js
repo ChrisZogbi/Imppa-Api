@@ -1,9 +1,12 @@
 import app from "../app.js";
 import { pool } from "./index";
 
-export function getUserByMailContraseniaService (Mail, Password) {
+export function getUserByMailContraseniaService (req) {
     
     var query = `SELECT * FROM usuarios where Mail = ? and Contrasenia = ?`;
+    
+    let Mail = req.query.Mail
+    let Password = req.query.Password
     
     return pool.promise().query(query, [Mail, Password])
         .then(([rows,fields]) => { if(rows.length == 1) { return ({Success: true, Data: rows})}})
@@ -19,7 +22,7 @@ export function getUsersService()
         .catch((err) => {({Success: false, Data: err})});
 }
 
-export function getUserService(req, res)
+export function getUserService(req)
 {
 
     var query = `SELECT * FROM usuarios WHERE ID = ?`
@@ -30,7 +33,7 @@ export function getUserService(req, res)
         .catch((err) => {({Success: false, Data: err})});
 }
 
-export function addUserService(req, res)
+export function addUserService(req)
 {
     var Usuario = req.body;
 
@@ -38,11 +41,11 @@ export function addUserService(req, res)
 
     console.log(query);
     return pool.promise().query(query, [Usuario])
-        .then(() => { return({Success: true}); })
+        .then(([result]) => { return({Success: true, InsertId: result.insertId}); })
         .catch((err) => {({Success: false, Data: err})});
 }
 
-export function updateUserService(req, res)
+export function updateUserService(req)
 {
     var UserData = req.body;
 
@@ -62,7 +65,7 @@ export function updateUserService(req, res)
         .catch((err) => {({Success: false, Data: err})});
 }
 
-export function deleteUserService(req, res)
+export function deleteUserService(req)
 {
     var UserId = req.body.Id;
 

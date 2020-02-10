@@ -2,7 +2,7 @@ import app from "../app.js";
 import { pool } from "./index";
 //import { Request } from "mssql";
 
-export function getTipoClaseService(req, res)
+export function getTipoClaseService(req)
 {
     var query = `SELECT * FROM TipoClase`;
     console.log(query);
@@ -11,7 +11,7 @@ export function getTipoClaseService(req, res)
             .catch((err) => { return ({Success: false, Data: err})});
 }
 
-export function addTipoClaseService(req, res)
+export function addTipoClaseService(req)
 {
     var query = `INSER INTO TipoClase VALUES (?) `;
 
@@ -19,7 +19,7 @@ export function addTipoClaseService(req, res)
             .then( () => {return ({Success: true})})
             .catch((err) => { return ({Success: false, Data: err})});
 }
-export function updateTipoClaseService(req, res)
+export function updateTipoClaseService(req)
 {
     var DatosActualizar = req.body;
 
@@ -32,7 +32,7 @@ export function updateTipoClaseService(req, res)
             .catch((err) => { return ({Success: false, Data: err})});
 }
 
-export function deleteTipoClaseService(req, res)
+export function deleteTipoClaseService(req)
 {
     var IdTipoClase = req.body.IdTipoClase;
 

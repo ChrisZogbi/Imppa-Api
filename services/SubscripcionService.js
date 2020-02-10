@@ -2,7 +2,7 @@ import app from "../app.js";
 import { pool } from "./index";
 //import { Request } from "mssql";
 
-export function getSubcripcionService(req, res)
+export function getSubcripcionService(req)
 {
     var query = `SELECT * FROM Subscripcion`;
     console.log(query);
@@ -11,7 +11,7 @@ export function getSubcripcionService(req, res)
             .catch((err) => { return ({Success: false, Data: err})});
 }
 
-export function getSubcripcionByIdService(req, res)
+export function getSubcripcionByIdService(req)
 {
     var query = `SELECT * FROM Subscripcion WHERE ID = ?`;
 
@@ -20,7 +20,7 @@ export function getSubcripcionByIdService(req, res)
             .catch((err) => { return ({Success: false, Data: err})});
 }
 
-export function addSubcripcionService(req, res)
+export function addSubcripcionService(req)
 {
     var query = `INSER INTO Subscripcion VALUES (?) `;
 
@@ -28,7 +28,7 @@ export function addSubcripcionService(req, res)
             .then(() => {return ({Success: true})})
             .catch((err) => { return ({Success: false, Data: err})});
 }
-export function updateSubcripcionService(req, res)
+export function updateSubcripcionService(req)
 {
     var DatosActualizar = req.body;
 
@@ -43,7 +43,7 @@ export function updateSubcripcionService(req, res)
             .catch((err) => { return ({Success: false, Data: err})});
 }
 
-export function deleteSubcripcionService(req, res)
+export function deleteSubcripcionService(req)
 {
     var IdTipoUsuario = req.body.Id;
 

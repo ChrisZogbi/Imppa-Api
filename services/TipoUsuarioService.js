@@ -13,7 +13,7 @@ export function getTipoUsuarioService(req)
             .catch((err) => { return ({Success: false, Data: err})});
 }
 
-export function getTipoUsuarioByIdService(req, res)
+export function getTipoUsuarioByIdService(req)
 {
     var query = `SELECT * FROM tipoUsuario WHERE ID = ?`;
 
@@ -22,15 +22,15 @@ export function getTipoUsuarioByIdService(req, res)
             .catch((err) => { return ({Success: false, Data: err})});
 }
 
-export function addTipoUsuarioService(req, res)
+export function addTipoUsuarioService(req)
 {
     var query = `INSERT INTO tipousuario (tipo) VALUES (?) `;
 
     return pool.promise().query(query, [req.body.Tipo])
-            .then(() => {return ({Success: true})})
+            .then(() => {return ({Success: true,  Data: 'Se agregó exitosamente el Tipo Usuario'})})
             .catch((err) => { return ({Success: false, Data: err})});
 }
-export function updateTipoUsuarioService(req, res)
+export function updateTipoUsuarioService(req)
 {
     var DatosActualizar = req.body;
 
@@ -39,11 +39,11 @@ export function updateTipoUsuarioService(req, res)
                 WHERE [ID] = ${DatosActualizar.Id}`; 
         
     return pool.promise().query(query)
-            .then( () => {return ({Success: true})})
+            .then(() => {return ({Success: true, Data: 'Se modificó exitosamente el Tipo Usuario'})})
             .catch((err) => { return ({Success: false, Data: err})});
 }
 
-export function deleteTipoUsuarioService(req, res)
+export function deleteTipoUsuarioService(req)
 {
     var IdTipoUsuario = req.body.IdTipoUsuario;
 
@@ -51,6 +51,6 @@ export function deleteTipoUsuarioService(req, res)
                 WHERE [ID] = ${IdTipoUsuario}`; 
 
     return pool.promise().query(query)
-            .then( () => {return ({Success: true})})
+            .then(() => {return ({Success: true, Data: 'Se eliminó exitosamente el Tipo Usuario'})})
             .catch((err) => { return ({Success: false, Data: err})});
 }
