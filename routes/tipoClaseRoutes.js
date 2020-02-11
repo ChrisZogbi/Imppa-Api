@@ -14,5 +14,5 @@ export let updateTipoClase = (req, res) => {
 }
 
 export let deleteTipoClase = (req, res) => {
-    return(deleteTipoUsuarioController(req, res));
+    return(deleteTipoClaseController(req, res));
 } 

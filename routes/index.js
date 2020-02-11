@@ -1,7 +1,9 @@
 import { getUsers, addUser, updateUser, deleteUser, loginUser } from './userRoutes'
 import { getTipoUsuario, addTipoUsuario, updateTipoUsuario, deleteTipoUsuario } from './tipoUsuarioRoutes'
-import { getTipoUsuario, addTipoUsuario, updateTipoUsuario, deleteTipoUsuario } from './'
-
+import { getTipoClase, addTipoClase, updateTipoClase, deleteTipoClase } from './tipoClaseRoutes'
+import { getSubscipcion, addSubscipcion, updateSubscipcion, deleteSubscipcion } from './subscripcionRoutes'
+import { getComentario, addComentario, updateComentario, deleteComentario } from './comentarioRoutes'
+import { getCategoriaClase, addCategoriaClase, updateCategoriaClase, deleteCategoriaClase } from './categoriaClaseRoutes'
 
 export function assignRoutes(app) {
     app.route('/users/')
@@ -20,8 +22,26 @@ export function assignRoutes(app) {
         .delete(deleteTipoUsuario);
 
     app.route('/tipoClase/')
-        .get(getTipoUsuario)
-        .post(addTipoUsuario)
-        .put(updateTipoUsuario)
-        .delete(deleteTipoUsuario);
+        .get(getTipoClase)
+        .post(addTipoClase)
+        .put(updateTipoClase)
+        .delete(deleteTipoClase);
+
+    app.route('/subscripcion/')
+        .get(getSubscipcion)
+        .post(addSubscipcion)
+        .put(updateSubscipcion)
+        .delete(deleteSubscipcion);
+
+    app.route('/comentario/')
+        .get(getComentario)
+        .post(addComentario)
+        .put(updateComentario)
+        .delete(deleteComentario);    
+
+    app.route('/categoriaClase/')
+        .get(getCategoriaClase)
+        .post(addCategoriaClase)
+        .put(updateCategoriaClase)
+        .delete(deleteCategoriaClase);    
 }

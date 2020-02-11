@@ -3,7 +3,7 @@ import {getCategoriaClaseService, getCategoriaClaseByNombreCategoriaService, add
         from '../services/CategoriaClaseService';
 import {LogError} from './ErrorLogController';
 
- export function getSubscipcionController(req) {
+ export function getCategoriaClaseController(req) {
 
   console.log('lala' + req.baseUrl);
   if(req.query.NombreCategoria)
@@ -15,7 +15,7 @@ import {LogError} from './ErrorLogController';
         if(response.Success){res.status(200).json(response)}
         else
         {
-          LogError(getSubscipcionController.name, response.Data.message)
+          LogError(getCategoriaClaseController.name, response.Data.message)
           res.status(500).json(response);
         }
   
@@ -33,7 +33,7 @@ import {LogError} from './ErrorLogController';
       if(response.Success){res.status(200).json(response)}
       else
       {
-        LogError(getSubscipcionController.name, response.Data.message)
+        LogError(getCategoriaClaseController.name, response.Data.message)
         res.status(500).json(response);
       }
 
@@ -44,7 +44,7 @@ import {LogError} from './ErrorLogController';
   }
 } 
   
-export async function addSubscipcionController(req) {
+export async function addCategoriaClaseController(req) {
     console.log(req.body);
 
     addCategoriaClaseService(req)
@@ -54,7 +54,7 @@ export async function addSubscipcionController(req) {
       if(response.Success){res.status(200).json(response)}
       else
       {
-        LogError(addSubscipcionController.name, response.Data.message)
+        LogError(addCategoriaClaseController.name, response.Data.message)
         res.status(500).json(response);
       }
     })
@@ -63,7 +63,7 @@ export async function addSubscipcionController(req) {
     });
 }
 
-export function updateSubscipcionController(req) {
+export function updateCategoriaClaseController(req) {
   console.log(req.body);
 
   updateCategoriaClaseService(req)
@@ -73,7 +73,7 @@ export function updateSubscipcionController(req) {
     if(response.Success){res.status(200).json(response)}
     else
     {
-      LogError(updateSubscipcionController.name, response.Data.message)
+      LogError(updateCategoriaClaseController.name, response.Data.message)
       res.status(500).json(response);
     }
   })
@@ -82,7 +82,7 @@ export function updateSubscipcionController(req) {
   });
 }
 
-export function deleteSubscipcionController(req) {
+export function deleteCategoriaClaseController(req) {
   console.log(req.body);
 
   deleteCategoriaClaseService(req)
@@ -92,7 +92,7 @@ export function deleteSubscipcionController(req) {
     if(response.Success){res.status(200).json(response)}
     else
     {
-      LogError(deleteSubscipcionController.name, response.Data.message)
+      LogError(deleteCategoriaClaseController.name, response.Data.message)
       res.status(500).json(response);
     }
   })

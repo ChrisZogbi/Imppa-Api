@@ -3,7 +3,7 @@ import {getComentariosByIdProfesorService, getComentarioByIdService, addComentar
         from '../services/ComentarioService';
 import {LogError} from './ErrorLogController';
 
- export function getSubscipcionController(req) {
+ export function getComentarioController(req) {
 
   console.log('lala' + req.baseUrl);
   if(req.query.IdProfesor)
@@ -15,7 +15,7 @@ import {LogError} from './ErrorLogController';
         if(response.Success){res.status(200).json(response)}
         else
         {
-          LogError(getSubscipcionController.name, response.Data.message)
+          LogError(getComentarioController.name, response.Data.message)
           res.status(500).json(response);
         }
   
@@ -33,7 +33,7 @@ import {LogError} from './ErrorLogController';
       if(response.Success){res.status(200).json(response)}
       else
       {
-        LogError(getSubscipcionController.name, response.Data.message)
+        LogError(getComentarioController.name, response.Data.message)
         res.status(500).json(response);
       }
 
@@ -44,7 +44,7 @@ import {LogError} from './ErrorLogController';
   }
 } 
   
-export async function addSubscipcionController(req) {
+export async function addComentarioController(req) {
     console.log(req.body);
 
     addComentarioService(req)
@@ -54,7 +54,7 @@ export async function addSubscipcionController(req) {
       if(response.Success){res.status(200).json(response)}
       else
       {
-        LogError(addSubscipcionController.name, response.Data.message)
+        LogError(addComentarioController.name, response.Data.message)
         res.status(500).json(response);
       }
     })
@@ -63,7 +63,7 @@ export async function addSubscipcionController(req) {
     });
 }
 
-export function updateSubscipcionController(req) {
+export function updateComentarioController(req) {
   console.log(req.body);
 
   updateSubcripcionService(req)
@@ -73,7 +73,7 @@ export function updateSubscipcionController(req) {
     if(response.Success){res.status(200).json(response)}
     else
     {
-      LogError(updateSubscipcionController.name, response.Data.message)
+      LogError(updateComentarioController.name, response.Data.message)
       res.status(500).json(response);
     }
   })
@@ -82,7 +82,7 @@ export function updateSubscipcionController(req) {
   });
 }
 
-export function deleteSubscipcionController(req) {
+export function deleteComentarioController(req) {
   console.log(req.body);
 
   deleteComentarioService(req).then((response) => {
@@ -91,7 +91,7 @@ export function deleteSubscipcionController(req) {
     if(response.Success){res.status(200).json(response)}
     else
     {
-      LogError(deleteSubscipcionController.name, response.Data.message)
+      LogError(deleteComentarioController.name, response.Data.message)
       res.status(500).json(response);
     }
   })
