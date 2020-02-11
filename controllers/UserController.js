@@ -1,6 +1,6 @@
 import express from 'express';
-import {getUserByMailContraseniaService, getUserService, getUsersService, addUserService, updateUserService, deleteUserService} from '../services/UserService';
-import {addTipoUsuarioController} from './TipoUsuarioController'
+import {getUserByMail, getUserByMailContraseniaService, getUserService, getUsersService, addUserService, updateUserService, deleteUserService} from '../services/UserService';
+import {LogError} from './ErrorLogController';
 
  export function getUsersController(req, res) {
    console.log(req.body);
@@ -42,22 +42,36 @@ import {addTipoUsuarioController} from './TipoUsuarioController'
   }
 }
 
- export function addUserController(req, res) {
+ export async function addUserController(req, res) {
    console.log(req.body);
-   addUserService(req)
-   .then((response) => {
-    console.log("Respuesta" + response.Success)
-    
-    if(response.Success){res.status(200).json(response)}
-    else
-    {
-      LogError(addUserController.name, response.Data.message)
-      res.status(500).json(response);
-    }
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+
+   getUserByMail(req.body.Mail)
+    .then((response) =>{
+
+        console.log("Existe usuario con mismo mail: " + response.Success)
+        console.log(response);
+
+        if(!response.Success){
+            addUserService(req)
+            .then((responseAdd) => {
+              console.log("Respuesta" + responseAdd.Success)
+              
+              if(responseAdd.Success){res.status(200).json(response)}
+              else
+              {
+                LogError(addUserController.name, responseAdd.Data.message)
+                res.status(500).json(responseAdd);
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+        else{
+          LogError(addUserController.name, response.Data.message)
+          res.status(500).json(response.Data.message);
+        }
+    })
 }
 
 export function updateUserController(req, res) {
@@ -105,7 +119,7 @@ export function loginUserController(req, res) {
     if(response.Success){res.status(200).json(response)}
     else
     {
-      LogError(deleteUserController.name, response.Data.message)
+      LogError(loginUserController.name, response.Data.message)
       res.status(500).json(response);
     }
   })

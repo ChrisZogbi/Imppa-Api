@@ -5,14 +5,14 @@ export let getTipoUsuario = async (req, res) => {
     return(await getTipoUsuarioController(req,res));
 }
 
-export let  addTipoUsuario = (req, res) => {
+export let  addTipoUsuario = async (req, res) => {
     return(addTipoUsuarioController(req, res));
 }
 
-export let updateTipoUsuario = (req, res) => {
+export let updateTipoUsuario = async (req, res) => {
     return(updateTipoUsuarioController(req, res));
 }
 
-export let deleteTipoUsuario = (req, res) => {
+export let deleteTipoUsuario = async (req, res) => {
     return(deleteTipoUsuarioController(req, res));
 } 

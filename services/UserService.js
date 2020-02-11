@@ -7,9 +7,37 @@ export function getUserByMailContraseniaService (req) {
     
     let Mail = req.query.Mail
     let Password = req.query.Password
+
+    console.log(Mail + Password);
     
     return pool.promise().query(query, [Mail, Password])
-        .then(([rows,fields]) => { if(rows.length == 1) { return ({Success: true, Data: rows})}})
+        .then(([rows,fields]) => { 
+            if(rows.length == 1) { 
+                return ({Success: true, Data: rows})
+            }
+            else{
+                return ({Success: false, Data: {'message': `Hay mas de un usuario con el mismo mail: ${Mail}`}})
+            }
+        })
+        .catch((err) => { return ({Success: false, Data: err})});
+}
+
+export function getUserByMail(Mail) {
+    
+    var query = `SELECT * FROM usuarios where Mail = '${Mail}'`;
+
+    console.log(Mail);
+
+    return pool.promise().query(query)
+        .then(([rows,fields]) => { 
+            console.log("Numero de rows devueltas " + rows.length);
+            if(rows.length >= 1) { 
+                return ({Success: true, Data: {'message': `Ya existe un usuario con el mismo mail: ${Mail}`}})
+            }
+            else{
+                return ({Success: false})
+            }
+        })
         .catch((err) => { return ({Success: false, Data: err})});
 }
 
@@ -35,7 +63,12 @@ export function getUserService(req)
 
 export function addUserService(req)
 {
+    var today = new Date();
+    var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+
     var Usuario = req.body;
+
+    Usuario.AddedDate = date
 
     var query =  `INSERT INTO usuarios SET ?`
 

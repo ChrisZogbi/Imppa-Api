@@ -1,18 +1,18 @@
 import {getComentarioController, addComentarioController, updateComentarioController, deleteComentarioController} from '../controllers/ComentarioController';
 
-export let getComentario = (req, res) => {
+export let getComentario = async (req, res) => {
     console.log("GetUsers Route inicio" + req.baseUrl);
     return( getComentarioController(req,res));
 }
 
-export let  addComentario = (req, res) => {
+export let  addComentario = async (req, res) => {
     return(addComentarioController(req, res));
 }
 
-export let updateComentario = (req, res) => {
+export let updateComentario = async (req, res) => {
     return(updateComentarioController(req, res));
 }
 
-export let deleteComentario = (req, res) => {
+export let deleteComentario = async (req, res) => {
     return(deleteComentarioController(req, res));
 } 
