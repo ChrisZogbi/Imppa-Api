@@ -82,16 +82,16 @@ export function updateUserService(req)
 {
     var UserData = req.body;
 
-    var query = `UPDATE [dbo].[Comentarios]
-                    SET [TipoUsuario] = ${UserData.TipoUsuario}
-                    ,[Mail] = '${UserData.Mail}'
-                    ,[Contraseña] = '${UserData.Contraseña}'
-                    ,[AddedDate] = '${UserData.AddedDate}'
-                    ,[LastLogin] = '${UserData.LastLogin}'
-                    ,[Nombre] = '${UserData.Nombre}'
-                    ,[Apellido] = '${UserData.Apellido}'
-                    ,[Direccion] = '${UserData.Direccion}'
-                WHERE [ID] = ${UserData.UserId}`; 
+    var query = `UPDATE Comentarios
+                    SET TipoUsuario = ${UserData.TipoUsuario}
+                    ,Mail = '${UserData.Mail}'
+                    ,Contraseña = '${UserData.Contraseña}'
+                    ,AddedDate = '${UserData.AddedDate}'
+                    ,LastLogin = '${UserData.LastLogin}'
+                    ,Nombre = '${UserData.Nombre}'
+                    ,Apellido = '${UserData.Apellido}'
+                    ,Direccion = '${UserData.Direccion}'
+                WHERE ID = ${UserData.UserId}`; 
     console.log(query);
     return pool.promise().query(query, [Usuario])
         .then(() => { return({Success: true}); })
