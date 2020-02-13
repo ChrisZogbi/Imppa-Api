@@ -108,5 +108,5 @@ export function deleteUserService(req)
 
     return pool.promise().query(query)
         .then(() => { return({Success: true}); })
-        .catch((err) => {return({Success: false, Data: err})});
+        .catch((err) => {return({Success: false, Data: err, Query: query})});
 }
