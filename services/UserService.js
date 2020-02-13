@@ -102,7 +102,7 @@ export function deleteUserService(req)
 {
     var UserId = req.body.Id;
 
-    var query = `DELETE FROM usuarios WHERE [ID] = ${UserId}`; 
+    var query = `DELETE FROM usuarios WHERE ID = ${UserId}`; 
 
                 console.log(query);
 
