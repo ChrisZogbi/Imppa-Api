@@ -107,6 +107,7 @@ export function deleteUserController(req, res) {
   })
   .catch((err) => {
     console.log(err);
+    LogError(deleteUserController.name, response.Data.message)
   });
 }
 
@@ -125,6 +126,7 @@ export function loginUserController(req, res) {
   })
   .catch((err) => {
     console.log(err);
+    LogError(loginUserController.name, response.Data.message)
   });
 }
 

@@ -33,10 +33,10 @@ export function updateCategoriaClaseService(req, res)
 {
     var DatosActualizar = req.body;
 
-    var query = `UPDATE [dbo].[categoriaclase]
-                    SET [NombreCategoria] = ${DatosActualizar.NombreCategoria},
-                    [Habilitado] = ${DatosActualizar.Habilitado}
-                WHERE [ID] = ${DatosActualizar.Id}`; 
+    var query = `UPDATE categoriaclase
+                    SET NombreCategoria = ${DatosActualizar.NombreCategoria},
+                    Habilitado = ${DatosActualizar.Habilitado}
+                WHERE ID = ${DatosActualizar.Id}`; 
         
     return pool.promise().query(query)
             .then(() => {return ({Success: true})})
@@ -47,8 +47,8 @@ export function deleteCategoriaClaseService(req, res)
 {
     var Idcategoriaclase = req.body.Idcategoriaclase;
 
-    var query = `DELETE FROM  [dbo].[categoriaclase]
-                WHERE [ID] = ${Idcategoriaclase}`;
+    var query = `DELETE FROM categoriaclase
+                WHERE ID = ${Idcategoriaclase}`;
 
     return pool.promise().query(query)
             .then(() => {return ({Success: true})})

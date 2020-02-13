@@ -32,11 +32,11 @@ export function updateSubcripcionService(req)
 {
     var DatosActualizar = req.body;
 
-    var query = `UPDATE [dbo].[Subscripcion]
-                    SET [Nombre] = ${DatosActualizar.Nombre},
-                    [Descripcion] = ${DatosActualizar.Descripcion},
-                    [Precio] = ${DatosActualizar.Precio},
-                WHERE [ID] = ${DatosActualizar.Id}`; 
+    var query = `UPDATE subscripcion
+                    SET Nombre = ${DatosActualizar.Nombre},
+                    Descripcion = ${DatosActualizar.Descripcion},
+                    Precio = ${DatosActualizar.Precio},
+                WHERE ID = ${DatosActualizar.Id}`; 
         
     return pool.promise().query(query)
             .then( () => {return ({Success: true})})
@@ -47,8 +47,8 @@ export function deleteSubcripcionService(req)
 {
     var IdTipoUsuario = req.body.Id;
 
-    var query = `DELETE FROM  [dbo].[Subscripcion]
-                WHERE [ID] = ${Id}`; 
+    var query = `DELETE FROM subscripcion
+                WHERE ID = ${Id}`; 
 
     return pool.promise().query(query)
             .then( () => {return ({Success: true})})

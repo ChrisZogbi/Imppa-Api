@@ -23,9 +23,9 @@ export function updateTipoClaseService(req)
 {
     var DatosActualizar = req.body;
 
-    var query = `UPDATE [dbo].[TipoClase]
-                    SET [Tipo] = ${DatosActualizar.Tipo}
-                WHERE [ID] = ${DatosActualizar.Id}`; 
+    var query = `UPDATE tipoclase
+                    SET Tipo = ${DatosActualizar.Tipo}
+                WHERE ID = ${DatosActualizar.Id}`; 
         
     return pool.promise().query(query)
             .then( () => {return ({Success: true})})
@@ -36,8 +36,8 @@ export function deleteTipoClaseService(req)
 {
     var IdTipoClase = req.body.IdTipoClase;
 
-    var query = `DELETE FROM  [dbo].[TipoClase]
-                WHERE [ID] = ${IdTipoClase}`; 
+    var query = `DELETE FROM tipoclase
+                WHERE ID = ${IdTipoClase}`; 
 
     return pool.promise().query(query)
             .then( () => {return ({Success: true})})

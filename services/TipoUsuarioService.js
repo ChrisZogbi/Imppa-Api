@@ -34,9 +34,9 @@ export function updateTipoUsuarioService(req)
 {
     var DatosActualizar = req.body;
 
-    var query = `UPDATE [dbo].[TipoUsuario]
-                    SET [TipoUsuario] = ${DatosActualizar.TipoUsuario}
-                WHERE [ID] = ${DatosActualizar.Id}`; 
+    var query = `UPDATE tipousuario
+                    SET TipoUsuario = ${DatosActualizar.TipoUsuario}
+                WHERE ID = ${DatosActualizar.Id}`; 
         
     return pool.promise().query(query)
             .then(() => {return ({Success: true, Data: 'Se modificó exitosamente el Tipo Usuario'})})
@@ -47,8 +47,8 @@ export function deleteTipoUsuarioService(req)
 {
     var IdTipoUsuario = req.body.IdTipoUsuario;
 
-    var query = `DELETE FROM  [dbo].[TipoUsuario]
-                WHERE [ID] = ${IdTipoUsuario}`; 
+    var query = `DELETE FROM tipousuario
+                WHERE ID = ${IdTipoUsuario}`; 
 
     return pool.promise().query(query)
             .then(() => {return ({Success: true, Data: 'Se eliminó exitosamente el Tipo Usuario'})})

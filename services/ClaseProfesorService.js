@@ -58,10 +58,10 @@ export function updateClaseProfesorService(req, res)
 {
     var ClaseProfesorData = req.body;
 
-    var query = `UPDATE [dbo].[ClaseProfesor]
-                    SET [Direccion] = ${ClaseProfesorData.Comentario}
-                    ,[Precio] = '${ClaseProfesorData.Puntaje}'
-                WHERE [ID] = ${ClaseProfesorData.IdClaseProfesor}`; 
+    var query = `UPDATE claseprofesor
+                    SET Direccion = ${ClaseProfesorData.Comentario}
+                    ,Precio = '${ClaseProfesorData.Puntaje}'
+                WHERE ID = ${ClaseProfesorData.IdClaseProfesor}`; 
     console.log(query);
     return pool.promise().query(query)
             .then(() => {return ({Success: true})})
@@ -73,8 +73,8 @@ export function deleteClaseProfesorService(req, res)
     var idUsuario = req.body.IdUsuario;
     var idClaseProfesor = req.body.IdClaseProfesor;
 
-    var query = `DELETE FROM  [dbo].[ClaseProfesor]
-                WHERE [ID] = ?`; 
+    var query = `DELETE FROM claseprofesor
+                WHERE ID = ?`; 
 
     return pool.promise().query(query, [IdClaseProfesor])
             .then( () => {return ({Success: true})})

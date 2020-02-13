@@ -38,9 +38,9 @@ export function updateComentarioService(req, res)
     var ComentarioData = req.body;
 
     var query = `UPDATE [comentarios]
-                    SET [Comentario] = ${ComentarioData.Comentario}
-                    ,[Puntaje] = '${ComentarioData.Puntaje}'
-                WHERE [ID] = ${ComentarioData.IdComentario}`; 
+                    SET Comentario = ${ComentarioData.Comentario}
+                    ,Puntaje = '${ComentarioData.Puntaje}'
+                WHERE ID = ${ComentarioData.IdComentario}`; 
     console.log(query);
     return pool.promise().query(query)
             .then( () => {return ({Success: true})})
@@ -51,8 +51,8 @@ export function deleteComentarioService(req, res)
 {
     var idComentario = req.body.IdComentario;
 
-    var query = `DELETE FROM  [comentarios]
-                WHERE [ID] = ?`; 
+    var query = `DELETE FROM comentarios
+                WHERE[ID = ?`; 
 
     return pool.promise().query(query, [idComentario])
             .then( () => {return ({Success: true})})

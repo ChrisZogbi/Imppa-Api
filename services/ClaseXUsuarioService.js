@@ -41,10 +41,10 @@ export function updateClaseXUsuarioService(req, res)
 {
     var DatosActualizar = req.body;
 
-    var query = `UPDATE [dbo].[clasexusuario]
-                    SET [IDUsuario] = ${DatosActualizar.IDUsuario},
-                    [IDClaseProfesor] = ${DatosActualizar.IDClaseProfesor}
-                WHERE [ID] = ${DatosActualizar.Id}`; 
+    var query = `UPDATE clasexusuario
+                    SET IDUsuario = ${DatosActualizar.IDUsuario},
+                    IDClaseProfesor]= ${DatosActualizar.IDClaseProfesor}
+                WHERE ID = ${DatosActualizar.Id}`; 
         
     return pool.promise().query(query)
             .then(() => {return ({Success: true})})
@@ -55,8 +55,8 @@ export function deleteClaseXUsuarioService(req, res)
 {
     var IdClaseXUsuario = req.body.Id;
 
-    var query = `DELETE FROM  [dbo].[clasexusuario]
-                WHERE [ID] = ${IdClaseXUsuario}`;
+    var query = `DELETE FROM clasexusuario
+                WHERE ID = ${IdClaseXUsuario}`;
 
     return pool.promise().query(query)
             .then(() => {return ({Success: true})})

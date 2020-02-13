@@ -47,7 +47,7 @@ export function getUsersService()
 
     return pool.promise().query(query)
         .then(([rows]) => { return({Success: true, Data: rows}); })
-        .catch((err) => {({Success: false, Data: err})});
+        .catch((err) => { return({Success: false, Data: err})});
 }
 
 export function getUserService(req)
@@ -58,7 +58,7 @@ export function getUserService(req)
 
     return pool.promise().query(query, [idUsuario])
         .then(([rows]) => { return({Success: true, Data: rows}); })
-        .catch((err) => {({Success: false, Data: err})});
+        .catch((err) => { return({Success: false, Data: err})});
 }
 
 export function addUserService(req)
@@ -75,7 +75,7 @@ export function addUserService(req)
     console.log(query);
     return pool.promise().query(query, [Usuario])
         .then(([result]) => { return({Success: true, InsertId: result.insertId}); })
-        .catch((err) => {({Success: false, Data: err})});
+        .catch((err) => { return({Success: false, Data: err})});
 }
 
 export function updateUserService(req)
@@ -95,17 +95,18 @@ export function updateUserService(req)
     console.log(query);
     return pool.promise().query(query, [Usuario])
         .then(() => { return({Success: true}); })
-        .catch((err) => {({Success: false, Data: err})});
+        .catch((err) => { return({Success: false, Data: err})});
 }
 
 export function deleteUserService(req)
 {
     var UserId = req.body.Id;
 
-    var query = `DELETE FROM  [dbo].[usuarios]
-                WHERE [ID] = ?`; 
+    var query = `DELETE FROM usuarios WHERE [ID] = ${UserId}`; 
 
-    return pool.promise().query(query, [UserId])
+                console.log(query);
+
+    return pool.promise().query(query)
         .then(() => { return({Success: true}); })
-        .catch((err) => {({Success: false, Data: err})});
+        .catch((err) => {return({Success: false, Data: err})});
 }
