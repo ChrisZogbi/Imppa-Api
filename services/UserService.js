@@ -78,22 +78,36 @@ export function addUserService(req)
         .catch((err) => { return({Success: false, Data: err})});
 }
 
+export function updateContraseniaService(req)
+{
+    var UserData = req.body;
+
+    var query = `UPDATE usuarios
+        SET Contrasenia = '${UserData.Contrasenia}'
+    WHERE ID = ${UserData.ID}`; 
+    
+    console.log(query);
+
+    return pool.promise().query(query)
+        .then(() => { return({Success: true}); })
+        .catch((err) => { return({Success: false, Data: err})});
+}
+
 export function updateUserService(req)
 {
     var UserData = req.body;
 
-    var query = `UPDATE Comentarios
+    var query = `UPDATE usuarios
                     SET TipoUsuario = ${UserData.TipoUsuario}
                     ,Mail = '${UserData.Mail}'
-                    ,Contraseña = '${UserData.Contraseña}'
-                    ,AddedDate = '${UserData.AddedDate}'
-                    ,LastLogin = '${UserData.LastLogin}'
                     ,Nombre = '${UserData.Nombre}'
                     ,Apellido = '${UserData.Apellido}'
-                    ,Direccion = '${UserData.Direccion}'
-                WHERE ID = ${UserData.UserId}`; 
+                    ,Telefono1 = ${UserData.Telefono1}
+                    ,Telefono2 = ${UserData.Telefono2}
+                    ,Habilitado = ${UserData.Habilitado}
+                WHERE ID = ${UserData.ID}`; 
     console.log(query);
-    return pool.promise().query(query, [Usuario])
+    return pool.promise().query(query)
         .then(() => { return({Success: true}); })
         .catch((err) => { return({Success: false, Data: err})});
 }

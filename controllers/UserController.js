@@ -1,5 +1,6 @@
 import express from 'express';
-import {getUserByMail, getUserByMailContraseniaService, getUserService, getUsersService, addUserService, updateUserService, deleteUserService} from '../services/UserService';
+import {getUserByMail, getUserByMailContraseniaService, getUserService, getUsersService, addUserService,
+        updateUserService, deleteUserService, updateContraseniaService} from '../services/UserService';
 import {LogError} from './ErrorLogController';
 
  export function getUsersController(req, res) {
@@ -84,6 +85,24 @@ export function updateUserController(req, res) {
     else
     {
       LogError(updateUserController.name, response.Data.message)
+      res.status(500).json(response);
+    }
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+}
+
+export function updateContraseniaController(req, res) {
+  console.log(req.body);
+  updateContraseniaService(req)
+  .then((response) => {
+    console.log("Respuesta" + response.Success)
+    
+    if(response.Success){res.status(200).json(response)}
+    else
+    {
+      LogError(updateContraseniaController.name, response.Data.message)
       res.status(500).json(response);
     }
   })

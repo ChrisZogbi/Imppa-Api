@@ -1,4 +1,5 @@
-import { getUsersController, addUserController, updateUserController, deleteUserController, loginUserController } from '../controllers/UserController';
+import { getUsersController, addUserController, updateUserController, 
+         deleteUserController, loginUserController, updateContraseniaController } from '../controllers/UserController';
 
 export async function getUsers(req, res) {
     console.log("GetUsers Route inicio");
@@ -20,4 +21,9 @@ export async function deleteUser(req, res) {
 export async function loginUser(req, res) {
     console.log("Llego");
     return(loginUserController(req, res));
+}
+
+export async function cambiarContrasenia(req, res) {
+    console.log("Llego");
+    return(updateContraseniaController(req, res));
 }

@@ -1,4 +1,4 @@
-import { getUsers, addUser, updateUser, deleteUser, loginUser } from './userRoutes'
+import { getUsers, addUser, updateUser, deleteUser, loginUser, cambiarContrasenia } from './userRoutes'
 import { getTipoUsuario, addTipoUsuario, updateTipoUsuario, deleteTipoUsuario } from './tipoUsuarioRoutes'
 import { getTipoClase, addTipoClase, updateTipoClase, deleteTipoClase } from './tipoClaseRoutes'
 import { getSubscipcion, addSubscipcion, updateSubscipcion, deleteSubscipcion } from './subscripcionRoutes'
@@ -14,6 +14,9 @@ export function assignRoutes(app) {
     
     app.route('/login/')
         .post(loginUser);
+    
+    app.route('/cambioContrasenia/')
+        .put(cambiarContrasenia);
 
     app.route('/tipoUsuario/')
         .get(getTipoUsuario)
