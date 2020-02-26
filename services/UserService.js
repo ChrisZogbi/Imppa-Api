@@ -50,13 +50,12 @@ export function getUsersService()
         .catch((err) => { return({Success: false, Data: err})});
 }
 
-export function getUserService(req)
+export function getUserService(id)
 {
 
     var query = `SELECT * FROM usuarios WHERE ID = ?`
-    var idUsuario = req.body.IDUsuario;
 
-    return pool.promise().query(query, [idUsuario])
+    return pool.promise().query(query, [id])
         .then(([rows]) => { return({Success: true, Data: rows}); })
         .catch((err) => { return({Success: false, Data: err})});
 }
@@ -114,7 +113,7 @@ export function updateUserService(req)
 
 export function deleteUserService(req)
 {
-    var UserId = req.body.Id;
+    var UserId = req.body.ID;
 
     var query = `DELETE FROM usuarios WHERE ID = ${UserId}`; 
 

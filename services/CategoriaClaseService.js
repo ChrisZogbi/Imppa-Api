@@ -1,8 +1,7 @@
 import app from "../app.js";
 import { pool } from "./index";
-//import { Request } from "mssql";
 
-export function getCategoriaClaseService(req, res)
+export function getCategoriaClaseService(req)
 {
     var query = `SELECT * FROM categoriaclase`;
     console.log(query);
@@ -15,16 +14,16 @@ export function getCategoriaClaseByNombreCategoriaService(req, res)
 {
     var query = `SELECT * FROM categoriaclase WHERE NombreCategoria = ?`;
 
-    return pool.promise().query(query, [req.query.Id])
+    return pool.promise().query(query, [req.query.Categoria])
             .then(([rows]) => {return ({Success: true, Data: rows})})
             .catch((err) => { return ({Success: false, Data: err})});
 }
 
 export function addCategoriaClaseService(req, res)
 {
-    var query = `INSERT INTO categoriaclase (NombreCategoria, Habilitado) VALUES (?) `;
+    var query = `INSERT INTO categoriaclase (NombreCategoria, Habilitado) VALUES ('${req.body.Categoria}', true) `;
 
-    return pool.promise().query(query, [req.body.Tipo])
+    return pool.promise().query(query, [req.body.Categoria])
             .then(() => {return ({Success: true})})
             .catch((err) => { return ({Success: false, Data: err})});
 }
@@ -34,9 +33,9 @@ export function updateCategoriaClaseService(req, res)
     var DatosActualizar = req.body;
 
     var query = `UPDATE categoriaclase
-                    SET NombreCategoria = ${DatosActualizar.NombreCategoria},
+                    SET NombreCategoria = '${DatosActualizar.Categoria}',
                     Habilitado = ${DatosActualizar.Habilitado}
-                WHERE ID = ${DatosActualizar.Id}`; 
+                WHERE ID = ${DatosActualizar.ID}`; 
         
     return pool.promise().query(query)
             .then(() => {return ({Success: true})})
@@ -45,7 +44,7 @@ export function updateCategoriaClaseService(req, res)
 
 export function deleteCategoriaClaseService(req, res)
 {
-    var Idcategoriaclase = req.body.Idcategoriaclase;
+    var Idcategoriaclase = req.body.ID;
 
     var query = `DELETE FROM categoriaclase
                 WHERE ID = ${Idcategoriaclase}`;

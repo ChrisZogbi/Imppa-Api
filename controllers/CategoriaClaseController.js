@@ -3,7 +3,7 @@ import {getCategoriaClaseService, getCategoriaClaseByNombreCategoriaService, add
         from '../services/CategoriaClaseService';
 import {LogError} from './ErrorLogController';
 
- export function getCategoriaClaseController(req) {
+ export function getCategoriaClaseController(req, res) {
 
   console.log('lala' + req.baseUrl);
   if(req.query.NombreCategoria)
@@ -44,7 +44,7 @@ import {LogError} from './ErrorLogController';
   }
 } 
   
-export async function addCategoriaClaseController(req) {
+export async function addCategoriaClaseController(req, res) {
     console.log(req.body);
 
     addCategoriaClaseService(req)
@@ -63,7 +63,7 @@ export async function addCategoriaClaseController(req) {
     });
 }
 
-export function updateCategoriaClaseController(req) {
+export function updateCategoriaClaseController(req, res) {
   console.log(req.body);
 
   updateCategoriaClaseService(req)
@@ -82,7 +82,7 @@ export function updateCategoriaClaseController(req) {
   });
 }
 
-export function deleteCategoriaClaseController(req) {
+export function deleteCategoriaClaseController(req, res) {
   console.log(req.body);
 
   deleteCategoriaClaseService(req)

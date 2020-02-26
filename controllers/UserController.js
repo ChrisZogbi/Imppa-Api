@@ -5,9 +5,11 @@ import {LogError} from './ErrorLogController';
 
  export function getUsersController(req, res) {
    console.log(req.body);
-   if(req.query.Id)
+   let id = req.query.Id
+   
+   if(id)
   {
-    getUserService(req)
+    getUserService(id)
       .then((response) => {
         console.log("Respuesta" + response.Success)
         
@@ -57,7 +59,7 @@ import {LogError} from './ErrorLogController';
             .then((responseAdd) => {
               console.log("Respuesta" + responseAdd.Success)
               
-              if(responseAdd.Success){res.status(200).json(response)}
+              if(responseAdd.Success){res.status(200).json(responseAdd)}
               else
               {
                 LogError(addUserController.name, responseAdd.Data.message)
