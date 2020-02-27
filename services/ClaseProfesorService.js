@@ -3,7 +3,7 @@ import { pool } from "./index";
 
 export function getClaseByIdUsuarioService(req, res)
 {
-    var idUsuario = req.body.IdUsuario
+    var idUsuario = req.body.IDUsuario
 
     var query = `select * from ClaseProfesor 
                     join ClaseXUsuario on ClaseProfesor.ID = ClaseXUsuario.IDClaseProfesor
@@ -18,7 +18,7 @@ export function getClaseByIdUsuarioService(req, res)
 export function getClaseByIDService(req, res)
 {
     var query = `SELECT * FROM ClaseProfesor WHERE ID = ?`
-    var idClase = req.body.IdClase;
+    var idClase = req.body.ID;
 
     return pool.promise().query(query, [idClase])
             .then(([rows]) => {return ({Success: true, Data: rows})})
@@ -28,14 +28,15 @@ export function getClaseByIDService(req, res)
 export function addClaseProfesorService(req, res)
 {
     var ClaseProfesor = req.body;
-    var idUsuario = req.body.IdUsuario;
-    var idClaseCreada;
 
-    var query =  `INSERT INTO ClaseProfesor SET ?`
+    var query =  `INSERT INTO claseprofesor
+                    (ID, IDCategoriaClase, IDTipoClase, Precio, Latitud, Longitud)
+                  VALUES
+                    (${ClaseProfesor.IDCategoriaClase},${ClaseProfesor.IDTipoClase},${ClaseProfesor.Precio},${ClaseProfesor.Latitud},${ClaseProfesor.Longitud});`
 
     console.log(query);
-    return pool.promise().query(query, [ClaseProfesor])
-            .then(([rows]) => {return ({Success: true})})
+    return pool.promise().query(query)
+            .then(([result]) => {return ({Success: true, InsertID: result.insertId})})
             .catch((err) => { return ({Success: false, Data: err})});
     
     var ClaseXUsuario = {

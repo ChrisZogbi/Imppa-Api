@@ -29,11 +29,11 @@ export function getClaseXUsuarioByIdClaseService(req, res)
             .catch((err) => { return ({Success: false, Data: err})});   
 }
 
-export function addClaseXUsuarioService(req, res, ClaseXUsuario)
+export function addClaseXUsuarioService(IdUsuario, IdClase)
 {
-    var query = `INSERT INTO clasexusuario (IDUsuario, IDClaseProfesor) VALUES (?) `;
+    var query = `INSERT INTO clasexusuario (IDUsuario, IDClaseProfesor) VALUES (${IdUsuario}, ${IdClase}) `;
 
-    return pool.promise().query(query, [req.body])
+    return pool.promise().query(query)
             .then(() => {return ({Success: true})})
             .catch((err) => { return ({Success: false, Data: err})});
 }
