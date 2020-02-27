@@ -60,8 +60,10 @@ export function updateClaseProfesorService(req, res)
     var ClaseProfesorData = req.body;
 
     var query = `UPDATE claseprofesor
-                    SET Direccion = ${ClaseProfesorData.Comentario}
-                    ,Precio = '${ClaseProfesorData.Puntaje}'
+                    SET TipoClase = ${ClaseProfesorData.IDTipoClase}
+                    ,Precio = '${ClaseProfesorData.Precio}'
+                    ,Latitud = '${ClaseProfesorData.Latitud}'
+                    ,Longitud = '${ClaseProfesorData.Longitud}'
                 WHERE ID = ${ClaseProfesorData.IdClaseProfesor}`; 
     console.log(query);
     return pool.promise().query(query)
@@ -71,13 +73,12 @@ export function updateClaseProfesorService(req, res)
 
 export function deleteClaseProfesorService(req, res)
 {
-    var idUsuario = req.body.IdUsuario;
     var idClaseProfesor = req.body.IdClaseProfesor;
 
     var query = `DELETE FROM claseprofesor
                 WHERE ID = ?`; 
 
-    return pool.promise().query(query, [IdClaseProfesor])
+    return pool.promise().query(query, [idClaseProfesor])
             .then( () => {return ({Success: true})})
             .catch((err) => { return ({Success: false, Data: err})});
 }

@@ -37,26 +37,14 @@ export function addClaseXUsuarioService(IdUsuario, IdClase)
             .then(() => {return ({Success: true})})
             .catch((err) => { return ({Success: false, Data: err})});
 }
-export function updateClaseXUsuarioService(req, res)
-{
-    var DatosActualizar = req.body;
-
-    var query = `UPDATE clasexusuario
-                    SET IDUsuario = ${DatosActualizar.IDUsuario},
-                    IDClaseProfesor]= ${DatosActualizar.IDClaseProfesor}
-                WHERE ID = ${DatosActualizar.Id}`; 
-        
-    return pool.promise().query(query)
-            .then(() => {return ({Success: true})})
-            .catch((err) => { return ({Success: false, Data: err})});   
-    }
 
 export function deleteClaseXUsuarioService(req, res)
 {
-    var IdClaseXUsuario = req.body.Id;
+    var IDUsuario = req.body.IDUsuario;
+    var IDClaseProfesor = req.body.IDClaseProfesor;
 
     var query = `DELETE FROM clasexusuario
-                WHERE ID = ${IdClaseXUsuario}`;
+                WHERE IdUsuario = ${IDUsuario}  and IdClaseProfesor = ${IDClaseProfesor}`;
 
     return pool.promise().query(query)
             .then(() => {return ({Success: true})})
