@@ -2,7 +2,7 @@ import express, { response } from 'express';
 import {getTipoClaseService, addTipoClaseService, updateTipoClaseService, deleteTipoClaseService}  from '../services/TipoClaseService';
 import {LogError} from './ErrorLogController';
 
- export function getTipoClaseController(req) {
+ export function getTipoClaseController(req, res) {
 
     console.log('lala' + req.baseUrl);
  
@@ -23,7 +23,7 @@ import {LogError} from './ErrorLogController';
         });
 } 
   
-export async function addTipoClaseController(req) {
+export async function addTipoClaseController(req, res) {
     console.log(req.body);
 
     addTipoClaseService(req)
@@ -33,7 +33,7 @@ export async function addTipoClaseController(req) {
       if(response.Success){res.status(200).json(response)}
       else
       {
-        LogError(addTipoUsuarioController.name, response.Data.message)
+        LogError(addTipoClaseController.name, response.Data.message)
         res.status(500).json(response);
       }
     })
@@ -42,7 +42,7 @@ export async function addTipoClaseController(req) {
     });
 }
 
-export function updateTipoClaseController(req) {
+export function updateTipoClaseController(req, res) {
   console.log(req.body);
 
   updateTipoClaseService(req)
@@ -52,7 +52,7 @@ export function updateTipoClaseController(req) {
     if(response.Success){res.status(200).json(response)}
     else
     {
-      LogError(updateTipoUsuarioController.name, response.Data.message)
+      LogError(updateTipoClaseController.name, response.Data.message)
       res.status(500).json(response);
     }
   })
@@ -61,7 +61,7 @@ export function updateTipoClaseController(req) {
   });
 }
 
-export function deleteTipoClaseController(req) {
+export function deleteTipoClaseController(req, res) {
   console.log(req.body);
 
   deleteTipoClaseService(req).then((response) => {
@@ -70,7 +70,7 @@ export function deleteTipoClaseController(req) {
     if(response.Success){res.status(200).json(response)}
     else
     {
-      LogError(deleteTipoUsuarioController.name, response.Data.message)
+      LogError(deleteTipoClaseController.name, response.Data.message)
       res.status(500).json(response);
     }
   })

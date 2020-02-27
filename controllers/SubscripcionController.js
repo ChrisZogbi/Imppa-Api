@@ -2,7 +2,7 @@ import express, { response } from 'express';
 import {getSubcripcionByIdService, getSubcripcionService, deleteSubcripcionService, updateSubcripcionService, addSubcripcionService}  from '../services/SubscripcionService';
 import {LogError} from './ErrorLogController';
 
- export function getSubscipcionController(req) {
+ export function getSubscipcionController(req, res) {
 
   console.log('lala' + req.baseUrl);
   if(req.query.Id)
@@ -43,7 +43,7 @@ import {LogError} from './ErrorLogController';
   }
 } 
   
-export async function addSubscipcionController(req) {
+export async function addSubscipcionController(req, res) {
     console.log(req.body);
 
     addSubcripcionService(req)
@@ -62,7 +62,7 @@ export async function addSubscipcionController(req) {
     });
 }
 
-export function updateSubscipcionController(req) {
+export function updateSubscipcionController(req, res) {
   console.log(req.body);
 
   updateSubcripcionService(req)
@@ -81,7 +81,7 @@ export function updateSubscipcionController(req) {
   });
 }
 
-export function deleteSubscipcionController(req) {
+export function deleteSubscipcionController(req, res) {
   console.log(req.body);
 
   deleteSubcripcionService(req).then((response) => {

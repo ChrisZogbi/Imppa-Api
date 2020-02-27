@@ -7,7 +7,7 @@ export function getSubcripcionService(req)
     var query = `SELECT * FROM Subscripcion`;
     console.log(query);
     return pool.promise().query(query)
-            .then(([rows]) => { if (rows.length == 1) { return ({Success: true, Data: rows})}})
+            .then(([rows]) => {return ({Success: true, Data: rows})})
             .catch((err) => { return ({Success: false, Data: err})});
 }
 
@@ -22,9 +22,13 @@ export function getSubcripcionByIdService(req)
 
 export function addSubcripcionService(req)
 {
-    var query = `INSER INTO Subscripcion VALUES (?) `;
+    let Subcripcion = req.body
 
-    return pool.promise().query(query, [req.body.NuevaSubscripcion])
+    var query = `INSERT INTO Subscripcion (Nombre, Descripcion, precio, CantClases) VALUES ('${Subcripcion.Nombre}', '${Subcripcion.Descripcion}', ${Subcripcion.Precio}, ${Subcripcion.CantidadClases}) `;
+
+    console.log(query);
+
+    return pool.promise().query(query)
             .then(() => {return ({Success: true})})
             .catch((err) => { return ({Success: false, Data: err})});
 }
@@ -33,10 +37,11 @@ export function updateSubcripcionService(req)
     var DatosActualizar = req.body;
 
     var query = `UPDATE subscripcion
-                    SET Nombre = ${DatosActualizar.Nombre},
-                    Descripcion = ${DatosActualizar.Descripcion},
+                    SET Nombre = '${DatosActualizar.Nombre}',
+                    Descripcion = '${DatosActualizar.Descripcion}',
                     Precio = ${DatosActualizar.Precio},
-                WHERE ID = ${DatosActualizar.Id}`; 
+                    CantClases = ${DatosActualizar.CantidadClases}
+                WHERE ID = ${DatosActualizar.ID}`; 
         
     return pool.promise().query(query)
             .then( () => {return ({Success: true})})
@@ -45,10 +50,10 @@ export function updateSubcripcionService(req)
 
 export function deleteSubcripcionService(req)
 {
-    var IdTipoUsuario = req.body.Id;
+    var IdTipoUsuario = req.body.ID;
 
     var query = `DELETE FROM subscripcion
-                WHERE ID = ${Id}`; 
+                WHERE ID = ${IdTipoUsuario}`; 
 
     return pool.promise().query(query)
             .then( () => {return ({Success: true})})

@@ -7,18 +7,20 @@ export function getTipoClaseService(req)
     var query = `SELECT * FROM TipoClase`;
     console.log(query);
     return pool.promise().query(query)
-            .then(([rows]) => { if(rows.length == 1) { return ({Success: true, Data: rows})}})
+            .then(([rows]) => { return ({Success: true, Data: rows})})
             .catch((err) => { return ({Success: false, Data: err})});
 }
 
 export function addTipoClaseService(req)
 {
-    var query = `INSER INTO TipoClase VALUES (?) `;
+    var query = `INSERT INTO tipoclase (Tipo) VALUES ('${req.body.Tipo}') `;
 
-    return pool.promise().query(query, [req.body.NuevoTipoClase])
+    console.log(query);
+    return pool.promise().query(query)
             .then( () => {return ({Success: true})})
             .catch((err) => { return ({Success: false, Data: err})});
 }
+
 export function updateTipoClaseService(req)
 {
     var DatosActualizar = req.body;
@@ -34,11 +36,12 @@ export function updateTipoClaseService(req)
 
 export function deleteTipoClaseService(req)
 {
-    var IdTipoClase = req.body.IdTipoClase;
+    var IdTipoClase = req.body.ID;
 
     var query = `DELETE FROM tipoclase
                 WHERE ID = ${IdTipoClase}`; 
 
+    console.log(query)            ;
     return pool.promise().query(query)
             .then( () => {return ({Success: true})})
             .catch((err) => { return ({Success: false, Data: err})});
