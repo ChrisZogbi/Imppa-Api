@@ -4,6 +4,7 @@ import { getTipoClase, addTipoClase, updateTipoClase, deleteTipoClase } from './
 import { getSubscipcion, addSubscipcion, updateSubscipcion, deleteSubscipcion } from './subscripcionRoutes'
 import { getComentario, addComentario, updateComentario, deleteComentario } from './comentarioRoutes'
 import { getCategoriaClase, addCategoriaClase, updateCategoriaClase, deleteCategoriaClase } from './categoriaClaseRoutes'
+import * as ClaseRoutes from './claseRoutes'
 
 import * as ClaseController from './categoriaClaseRoutes'
 
@@ -50,9 +51,9 @@ export function assignRoutes(app) {
         .put(updateCategoriaClase)
         .delete(deleteCategoriaClase);    
 
-    app.route('/clase/')
-        .get(getCategoriaClase)
-        .post(addCategoriaClase)
-        .put(updateCategoriaClase)
-        .delete(deleteCategoriaClase); 
+    app.route('/clase?:IdProfesor/')
+        .get(ClaseRoutes.getClaseByProfesor);
+        // .post(addCategoriaClase)
+        // .put(updateCategoriaClase)
+        // .delete(deleteCategoriaClase); 
 }

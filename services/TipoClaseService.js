@@ -1,14 +1,13 @@
 import app from "../app.js";
 import { pool } from "./index";
-//import { Request } from "mssql";
 
 export function getTipoClaseService(req)
 {
     var query = `SELECT * FROM TipoClase`;
     console.log(query);
     return pool.promise().query(query)
-            .then(([rows]) => { return ({Success: true, Data: rows})})
-            .catch((err) => { return ({Success: false, Data: err})});
+        .then(([rows]) => { return ({Success: true, Data: rows})})
+        .catch((err) => { return ({Success: false, Data: err})});
 }
 
 export function addTipoClaseService(req)
@@ -17,8 +16,8 @@ export function addTipoClaseService(req)
 
     console.log(query);
     return pool.promise().query(query)
-            .then( () => {return ({Success: true})})
-            .catch((err) => { return ({Success: false, Data: err})});
+        .then( () => {return ({Success: true})})
+        .catch((err) => { return ({Success: false, Data: err})});
 }
 
 export function updateTipoClaseService(req)
@@ -30,8 +29,8 @@ export function updateTipoClaseService(req)
                 WHERE ID = ${DatosActualizar.Id}`; 
         
     return pool.promise().query(query)
-            .then( () => {return ({Success: true})})
-            .catch((err) => { return ({Success: false, Data: err})});
+        .then( () => {return ({Success: true})})
+        .catch((err) => { return ({Success: false, Data: err})});
 }
 
 export function deleteTipoClaseService(req)
@@ -43,6 +42,6 @@ export function deleteTipoClaseService(req)
 
     console.log(query)            ;
     return pool.promise().query(query)
-            .then( () => {return ({Success: true})})
-            .catch((err) => { return ({Success: false, Data: err})});
+        .then( () => {return ({Success: true})})
+        .catch((err) => { return ({Success: false, Data: err})});
 }

@@ -3,8 +3,8 @@ import * as ClaseProfesorService from '../services/ClaseProfesorService';
 import * as ClaseXUsuarioService from '../services/ClaseXUsuarioService';
 import {LogError} from './ErrorLogController';
 
-export function getClasesByID(req, res) {
-   ClaseProfesorService.getClaseByIDService(req)
+export function getClasesByID(req) {
+   ClaseProfesorService.getClaseByIDService(req, res)
     .then(response => {
         if(response.Success)
         {
@@ -23,6 +23,7 @@ export function getClasesByID(req, res) {
 }
 
 export function getClasesByProfesor(req, res) {
+    console.log('Llego a claseController');
     ClaseProfesorService.getClaseByIdUsuarioService(req)
     .then(response => {
         if(response.Success)
@@ -32,13 +33,24 @@ export function getClasesByProfesor(req, res) {
         else 
         {
             LogError(getClasesByProfesor.name, response.Data.message);
-            console.log(err);
+            console.log(response.Data);
+            res.status(500).json(response);
         }
     })
     .catch((err) => {
-        LogError(getClasesByProfesor.name, err.message);
+        LogError(getClasesByProfesor.name, err);
         console.log(err);
     });
+}
+
+export function getClasesByUbicacion(req, res)
+{
+
+}
+
+export function getClasesByFiltros(req, res)
+{
+
 }
 
 export async function addClase(req, res) {

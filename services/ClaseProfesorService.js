@@ -3,12 +3,12 @@ import { pool } from "./index";
 
 export function getClaseByIdUsuarioService(req, res)
 {
-    var idUsuario = req.body.IDUsuario
+    var idUsuario = req.body.IdProfesor
 
     var query = `select * from ClaseProfesor 
                     join ClaseXUsuario on ClaseProfesor.ID = ClaseXUsuario.IDClaseProfesor
                 WHERE 
-                    ClaseXUsuario.IDUsuario = ?`;
+                    ClaseXUsuario.IDUsuario = ${idUsuario}`;
 
     return pool.promise().query(query, idUsuario)
             .then(([rows]) => {return ({Success: true, Data: rows})})
@@ -17,8 +17,8 @@ export function getClaseByIdUsuarioService(req, res)
 
 export function getClaseByIDService(req, res)
 {
-    var query = `SELECT * FROM ClaseProfesor WHERE ID = ?`
     var idClase = req.body.ID;
+    var query = `SELECT * FROM ClaseProfesor WHERE ID = ${idClase}`;
 
     return pool.promise().query(query, [idClase])
             .then(([rows]) => {return ({Success: true, Data: rows})})
