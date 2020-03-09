@@ -2,7 +2,7 @@ import express, { response } from 'express';
 import {getTipoUsuarioByIdService, getTipoUsuarioService, deleteTipoUsuarioService, updateTipoUsuarioService, addTipoUsuarioService}  from '../services/TipoUsuarioService';
 import {LogError} from './ErrorLogController';
 
- export function getTipoUsuarioController(req) {
+ export function getTipoUsuarioController(req, res) {
 
   console.log('lala' + req.baseUrl);
   if(req.query.Id)
@@ -43,7 +43,7 @@ import {LogError} from './ErrorLogController';
   }
 } 
   
-export async function addTipoUsuarioController(req) {
+export async function addTipoUsuarioController(req, res) {
     console.log(req.body);
 
     addTipoUsuarioService(req)
@@ -62,7 +62,7 @@ export async function addTipoUsuarioController(req) {
     });
 }
 
-export function updateTipoUsuarioController(req) {
+export function updateTipoUsuarioController(req, res) {
   console.log(req.body);
 
   updateTipoUsuarioService(req)
@@ -81,7 +81,7 @@ export function updateTipoUsuarioController(req) {
   });
 }
 
-export function deleteTipoUsuarioController(req) {
+export function deleteTipoUsuarioController(req, res) {
   console.log(req.body);
 
   deleteTipoUsuarioService(req).then((response) => {

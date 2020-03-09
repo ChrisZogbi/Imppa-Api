@@ -16,7 +16,7 @@ export function assignRoutes(app) {
         .delete(deleteUser);
     
     app.route('/login/')
-        .post(loginUser);
+        .get(loginUser);
     
     app.route('/cambioContrasenia/')
         .put(cambiarContrasenia);
