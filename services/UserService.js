@@ -3,20 +3,21 @@ import { pool } from "./index";
 
 export function getUserByMailContraseniaService (req) {
     
-    var query = `SELECT * FROM usuarios where Mail = ? and Contrasenia = ?`;
-    
-    let Mail = req.query.Mail
-    let Password = req.query.Password
+    var query = `SELECT * FROM usuarios where Mail = '${req.query.Mail}' and Contrasenia = '${req.query.Contrasenia}'`;
+   
 
-    console.log(Mail + Password);
+    console.log(req.query);
     
-    return pool.promise().query(query, [Mail, Password])
+    return pool.promise().query(query)
         .then(([rows,fields]) => { 
             if(rows.length == 1) { 
                 return ({Success: true, Data: rows})
             }
-            else{
+            else if(rows.length > 1){
                 return ({Success: false, Data: {'message': `Hay mas de un usuario con el mismo mail: ${Mail}`}})
+            }
+            else{
+                return ({Success: false, Data: {'message': `El mail ingresado no se encuentra registrado.`}})
             }
         })
         .catch((err) => { return ({Success: false, Data: err})});
