@@ -11,10 +11,10 @@ const ObtenerTipoUsuario = (idTipoUsuario) => {
     }); 
   }).then((result) => {
     console.log("Respuesta de la promise: " + result);
-    return ({Data: result})});
+    return ({Data: result.Data})});
 }; 
 
- export function getUsersController(req, res) {
+ export async function getUsersController(req, res) {
    console.log(req.body);
    let id = req.query.Id
    
@@ -25,9 +25,10 @@ const ObtenerTipoUsuario = (idTipoUsuario) => {
         console.log("Respuesta" + response.Data.TipoUsuario)
         
         if(response.Success){
-          console.log("Resultado: " + ObtenerTipoUsuario(response.Data.TipoUsuario))
           
-          res.status(200).json(response)
+          let tipoUsuarioCompleto = ObtenerTipoUsuario(response.Data.TipoUsuario)
+          
+          res.status(200).json(tipoUsuarioCompleto)
         }
         else
         {

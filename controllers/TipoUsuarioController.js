@@ -45,14 +45,14 @@ import {LogError} from './ErrorLogController';
 
 export async function getDescripcionById(id)
 {
-  getTipoUsuarioByIdService(id)
-  .then((response) => {
-    console.log(response);
-    return response 
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+  return await getTipoUsuarioByIdService(id)
+    .then((response) => {
+      console.log(response);
+      return response 
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 }
 
 export async function addTipoUsuarioController(req, res) {
