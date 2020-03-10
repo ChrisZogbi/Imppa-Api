@@ -1,7 +1,18 @@
 import express from 'express';
 import {getUserByMail, getUserByMailContraseniaService, getUserService, getUsersService, addUserService,
         updateUserService, deleteUserService, updateContraseniaService} from '../services/UserService';
+import * as TipoUsuarioController from './TipoUsuarioController';
 import {LogError} from './ErrorLogController';
+
+const ObtenerTipoUsuario = (idTipoUsuario) => { 
+  new Promise((resolve, reject) => {
+    setTimeout(() => { 
+        resolve(TipoUsuarioController.getDescripcionById(idTipoUsuario)); 
+    }); 
+  }).then((result) => {
+    console.log("Respuesta de la promise: " + result);
+    return ({Data: result})});
+}; 
 
  export function getUsersController(req, res) {
    console.log(req.body);
@@ -11,9 +22,13 @@ import {LogError} from './ErrorLogController';
   {
     getUserService(id)
       .then((response) => {
-        console.log("Respuesta" + response.Success)
+        console.log("Respuesta" + response.Data.TipoUsuario)
         
-        if(response.Success){res.status(200).json(response)}
+        if(response.Success){
+          console.log("Resultado: " + ObtenerTipoUsuario(response.Data.TipoUsuario))
+          
+          res.status(200).json(response)
+        }
         else
         {
           LogError(getTipoUsuarioController.name, response.Data.message)

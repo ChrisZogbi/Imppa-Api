@@ -56,9 +56,7 @@ export function getUserService(id)
     var query = `SELECT * FROM usuarios WHERE ID = ${id}`
 
     return pool.promise().query(query)
-        .then(([rows]) => { 
-            console.log(rows);
-            return({Success: true, Data: rows[0]}); })
+        .then(([rows]) => { return({Success: true, Data: rows[0]}); })
         .catch((err) => { return({Success: false, Data: err})});
 }
 
