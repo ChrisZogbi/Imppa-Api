@@ -3,39 +3,21 @@ import { pool } from "./index";
 
 export function getUserByMailContraseniaService (req) {
     
-<<<<<<< HEAD
-    let Mail = req.query.Mail
-    let Password = req.query.Password
-
-    var query = `SELECT * FROM usuarios where Mail = '${Mail}' and Contrasenia = '${Password}'`;
-    
-
-    console.log(Mail + Password);
-=======
     var query = `SELECT * FROM usuarios where Mail = '${req.query.Mail}' and Contrasenia = '${req.query.Contrasenia}'`;
    
 
     console.log(req.query);
->>>>>>> b3f0663f9c1113143fdfdcaa0d70aa303d1614cd
     
     return pool.promise().query(query)
         .then(([rows,fields]) => { 
             if(rows.length == 1) { 
                 return ({Success: true, Data: rows})
             }
-<<<<<<< HEAD
-            else if (rows.length > 1){
-                return ({Success: false, Data: {'message': `Hay mas de un usuario con el mismo mail: ${Mail}`}})
-            }
-            else{
-                return ({Success: false, Data: {'message': `Aun no estas registrado`}})
-=======
             else if(rows.length > 1){
                 return ({Success: false, Data: {'message': `Hay mas de un usuario con el mismo mail: ${Mail}`}})
             }
             else{
                 return ({Success: false, Data: {'message': `El mail ingresado no se encuentra registrado.`}})
->>>>>>> b3f0663f9c1113143fdfdcaa0d70aa303d1614cd
             }
         })
         .catch((err) => { return ({Success: false, Data: err})});
@@ -71,11 +53,12 @@ export function getUsersService()
 
 export function getUserService(id)
 {
+    var query = `SELECT * FROM usuarios WHERE ID = ${id}`
 
-    var query = `SELECT * FROM usuarios WHERE ID = ?`
-
-    return pool.promise().query(query, [id])
-        .then(([rows]) => { return({Success: true, Data: rows}); })
+    return pool.promise().query(query)
+        .then(([rows]) => { 
+            console.log(rows);
+            return({Success: true, Data: rows[0]}); })
         .catch((err) => { return({Success: false, Data: err})});
 }
 

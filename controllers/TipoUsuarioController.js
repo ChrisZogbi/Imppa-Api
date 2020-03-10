@@ -7,7 +7,7 @@ import {LogError} from './ErrorLogController';
   console.log('lala' + req.baseUrl);
   if(req.query.Id)
   {
-    getTipoUsuarioByIdService(req)
+    getTipoUsuarioByIdService(req.query.Id)
       .then((response) => {
         console.log("Respuesta" + response.Success)
         
@@ -42,7 +42,19 @@ import {LogError} from './ErrorLogController';
     });
   }
 } 
-  
+
+export async function getDescripcionById(id)
+{
+  getTipoUsuarioByIdService(id)
+  .then((response) => {
+    console.log(response);
+    return response 
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+}
+
 export async function addTipoUsuarioController(req, res) {
     console.log(req.body);
 

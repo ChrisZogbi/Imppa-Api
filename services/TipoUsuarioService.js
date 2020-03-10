@@ -13,12 +13,13 @@ export function getTipoUsuarioService(req)
             .catch((err) => { return ({Success: false, Data: err})});
 }
 
-export function getTipoUsuarioByIdService(req)
+export function getTipoUsuarioByIdService(Id)
 {
-    var query = `SELECT * FROM tipoUsuario WHERE ID = ?`;
+    console.log('idTipoUsuari:' + Id)
+    var query = `SELECT * FROM tipoUsuario WHERE ID = ${Id}`;
 
-    return pool.promise().query(query, [req.query.Id])
-            .then(([rows]) => {return ({Success: true, Data: rows})})
+    return pool.promise().query(query)
+            .then(([rows]) => {return ({Success: true, Data: rows[0]})})
             .catch((err) => { return ({Success: false, Data: err})});
 }
 
