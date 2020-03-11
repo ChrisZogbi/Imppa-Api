@@ -4,14 +4,18 @@ import {getUserByMail, getUserByMailContraseniaService, getUserService, getUsers
 import * as TipoUsuarioController from './TipoUsuarioController';
 import {LogError} from './ErrorLogController';
 
-const ObtenerTipoUsuario = (idTipoUsuario) => { 
-  new Promise((resolve, reject) => {
+const ObtenerTipoUsuario = async (idTipoUsuario) => 
+{ 
+  return new Promise((resolve, reject) => 
+  {
     setTimeout(() => { 
         resolve(TipoUsuarioController.getDescripcionById(idTipoUsuario)); 
     }); 
-  }).then((result) => {
+  }).then((result) => 
+  {
     console.log("Respuesta de la promise: " + result);
-    return ({Data: result.Data})});
+    return ({Data: result.Data})
+  });
 }; 
 
  export async function getUsersController(req, res) {
@@ -26,9 +30,12 @@ const ObtenerTipoUsuario = (idTipoUsuario) => {
         
         if(response.Success){
           
-          let tipoUsuarioCompleto = ObtenerTipoUsuario(response.Data.TipoUsuario)
-          
-          res.status(200).json(tipoUsuarioCompleto)
+          ObtenerTipoUsuario(response.Data.TipoUsuario).then((tipoUsuarioCompleto) => {
+            console.log("Respuesta Tipo Usuario: " + tipoUsuarioCompleto.Data.ID);
+            response.Data.TipoUsuario = tipoUsuarioCompleto.Data
+            
+            res.status(200).json(response);
+          });
         }
         else
         {
