@@ -1,9 +1,14 @@
-import { getUsersController, addUserController, updateUserController, 
+import { getUsersController, getUserByID, addUserController, updateUserController, 
          deleteUserController, loginUserController, updateContraseniaController } from '../controllers/UserController';
 
 export async function getUsers(req, res) {
-    console.log("GetUsers Route inicio");
     return(getUsersController(req,res));
+}
+
+export async function getUser(req, res)
+{
+    console.log('Llego a getUserByID')
+    return(getUserByID(req, res))
 }
 
 export async function addUser(req, res) {

@@ -8,10 +8,9 @@ const ObtenerTipoUsuario = async (idTipoUsuario) =>
 { 
   return new Promise((resolve, reject) => 
   {
-    setTimeout(() => { 
-        resolve(TipoUsuarioController.getDescripcionById(idTipoUsuario)); 
-    }); 
-  }).then((result) => 
+      resolve(TipoUsuarioController.getDescripcionById(idTipoUsuario)); 
+  })
+  .then((result) => 
   {
     console.log("Respuesta de la promise: " + result);
     return ({Data: result.Data})
@@ -19,18 +18,37 @@ const ObtenerTipoUsuario = async (idTipoUsuario) =>
 }; 
 
  export async function getUsersController(req, res) {
-   console.log(req.body);
-   let id = req.query.Id
-   
-   if(id)
-  {
-    getUserService(id)
+    
+  console.log(req.body);
+
+  getUsersService()
+  .then((response) => {
+    console.log("Respuesta" + response.Success)
+
+    if(response.Success){res.status(200).json(response)}
+    else
+    {
+      LogError(getUsersController.name, response.Data.message)
+      res.status(500).json(response);
+    }
+
+    })
+    .catch((err) => {
+    console.log(err);
+    });
+}
+
+export async function getUserByID(req, res){
+  let id = req.query.Id
+
+  getUserService(id)
       .then((response) => {
         console.log("Respuesta" + response.Data.TipoUsuario)
         
         if(response.Success){
           
-          ObtenerTipoUsuario(response.Data.TipoUsuario).then((tipoUsuarioCompleto) => {
+          ObtenerTipoUsuario(response.Data.TipoUsuario)
+          .then((tipoUsuarioCompleto) => {
             console.log("Respuesta Tipo Usuario: " + tipoUsuarioCompleto.Data.ID);
             response.Data.TipoUsuario = tipoUsuarioCompleto.Data
             
@@ -39,33 +57,15 @@ const ObtenerTipoUsuario = async (idTipoUsuario) =>
         }
         else
         {
-          LogError(getTipoUsuarioController.name, response.Data.message)
+          LogError(getUserByID.name, response.Data.message)
           res.status(500).json(response);
         }
   
       })
       .catch((err) => {
+        LogError(getUserByID.name, response.Data.message)
         console.log(err);
       });
-  }
-  else
-  {
-    getUsersService()
-    .then((response) => {
-      console.log("Respuesta" + response.Success)
-      
-      if(response.Success){res.status(200).json(response)}
-      else
-      {
-        LogError(getUsersController.name, response.Data.message)
-        res.status(500).json(response);
-      }
-
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-  }
 }
 
  export async function addUserController(req, res) {

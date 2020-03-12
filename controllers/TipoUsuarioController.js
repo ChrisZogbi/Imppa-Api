@@ -4,7 +4,6 @@ import {LogError} from './ErrorLogController';
 
  export function getTipoUsuarioController(req, res) {
 
-  console.log('lala' + req.baseUrl);
   if(req.query.Id)
   {
     getTipoUsuarioByIdService(req.query.Id)
