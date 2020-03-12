@@ -1,5 +1,5 @@
 import express, { response } from 'express';
-import {getSubcripcionByIdService, getSubcripcionService, deleteSubcripcionService, updateSubcripcionService, addSubcripcionService}  from '../services/SubscripcionService';
+import * as SubscripcionService  from '../services/SubscripcionService';
 import {LogError} from './ErrorLogController';
 
  export function getSubscipcionController(req, res) {
@@ -7,7 +7,7 @@ import {LogError} from './ErrorLogController';
   console.log('lala' + req.baseUrl);
   if(req.query.Id)
   {
-    getSubcripcionByIdService(req)
+    SubscripcionService.getSubcripcionByIdService(req)
       .then((response) => {
         console.log("Respuesta" + response.Success)
         
@@ -25,7 +25,7 @@ import {LogError} from './ErrorLogController';
   }
   else
   {
-    getSubcripcionService(req)
+    SubscripcionService.getSubcripcionService(req)
     .then((response) => {
       console.log("Respuesta" + response.Success)
       
@@ -42,11 +42,22 @@ import {LogError} from './ErrorLogController';
     });
   }
 } 
+
+export async function getSubcripcionByIdProfesor(idProfesor){
+  return await SubscripcionService.getSubcripcionByIdProfesor(idProfesor)
+    .then((response) => {
+      console.log(response);
+      return response
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+}
   
 export async function addSubscipcionController(req, res) {
     console.log(req.body);
 
-    addSubcripcionService(req)
+    SubscripcionService.addSubcripcionService(req)
     .then((response) => {
       console.log("Respuesta" + response.Success)
       
@@ -65,7 +76,7 @@ export async function addSubscipcionController(req, res) {
 export function updateSubscipcionController(req, res) {
   console.log(req.body);
 
-  updateSubcripcionService(req)
+  SubscripcionService.updateSubcripcionService(req)
   .then((response) => {
     console.log("Respuesta" + response.Success)
     
@@ -84,7 +95,7 @@ export function updateSubscipcionController(req, res) {
 export function deleteSubscipcionController(req, res) {
   console.log(req.body);
 
-  deleteSubcripcionService(req).then((response) => {
+  SubscripcionService.deleteSubcripcionService(req).then((response) => {
     console.log("Respuesta" + response.Success)
     
     if(response.Success){res.status(200).json(response)}
