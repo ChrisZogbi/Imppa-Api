@@ -198,4 +198,3 @@ export function loginUserController(req, res) {
       LogError(loginUserController.name, response.Data.message)
     });
 }
-
