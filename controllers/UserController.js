@@ -7,13 +7,13 @@ import * as TipoUsuarioController from './TipoUsuarioController';
 import { LogError } from './ErrorLogController';
 import { getSubcripcionByIdProfesor } from './SubscripcionController'
 
-const ObtenerTipoUsuario = async (idTipoUsuario) => {
+const ObtenerTipoUsuario = async (idUsuario) => {
   return new Promise((resolve, reject) => {
-    resolve(TipoUsuarioController.getTipoUsuarioById(idTipoUsuario));
+    resolve(TipoUsuarioController.getTipoUsuarioByIdUsuario(idUsuario));
   })
     .then((result) => {
       console.log("Respuesta de la promise: " + result);
-      return ({ Data: result.Data })
+      return (result)
     });
 };
 
@@ -23,7 +23,7 @@ const ObtenerSubcripcionDelUsuario = async (id) => {
   })
     .then((result) => {
       console.log("Respuesta de la promise: " + result);
-      return ({ Data: result.Data })
+      return (result)
     });
 };
 
@@ -40,7 +40,6 @@ export async function getUsersController(req, res) {
         LogError(getUsersController.name, response.Data.message)
         res.status(500).json(response);
       }
-
     })
     .catch((err) => {
       console.log(err);
@@ -49,40 +48,53 @@ export async function getUsersController(req, res) {
 
 export async function getUserByID(req, res) {
   let id = req.query.Id
-  let TipoUsuario;
-  let Subcripcion;
 
-  getUserService(id)
-    .then((response) => {
-      console.log("Respuesta" + response.Data.TipoUsuario)
+  Promise.all([getUserService(id), ObtenerTipoUsuario(id), ObtenerSubcripcionDelUsuario(id)])
+    .then((results) => {
+      let resultUsuario = results[0];
+      let resultTipoUsuario = results[1];
+      let resultSubcripcion = results[2];
 
-      if (response.Success) {
-
-        ObtenerTipoUsuario(response.Data.TipoUsuario)
-          .then((tipoUsuarioCompleto) => {
-            TipoUsuario = tipoUsuarioCompleto.Data;
-
-            ObtenerSubcripcionDelUsuario(id)
-              .then((subcripcion) => {
-                Subcripcion = subcripcion.Data;
-
-                res.status(200).json({
-                  Success: true,
-                  Usuario: response.Data,
-                  TipoUsuarioData: TipoUsuario,
-                  SubcripcionData: Subcripcion
-                });
-              });
-          });
+      if (resultUsuario.Success && resultTipoUsuario.Success && resultSubcripcion.Success) {
+        console.log("Todo OK")
+        res.status(200).json({
+          Success: true,
+          DataUsuario: resultUsuario.Data,
+          DataTipoUsuario: resultTipoUsuario.Data,
+          DataSubcripcion: resultSubcripcion.Data
+        });
       }
       else {
-        LogError(getUserByID.name, response.Data.message)
-        res.status(500).json(response);
+        let errorUsuario;
+        let errorTipoUsuario;
+        let errorSubcripcion;
+        console.log("Error");
+
+        if (!resultUsuario.Success) {
+          errorUsuario = resultUsuario.Data.message;
+          LogError(getUserByID.name, resultUsuario.Data.message);
+        }
+
+        if (!resultTipoUsuario.Success) {
+          errorTipoUsuario = resultTipoUsuario.Data.message;
+          LogError("Consulta TipoUsuario", resultTipoUsuario.Data.message);
+        }
+
+        if (!resultSubcripcion.Success) {
+          errorSubcripcion = resultSubcripcion.Data.message;
+          LogError("Consulta Subcripcion", resultSubcripcion.Data.message);
+        }
+
+        res.status(500).json({
+          ErrorUsuario: errorUsuario,
+          ErrorTipoUsuario: errorTipoUsuario,
+          ErrorSubcripcion: errorSubcripcion
+        });
       }
     })
     .catch((err) => {
-      LogError(getUserByID.name, response.Data.message)
-      console.log(err);
+      LogError(getUserByID.name, err)
+      console.log(err)
     });
 }
 
@@ -186,4 +198,3 @@ export function loginUserController(req, res) {
       LogError(loginUserController.name, response.Data.message)
     });
 }
-

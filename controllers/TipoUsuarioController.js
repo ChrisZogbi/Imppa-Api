@@ -1,5 +1,5 @@
 import express, { response } from 'express';
-import { getTipoUsuarioByIdService, getTipoUsuarioService, deleteTipoUsuarioService, updateTipoUsuarioService, addTipoUsuarioService } from '../services/TipoUsuarioService';
+import { getTipoUsuarioByIdUsuarioService, getTipoUsuarioService, deleteTipoUsuarioService, updateTipoUsuarioService, addTipoUsuarioService } from '../services/TipoUsuarioService';
 import { LogError } from './ErrorLogController';
 
 export function getTipoUsuarioController(req, res) {
@@ -17,10 +17,9 @@ export function getTipoUsuarioController(req, res) {
     });
 }
 
-export async function getTipoUsuarioById(id) {
-  return await getTipoUsuarioByIdService(id)
+export async function getTipoUsuarioByIdUsuario(idUsuario) {
+  return await getTipoUsuarioByIdUsuarioService(idUsuario)
     .then((response) => {
-      console.log(response);
       return response
     })
     .catch((err) => {

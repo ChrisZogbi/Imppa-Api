@@ -13,9 +13,12 @@ export function getTipoUsuarioService(req)
             .catch((err) => { return ({Success: false, Data: err})});
 }
 
-export function getTipoUsuarioByIdService(Id)
+export function getTipoUsuarioByIdUsuarioService(IdUsurio)
 {
-    var query = `SELECT * FROM tipoUsuario WHERE ID = ${Id}`;
+    var query = 
+        `SELECT tipousuario.* FROM tipousuario join usuarios
+        on tipousuario.ID = usuarios.TipoUsuario
+        where usuarios.ID = ${IdUsurio}`;
 
     return pool.promise().query(query)
             .then(([rows]) => {return ({Success: true, Data: rows[0]})})
