@@ -109,7 +109,6 @@ export async function getUserByID(req, res) {
 }
 
 export async function addUserController(req, res) {
-  console.log(req.body);
   const idSubscripcion = req.body.IdSubscripcion
   const idTipoUsuario = req.body.TipoUsuario
 
@@ -125,7 +124,7 @@ export async function addUserController(req, res) {
             console.log("Respuesta" + responseAdd.Success)
             if (responseAdd.Success) {
               console.log("Id Usuario Insetado: " + responseAdd.InsertId)
-              if(idSubscripcion){
+              if(idTipoUsuario === 3){
                 AgregarUserSubcripcion(responseAdd.InsertId, idSubscripcion)
                   .then((responseSubscripcion) => {
                     if (responseSubscripcion.Success) {
