@@ -67,6 +67,11 @@ export async function addSubscipcionController(req, res) {
     });
 }
 
+export async function addUserSubcripcion(idUsuario, idSubscripcion) {
+  return await SubscripcionService.addUserSubcripcion(idUsuario, idSubscripcion)
+    .then((response) => { return response });
+}
+
 export function updateSubscipcionController(req, res) {
   console.log(req.body);
 

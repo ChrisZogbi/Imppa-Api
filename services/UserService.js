@@ -1,99 +1,106 @@
 import app from "../app.js";
 import { pool } from "./index";
 
-export function getUserByMailContraseniaService (req) {
-    
+export function getUserByMailContraseniaService(req) {
+
     var query = `SELECT * FROM usuarios where Mail = '${req.query.Mail}' and Contrasenia = '${req.query.Contrasenia}'`;
-   
+
 
     console.log(req.query);
-    
+
     return pool.promise().query(query)
-        .then(([rows,fields]) => { 
-            if(rows.length == 1) { 
-                return ({Success: true, Data: rows})
+        .then(([rows, fields]) => {
+            if (rows.length == 1) {
+                return ({ Success: true, Data: rows })
             }
-            else if(rows.length > 1){
-                return ({Success: false, Data: {'message': `Hay mas de un usuario con el mismo mail: ${Mail}`}})
+            else if (rows.length > 1) {
+                return ({ Success: false, Data: { 'message': `Hay mas de un usuario con el mismo mail: ${Mail}` } })
             }
-            else{
-                return ({Success: false, Data: {'message': `El mail ingresado no se encuentra registrado.`}})
+            else {
+                return ({ Success: false, Data: { 'message': `El mail ingresado no se encuentra registrado.` } })
             }
         })
-        .catch((err) => { return ({Success: false, Data: err})});
+        .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
 export function getUserByMail(Mail) {
-    
+
     var query = `SELECT * FROM usuarios where Mail = '${Mail}'`;
 
     console.log(Mail);
 
     return pool.promise().query(query)
-        .then(([rows,fields]) => { 
+        .then(([rows, fields]) => {
             console.log("Numero de rows devueltas " + rows.length);
-            if(rows.length >= 1) { 
-                return ({Success: true, Data: {'message': `Ya existe un usuario con el mismo mail: ${Mail}`}})
+            if (rows.length >= 1) {
+                return ({ Success: true, Data: { 'message': `Ya existe un usuario con el mismo mail: ${Mail}` } })
             }
-            else{
-                return ({Success: false})
+            else {
+                return ({ Success: false })
             }
         })
-        .catch((err) => { return ({Success: false, Data: err})});
+        .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
-export function getUsersService()
-{
+export function getUsersService() {
     var query = `SELECT * FROM usuarios`;
 
     return pool.promise().query(query)
-        .then(([rows]) => { return({Success: true, Data: rows}); })
-        .catch((err) => { return({Success: false, Data: err})});
+        .then(([rows]) => { return ({ Success: true, Data: rows }); })
+        .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
-export function getUserService(id)
-{
+export function getUserService(id) {
     var query = `SELECT * FROM usuarios WHERE ID = ${id}`
 
     return pool.promise().query(query)
-        .then(([rows]) => { return({Success: true, Data: rows[0]}); })
-        .catch((err) => { return({Success: false, Data: err})});
+        .then(([rows]) => { return ({ Success: true, Data: rows[0] }); })
+        .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
-export function addUserService(req)
-{
+export function addUserService(req) {
     var today = new Date();
-    var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
 
     var Usuario = req.body;
 
     Usuario.AddedDate = date
 
-    var query =  `INSERT INTO usuarios SET ?`
+    var query = `INSERT INTO usuarios
+    (TipoUsuario, Mail, Contrasenia, AddedDate, LastLogin, Nombre, Apellido, Telefono1, Telefono2, Habilitado)
+    VALUES
+    (${Usuario.TipoUsuario},
+    '${Usuario.Mail}',
+    '${Usuario.Contrasenia}',
+    '${Usuario.AddedDate}',
+    '${Usuario.LastLogin}',
+    '${Usuario.Nombre}',
+    '${Usuario.Apellido}',
+    '${Usuario.Telefono1}',
+    '${Usuario.Telefono2}',
+    ${Usuario.Habilitado});`
 
     console.log(query);
-    return pool.promise().query(query, [Usuario])
-        .then(([result]) => { return({Success: true, InsertId: result.insertId}); })
-        .catch((err) => { return({Success: false, Data: err})});
+    return pool.promise().query(query)
+        .then(([result]) => { return ({ Success: true, InsertId: result.insertId }); })
+        .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
-export function updateContraseniaService(req)
-{
+export function updateContraseniaService(req) {
     var UserData = req.body;
 
     var query = `UPDATE usuarios
         SET Contrasenia = '${UserData.Contrasenia}'
-    WHERE ID = ${UserData.ID}`; 
-    
+    WHERE ID = ${UserData.ID}`;
+
     console.log(query);
 
     return pool.promise().query(query)
-        .then(() => { return({Success: true}); })
-        .catch((err) => { return({Success: false, Data: err})});
+        .then(() => { return ({ Success: true }); })
+        .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
-export function updateUserService(req)
-{
+export function updateUserService(req) {
     var UserData = req.body;
 
     var query = `UPDATE usuarios
@@ -104,22 +111,21 @@ export function updateUserService(req)
                     ,Telefono1 = ${UserData.Telefono1}
                     ,Telefono2 = ${UserData.Telefono2}
                     ,Habilitado = ${UserData.Habilitado}
-                WHERE ID = ${UserData.ID}`; 
+                WHERE ID = ${UserData.ID}`;
     console.log(query);
     return pool.promise().query(query)
-        .then(() => { return({Success: true}); })
-        .catch((err) => { return({Success: false, Data: err})});
+        .then(() => { return ({ Success: true }); })
+        .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
-export function deleteUserService(req)
-{
+export function deleteUserService(req) {
     var UserId = req.body.ID;
 
-    var query = `DELETE FROM usuarios WHERE ID = ${UserId}`; 
+    var query = `DELETE FROM usuarios WHERE ID = ${UserId}`;
 
-                console.log(query);
+    console.log(query);
 
     return pool.promise().query(query)
-        .then(() => { return({Success: true}); })
-        .catch((err) => {return({Success: false, Data: err, Query: query})});
+        .then(() => { return ({ Success: true }); })
+        .catch((err) => { return ({ Success: false, Data: err, Query: query }) });
 }

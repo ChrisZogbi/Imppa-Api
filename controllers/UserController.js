@@ -5,7 +5,7 @@ import {
 } from '../services/UserService';
 import * as TipoUsuarioController from './TipoUsuarioController';
 import { LogError } from './ErrorLogController';
-import { getSubcripcionByIdProfesor } from './SubscripcionController'
+import { getSubcripcionByIdProfesor, addUserSubcripcion } from './SubscripcionController'
 
 const ObtenerTipoUsuario = async (idUsuario) => {
   return new Promise((resolve, reject) => {
@@ -20,6 +20,16 @@ const ObtenerTipoUsuario = async (idUsuario) => {
 const ObtenerSubcripcionDelUsuario = async (id) => {
   return new Promise((resolve, reject) => {
     resolve(getSubcripcionByIdProfesor(id));
+  })
+    .then((result) => {
+      console.log("Respuesta de la promise: " + result);
+      return (result)
+    });
+};
+
+const AgregarUserSubcripcion = async (idUsuario, idSubscripcion) => {
+  return new Promise((resolve, reject) => {
+    resolve(addUserSubcripcion(idUsuario, idSubscripcion));
   })
     .then((result) => {
       console.log("Respuesta de la promise: " + result);
@@ -100,6 +110,8 @@ export async function getUserByID(req, res) {
 
 export async function addUserController(req, res) {
   console.log(req.body);
+  const idSubscripcion = req.body.IdSubscripcion
+  const idTipoUsuario = req.body.TipoUsuario
 
   getUserByMail(req.body.Mail)
     .then((response) => {
@@ -111,8 +123,24 @@ export async function addUserController(req, res) {
         addUserService(req)
           .then((responseAdd) => {
             console.log("Respuesta" + responseAdd.Success)
-
-            if (responseAdd.Success) { res.status(200).json(responseAdd) }
+            if (responseAdd.Success) {
+              console.log("Id Usuario Insetado: " + responseAdd.InsertId)
+              if(idSubscripcion){
+                AgregarUserSubcripcion(responseAdd.InsertId, idSubscripcion)
+                  .then((responseSubscripcion) => {
+                    if (responseSubscripcion.Success) {
+                      res.status(200).json(responseAdd);
+                    }
+                    else {
+                      LogError(addUserController.name, responseSubscripcion.Data.message)
+                      res.status(500).json(responseSubscripcion);
+                    }
+                  });
+              }
+              else{
+                res.status(200).json(responseAdd);
+              }
+            }
             else {
               LogError(addUserController.name, responseAdd.Data.message)
               res.status(500).json(responseAdd);

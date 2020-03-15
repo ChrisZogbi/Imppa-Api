@@ -40,6 +40,15 @@ export function addSubcripcionService(req) {
         .then(() => { return ({ Success: true }) })
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
+
+export function addUserSubcripcion(idUsuario, idSubscripcion) {
+    const query = `INSERT INTO subscripcionusuario (IDUsuario, IDSubscripcion) VALUES (${idUsuario}, ${idSubscripcion})`
+    console.log(query);
+    return pool.promise().query(query)
+        .then(() => { return ({ Success: true }) })
+        .catch((err) => { return ({ Success: false, Data: err }) });
+}
+
 export function updateSubcripcionService(req) {
     var DatosActualizar = req.body;
 
