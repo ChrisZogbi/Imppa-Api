@@ -20,7 +20,7 @@ export function assignRoutes(app) {
 
     app.route('/login/')
         .get(loginUser);
-    
+
     app.route('/cambioContrasenia/')
         .put(cambiarContrasenia);
 
@@ -46,17 +46,19 @@ export function assignRoutes(app) {
         .get(getComentario)
         .post(addComentario)
         .put(updateComentario)
-        .delete(deleteComentario);    
+        .delete(deleteComentario);
 
     app.route('/categoriaClase/')
         .get(getCategoriaClase)
         .post(addCategoriaClase)
         .put(updateCategoriaClase)
-        .delete(deleteCategoriaClase);    
+        .delete(deleteCategoriaClase);
 
     app.route('/clase?:IdProfesor/')
         .get(ClaseRoutes.getClaseByProfesor);
-        // .post(addCategoriaClase)
-        // .put(updateCategoriaClase)
-        // .delete(deleteCategoriaClase); 
+    // .post(addCategoriaClase)
+    // .put(updateCategoriaClase)
+    // .delete(deleteCategoriaClase); 
+    app.route('/clase/')
+        .post(ClaseRoutes.addClase);
 }

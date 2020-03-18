@@ -32,7 +32,7 @@ export function getClaseXUsuarioByIdClaseService(req, res)
 export function addClaseXUsuarioService(IdUsuario, IdClase)
 {
     var query = `INSERT INTO clasexusuario (IDUsuario, IDClaseProfesor) VALUES (${IdUsuario}, ${IdClase}) `;
-
+    console.log(query);
     return pool.promise().query(query)
             .then(() => {return ({Success: true})})
             .catch((err) => { return ({Success: false, Data: err})});
