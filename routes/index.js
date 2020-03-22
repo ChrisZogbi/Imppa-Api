@@ -60,5 +60,6 @@ export function assignRoutes(app) {
     // .put(updateCategoriaClase)
     // .delete(deleteCategoriaClase); 
     app.route('/clase/')
+        .get()
         .post(ClaseRoutes.addClase);
 }

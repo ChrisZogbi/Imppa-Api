@@ -39,6 +39,24 @@ export function getClasesByProfesor(req, res) {
         });
 }
 
+export function getClasesByFilter(req, res) {
+    ClaseProfesorService.getClaseByFilter(req)
+        .then(response => {
+            if (response.Success) {
+                res.status(200).json(response)
+            }
+            else {
+                LogError(getClasesByFilter.name, response.Data.message);
+                console.log(response.Data);
+                res.status(500).json(response);
+            }
+        })
+        .catch((err) => {
+            LogError(getClasesByFilter.name, err);
+            console.log(err);
+        });
+}
+
 export function getClasesByUbicacion(req, res) {
 
 }
