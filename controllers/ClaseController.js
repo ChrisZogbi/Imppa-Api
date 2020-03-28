@@ -70,6 +70,7 @@ export async function addClase(req, res) {
     ClaseProfesorService.addClaseProfesorService(req)
         .then(response => {
             if (response.Success) {
+                //Tengo que agregar que al mismo tiempo guarde la clase por dia y la clase por hora.
                 ClaseXUsuarioService.addClaseXUsuarioService(req.body.IdUsuario, response.InsertID)
                     .then(responseClasexUsuario => {
                         if (responseClasexUsuario.Success) {

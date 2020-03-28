@@ -8,14 +8,13 @@ export function getClaseByIdUsuarioService(req, res) {
                     join ClaseXUsuario on ClaseProfesor.ID = ClaseXUsuario.IDClaseProfesor
                 WHERE 
                     ClaseXUsuario.IDUsuario = ${idUsuario}`;
-
+    console.log(query);
     return pool.promise().query(query, idUsuario)
         .then(([rows]) => { return ({ Success: true, Data: rows }) })
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
-export function getAllClases()
-{
+export function getAllClases() {
     const query = `select * from ClaseProfesor`;
 
     return pool.promise().query(query, [idClase])
@@ -38,16 +37,17 @@ export function getClaseByFilter(req) {
     const query =
         `select cp.* from claseprofesor as cp join diasxclase dc on cp.ID = dc.IDClaseProfesor
         where 
-        cp.IDTipoClase = ${claseFilter.IdTipoClase}
-        AND (cp.Precio >= ${claseFilter.PrecioMin} and cp.Precio <= ${claseFilter.PrecioMax})`
-    
-    if(req.body.IdTipoCategoria > 0)
-    {
+        cp.IDTipoClase = ${claseFilter.IdTipoClase}`
+
+    if (claseFilter.FiltraCategoria > 0) {
         query = query + `AND cp.IDCategoriaClase = ${IdCategoriaClase}`
     }
 
-    if(claseFilter.FiltraPrecio)
-    {
+    if (claseFilter.FiltraPrecio) {
+        query = query + `AND (cp.Precio >= ${claseFilter.PrecioMin} and cp.Precio <= ${claseFilter.PrecioMax})`
+    }
+
+    if (claseFilter.FiltraDias) {
         query = query + `AND (dc.Lunes = ${claseFilter.Lunes} and dc.Martes = ${claseFilter.Martes} and dc.Miercoles = ${claseFilter.Miercoles} and dc.Jueves = ${claseFilter.Jueves}
             and  dc.Viernes = ${claseFilter.Viernes} and dc.Sabado = ${claseFilter.Sabado} and dc.Domingo = ${claseFilter.Domingo})`
     }
@@ -98,3 +98,9 @@ export function deleteClaseProfesorService(req, res) {
         .then(() => { return ({ Success: true }) })
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
+
+function addHorariosClase(idClaseProfesor)
+{}
+
+function addDiasClase(idClaseProfesor)
+{}
