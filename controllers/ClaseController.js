@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { response } from 'express';
 import * as ClaseProfesorService from '../services/ClaseProfesorService';
 import * as ClaseXUsuarioService from '../services/ClaseXUsuarioService';
 import { LogError } from './ErrorLogController';
@@ -58,7 +58,20 @@ export function getClasesByFilter(req, res) {
 }
 
 export function getClasesByUbicacion(req, res) {
-
+    ClaseProfesorService.getClaseByUbicacion(req)
+        .then(response => {
+            if (response.Success) {
+                res.status(200).json(response)
+            }
+            else {
+                LogError(getClasesByUbicacion.name, response.Data.message);
+                console.log(response.Data);
+                res.status(500).json(response);
+            }
+        }).catch((err) => {
+            LogError(getClasesByFilter.name, err);
+            console.log(err);
+        });
 }
 
 export function getClasesByFiltros(req, res) {

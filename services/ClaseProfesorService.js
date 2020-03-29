@@ -54,7 +54,29 @@ export function getClaseByFilter(req) {
 
     console.log(query);
     return pool.promise().query(query)
-        .then(([result]) => { return ({ Success: true, InsertID: result.insertId }) })
+        .then(([rows]) => { return ({ Success: true, Data: rows }) })
+        .catch((err) => { return ({ Success: false, Data: err }) });
+}
+
+export function getClaseByUbicacion(req) {
+    const alumnoUbicacion = req.query;
+    console.log()
+
+    let bordeSuperior = parseFloat(alumnoUbicacion.Latitud) + 0.02;
+    let bordeInferior = parseFloat(alumnoUbicacion.Latitud) - 0.02;
+    let bordeDerecho = parseFloat(alumnoUbicacion.Longitud) + 0.02;
+    let bordeIzquierdo = parseFloat(alumnoUbicacion.Longitud) - 0.02;
+
+    const query =
+        `select u.Nombre, u.Apellido, u.telefono1, cp.* from claseprofesor as cp 
+            join clasexusuario as cu on cp.ID = cu.IDClaseProfesor
+            join usuarios as u on cu.IDUsuario = u.ID
+         where (latitud < ${bordeSuperior} AND latitud > ${bordeInferior})
+         and ( longitud < ${bordeDerecho} AND  longitud> ${bordeIzquierdo})`
+
+    console.log(query);
+    return pool.promise().query(query)
+        .then(([rows]) => { return ({ Success: true, Data: rows }) })
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 

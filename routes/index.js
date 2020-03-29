@@ -54,11 +54,12 @@ export function assignRoutes(app) {
         .put(updateCategoriaClase)
         .delete(deleteCategoriaClase);
 
+    app.route('/claseubicacion/')
+        .get(ClaseRoutes.getClaseByUbicacion);
+
     app.route('/clase?:IdProfesor/')
         .get(ClaseRoutes.getClaseByProfesor);
-    // .post(addCategoriaClase)
-    // .put(updateCategoriaClase)
-    // .delete(deleteCategoriaClase); 
+
     app.route('/clase/')
         .get(ClaseRoutes.getClaseByFilter)
         .post(ClaseRoutes.addClase);
