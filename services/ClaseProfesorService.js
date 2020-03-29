@@ -68,10 +68,14 @@ export function getClaseByUbicacion(req) {
     let bordeIzquierdo = parseFloat(alumnoUbicacion.Longitud) - 0.02;
 
     const query =
-        `select u.Nombre, u.Apellido, u.telefono1, cp.* from claseprofesor as cp 
-            join clasexusuario as cu on cp.ID = cu.IDClaseProfesor
-            join usuarios as u on cu.IDUsuario = u.ID
-         where (latitud < ${bordeSuperior} AND latitud > ${bordeInferior})
+        `select u.Nombre, u.Apellido, u.telefono1, cp.Precio, cp.Latitud, cp.Longitud, dc.Lunes, dc.Martes, dc.Miercoles, dc.Jueves, dc.Viernes, dc.Sabado, dc.Domingo, cc.ID as IdCategoria, cc.NombreCategoria
+        from claseprofesor as cp
+                    join clasexusuario as cu on cp.ID = cu.IDClaseProfesor
+                    join usuarios as u on cu.IDUsuario = u.ID
+                    join diasxclase as dc on cp.ID = dc.IDClaseProfesor
+                    join categoriaclase as cc on cc.ID = cp.IDCategoriaClase
+         where IDTipoClase = 2 
+         and (latitud < ${bordeSuperior} AND latitud > ${bordeInferior})
          and ( longitud < ${bordeDerecho} AND  longitud> ${bordeIzquierdo})`
 
     console.log(query);
@@ -121,8 +125,8 @@ export function deleteClaseProfesorService(req, res) {
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
-function addHorariosClase(idClaseProfesor)
-{}
+function addHorariosClase(idClaseProfesor) {
 
-function addDiasClase(idClaseProfesor)
-{}
+}
+
+function addDiasClase(idClaseProfesor) { }
