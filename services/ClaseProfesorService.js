@@ -68,7 +68,7 @@ export function getClaseByUbicacion(req) {
     let bordeIzquierdo = parseFloat(alumnoUbicacion.Longitud) - 0.02;
 
     const query =
-        `select u.Nombre, u.Apellido, u.telefono1, cp.Precio, cp.Latitud, cp.Longitud, dc.Lunes, dc.Martes, dc.Miercoles, dc.Jueves, dc.Viernes, dc.Sabado, dc.Domingo, cc.ID as IdCategoria, cc.NombreCategoria
+        `select u.Nombre, u.Apellido, u.telefono1 as Telefono, cp.Precio, cp.Latitud, cp.Longitud, dc.Lunes, dc.Martes, dc.Miercoles, dc.Jueves, dc.Viernes, dc.Sabado, dc.Domingo, cc.ID as IdCategoria, cc.NombreCategoria
         from claseprofesor as cp
                     join clasexusuario as cu on cp.ID = cu.IDClaseProfesor
                     join usuarios as u on cu.IDUsuario = u.ID
