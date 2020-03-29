@@ -3,6 +3,16 @@ import * as ClaseProfesorService from '../services/ClaseProfesorService';
 import * as ClaseXUsuarioService from '../services/ClaseXUsuarioService';
 import { LogError } from './ErrorLogController';
 
+const AgregarClaseXUsuario = async (idUsuario, idClase) => {
+    return new Promise((resolve, reject) => {
+        resolve(ClaseXUsuarioService.addClaseXUsuarioService(idUsuario, idClase));
+    })
+        .then((result) => {
+            console.log("Respuesta de la promise: " + result);
+            return (result)
+        });
+};
+
 export function getClasesByID(req) {
     ClaseProfesorService.getClaseByIDService(req, res)
         .then(response => {
@@ -79,12 +89,10 @@ export function getClasesByFiltros(req, res) {
 }
 
 export async function addClase(req, res) {
-    console.log("llego a add clase");
     ClaseProfesorService.addClaseProfesorService(req)
         .then(response => {
             if (response.Success) {
-                //Tengo que agregar que al mismo tiempo guarde la clase por dia y la clase por hora.
-                ClaseXUsuarioService.addClaseXUsuarioService(req.body.IdUsuario, response.InsertID)
+                AgregarClaseXUsuario(req.body.IdUsuario, response.InsertID)
                     .then(responseClasexUsuario => {
                         if (responseClasexUsuario.Success) {
                             res.status(200).json({
@@ -94,6 +102,7 @@ export async function addClase(req, res) {
                         }
                         else {
                             LogError(addClase.name, responseClasexUsuario.Data.message);
+                            console.log("Error en Clase X Usuario");
                             res.status(500).json(responseClasexUsuario);
                         }
 

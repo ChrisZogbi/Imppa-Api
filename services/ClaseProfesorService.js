@@ -95,8 +95,12 @@ export function addClaseProfesorService(req, res) {
 
     console.log(query);
     return pool.promise().query(query)
-        .then(([result]) => { return ({ Success: true, InsertID: result.insertId }) })
-        .catch((err) => { return ({ Success: false, Data: err }) });
+        .then(([result]) => {
+            return addDiasClase(result.insertId, ClaseProfesor).then(resultDias => {
+                if (resultDias.Success) { return ({ Success: true, InsertID: result.insertId }) }
+            });
+        })
+        .catch((err) => {return ({ Success: false, Data: err }) });
 }
 
 export function updateClaseProfesorService(req, res) {
@@ -125,8 +129,14 @@ export function deleteClaseProfesorService(req, res) {
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
-function addHorariosClase(idClaseProfesor) {
-
+function addDiasClase(idClase, ClaseProfesor) {
+    var query = `INSERT INTO diasxclase
+                            (IDClaseProfesor,Lunes,Martes,Miercoles,Jueves,Viernes,Sabado,Domingo)
+                            VALUES
+                            (${idClase},${ClaseProfesor.Lunes},${ClaseProfesor.Martes},${ClaseProfesor.Miercoles},${ClaseProfesor.Jueves},${ClaseProfesor.Viernes},${ClaseProfesor.Sabado},${ClaseProfesor.Domingo})`
+    return pool.promise().query(query)
+        .then(() => { return ({ Success: true }) })
+        .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
-function addDiasClase(idClaseProfesor) { }
+function addHorariosClase(idClaseProfesor) { }
