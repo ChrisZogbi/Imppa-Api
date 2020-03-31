@@ -4,8 +4,9 @@ import { pool } from "./index";
 export function getClaseByIdUsuarioService(req, res) {
     var idUsuario = req.query.IdProfesor
 
-    var query = `select * from ClaseProfesor 
-                    join ClaseXUsuario on ClaseProfesor.ID = ClaseXUsuario.IDClaseProfesor
+    var query = `select cp.*, dc.Lunes, dc.Martes, dc.Miercoles, dc.Jueves, dc.Viernes, dc.Sabado, dc.Domingo from ClaseProfesor as cp
+                    join ClaseXUsuario on cp.ID = ClaseXUsuario.IDClaseProfesor
+                    join diasxclase as dc on cp.ID = dc.IDClaseProfesor
                 WHERE 
                     ClaseXUsuario.IDUsuario = ${idUsuario}`;
     console.log(query);
@@ -37,7 +38,7 @@ export function getClaseByFilter(req) {
     const query =
         `select cp.* from claseprofesor as cp join diasxclase dc on cp.ID = dc.IDClaseProfesor
         where 
-        cp.IDTipoClase = ${claseFilter.IdTipoClase}`
+        cp.IDTipoClase = 1`
 
     if (claseFilter.FiltraCategoria > 0) {
         query = query + `AND cp.IDCategoriaClase = ${IdCategoriaClase}`
@@ -84,7 +85,6 @@ export function getClaseByUbicacion(req) {
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
-
 export function addClaseProfesorService(req, res) {
     var ClaseProfesor = req.body;
 
@@ -100,7 +100,17 @@ export function addClaseProfesorService(req, res) {
                 if (resultDias.Success) { return ({ Success: true, InsertID: result.insertId }) }
             });
         })
-        .catch((err) => {return ({ Success: false, Data: err }) });
+        .catch((err) => { return ({ Success: false, Data: err }) });
+}
+
+function addDiasClase(idClase, ClaseProfesor) {
+    var query = `INSERT INTO diasxclase
+                            (IDClaseProfesor,Lunes,Martes,Miercoles,Jueves,Viernes,Sabado,Domingo)
+                            VALUES
+                            (${idClase},${ClaseProfesor.Lunes},${ClaseProfesor.Martes},${ClaseProfesor.Miercoles},${ClaseProfesor.Jueves},${ClaseProfesor.Viernes},${ClaseProfesor.Sabado},${ClaseProfesor.Domingo})`
+    return pool.promise().query(query)
+        .then(() => { return ({ Success: true }) })
+        .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
 export function updateClaseProfesorService(req, res) {
@@ -129,14 +139,6 @@ export function deleteClaseProfesorService(req, res) {
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
-function addDiasClase(idClase, ClaseProfesor) {
-    var query = `INSERT INTO diasxclase
-                            (IDClaseProfesor,Lunes,Martes,Miercoles,Jueves,Viernes,Sabado,Domingo)
-                            VALUES
-                            (${idClase},${ClaseProfesor.Lunes},${ClaseProfesor.Martes},${ClaseProfesor.Miercoles},${ClaseProfesor.Jueves},${ClaseProfesor.Viernes},${ClaseProfesor.Sabado},${ClaseProfesor.Domingo})`
-    return pool.promise().query(query)
-        .then(() => { return ({ Success: true }) })
-        .catch((err) => { return ({ Success: false, Data: err }) });
-}
-
 function addHorariosClase(idClaseProfesor) { }
+
+function DeleteDiasClases(idClaseprofeso) { }
