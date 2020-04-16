@@ -5,7 +5,6 @@ import { getSubscipcion, addSubscipcion, updateSubscipcion, deleteSubscipcion } 
 import { getComentario, addComentario, updateComentario, deleteComentario } from './comentarioRoutes'
 import { getCategoriaClase, addCategoriaClase, updateCategoriaClase, deleteCategoriaClase } from './categoriaClaseRoutes'
 import * as ClaseRoutes from './claseRoutes'
-
 import * as ClaseController from './categoriaClaseRoutes'
 
 export function assignRoutes(app) {
@@ -56,11 +55,15 @@ export function assignRoutes(app) {
 
     app.route('/claseubicacion/')
         .get(ClaseRoutes.getClaseByUbicacion);
+    
+    app.route('/clasesdistancia/')
+        .get(ClaseRoutes.getClasesDistanciaFiltro)
 
     app.route('/clase?:IdProfesor/')
         .get(ClaseRoutes.getClaseByProfesor);
 
     app.route('/clase/')
-        .get(ClaseRoutes.getClaseByFilter)
         .post(ClaseRoutes.addClase);
+
+    
 }

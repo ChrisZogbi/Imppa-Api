@@ -4,8 +4,7 @@ export async function getClaseByProfesor(req, res) {
     return(ClaseController.getClasesByProfesor(req,res));
 }
 
-export async function getClaseByFilter(req, res) {
-    console.log("getClaseByFilter Route inicio");
+export async function getClasesDistanciaFiltro(req, res) {
     return(ClaseController.getClasesByFilter(req,res));
 }
 

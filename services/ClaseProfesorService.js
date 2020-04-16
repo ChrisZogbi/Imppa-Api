@@ -35,22 +35,22 @@ export function getClaseByIDService(req, res) {
 export function getClaseByFilter(req) {
     const claseFilter = req.body;
 
-    const query =
+    let query =
         `select cp.* from claseprofesor as cp join diasxclase dc on cp.ID = dc.IDClaseProfesor
         where 
-        cp.IDTipoClase = 1`
+        cp.IDTipoClase = 1 `
 
-    if (claseFilter.FiltraCategoria > 0) {
-        query = query + `AND cp.IDCategoriaClase = ${IdCategoriaClase}`
+    if (claseFilter.FiltraCategoria) {
+        query = query + `AND cp.IDCategoriaClase = ${claseFilter.IdCategoria} `
     }
 
     if (claseFilter.FiltraPrecio) {
-        query = query + `AND (cp.Precio >= ${claseFilter.PrecioMin} and cp.Precio <= ${claseFilter.PrecioMax})`
+        query = query + `AND (cp.Precio >= ${claseFilter.PrecioMin} and cp.Precio <= ${claseFilter.PrecioMax}) `
     }
 
     if (claseFilter.FiltraDias) {
         query = query + `AND (dc.Lunes = ${claseFilter.Lunes} and dc.Martes = ${claseFilter.Martes} and dc.Miercoles = ${claseFilter.Miercoles} and dc.Jueves = ${claseFilter.Jueves}
-            and  dc.Viernes = ${claseFilter.Viernes} and dc.Sabado = ${claseFilter.Sabado} and dc.Domingo = ${claseFilter.Domingo})`
+            and  dc.Viernes = ${claseFilter.Viernes} and dc.Sabado = ${claseFilter.Sabado} and dc.Domingo = ${claseFilter.Domingo}) `
     }
 
     console.log(query);

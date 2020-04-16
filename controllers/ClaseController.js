@@ -31,7 +31,6 @@ export function getClasesByID(req) {
 }
 
 export function getClasesByProfesor(req, res) {
-    console.log('Llego a claseController');
     ClaseProfesorService.getClaseByIdUsuarioService(req)
         .then(response => {
             if (response.Success) {
@@ -50,6 +49,7 @@ export function getClasesByProfesor(req, res) {
 }
 
 export function getClasesByFilter(req, res) {
+    console.log('Llego al controller man');
     ClaseProfesorService.getClaseByFilter(req)
         .then(response => {
             if (response.Success) {
