@@ -17,3 +17,13 @@ export async function getClaseByUbicacion(req, res) {
     console.log("GetByUbicacion Route inicio");
     return(ClaseController.getClasesByUbicacion(req,res));
 }
+
+export async function habilitarClase(req, res) {
+    console.log("HabilitarClase Route inicio");
+    return(ClaseController.habilitarClase(req,res));
+}
+
+export async function deshabilitarClase(req, res) {
+    console.log("deshabilitarClase Route inicio");
+    return(ClaseController.deshabilitarClase(req,res));
+}

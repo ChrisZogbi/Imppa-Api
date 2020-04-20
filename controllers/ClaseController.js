@@ -84,10 +84,6 @@ export function getClasesByUbicacion(req, res) {
         });
 }
 
-export function getClasesByFiltros(req, res) {
-
-}
-
 export async function addClase(req, res) {
     ClaseProfesorService.addClaseProfesorService(req)
         .then(response => {
@@ -162,4 +158,42 @@ export function deleteClase(req, res) {
             LogError(getClasesByProfesor.name, err.message);
             console.log(err);
         });
+}
+
+export function habilitarClase(req, res)
+{
+    ClaseProfesorService.HabilitarClase(req)
+    .then(response => {
+        if (response.Success) {
+            res.status(200).json(response)
+        }
+        else {
+            LogError(getClasesByID.name, response.Data.message);
+            console.log(response.Data);
+            res.status(500).json(response.Data);
+        }
+    })
+    .catch((err) => {
+        LogError(habilitarClase.name, err.message);
+        console.log(err);
+    });
+}
+
+export function deshabilitarClase(req, res)
+{
+    ClaseProfesorService.DeshabilitarClase(req)
+    .then(response => {
+        if (response.Success) {
+            res.status(200).json(response)
+        }
+        else {
+            LogError(getClasesByID.name, response.Data.message);
+            console.log(response.Data);
+            res.status(500).json(response.Data);
+        }
+    })
+    .catch((err) => {
+        LogError(deshabilitarClase.name, err.message);
+        console.log(err);
+    });
 }

@@ -89,9 +89,10 @@ export function addClaseProfesorService(req, res) {
     var ClaseProfesor = req.body;
 
     var query = `INSERT INTO claseprofesor
-                    (IDCategoriaClase, IDTipoClase, Precio, Latitud, Longitud)
+                    (IDCategoriaClase, IDTipoClase, Precio, Latitud, Longitud, Hablitada)
                   VALUES
-                    (${ClaseProfesor.IDCategoriaClase},${ClaseProfesor.IDTipoClase},${ClaseProfesor.Precio},${ClaseProfesor.Latitud},${ClaseProfesor.Longitud});`
+                    (${ClaseProfesor.IDCategoriaClase},${ClaseProfesor.IDTipoClase},${ClaseProfesor.Precio},
+                        ${ClaseProfesor.Latitud},${ClaseProfesor.Longitud}, true);`
 
     console.log(query);
     return pool.promise().query(query)
@@ -135,6 +136,34 @@ export function deleteClaseProfesorService(req, res) {
                 WHERE ID = ?`;
 
     return pool.promise().query(query, [idClaseProfesor])
+        .then(() => { return ({ Success: true }) })
+        .catch((err) => { return ({ Success: false, Data: err }) });
+}
+
+export function DeshabilitarClase(req){
+    var idClaseProfesor = req.query.IdClaseProfesor;
+
+    var query = `UPDATE claseprofesor
+                    SET Hablitada = false
+                WHERE ID = ${idClaseProfesor}`;
+
+    return pool.promise().query(query)
+        .then(() => { return ({ Success: true }) })
+        .catch((err) => { return ({ Success: false, Data: err }) });
+}
+
+export function HabilitarClase(req){
+    var idClaseProfesor = req.query.IdClaseProfesor;
+
+    console.log(req.query.IdClaseProfesor)
+
+    var query = `UPDATE claseprofesor
+                    SET Hablitada = true
+                WHERE ID = ${idClaseProfesor}`;
+    
+    console.log(query);
+
+    return pool.promise().query(query)
         .then(() => { return ({ Success: true }) })
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
