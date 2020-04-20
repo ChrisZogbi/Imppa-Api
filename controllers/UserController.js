@@ -69,7 +69,7 @@ export async function getUserByID(req, res) {
         console.log("Todo OK")
         res.status(200).json({
           Success: true,
-          DataUsuario: resultUsuario.Data,
+          DataUsuario: resultUsuario.Data ,
           DataTipoUsuario: resultTipoUsuario.Data,
           DataSubcripcion: resultSubcripcion.Data
         });

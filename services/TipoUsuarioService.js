@@ -21,7 +21,7 @@ export function getTipoUsuarioByIdUsuarioService(IdUsurio)
         where usuarios.ID = ${IdUsurio}`;
 
     return pool.promise().query(query)
-            .then(([rows]) => {return ({Success: true, Data: rows[0]})})
+            .then(([rows]) => {return ({Success: true, Data: rows})})
             .catch((err) => { return ({Success: false, Data: err})});
 }
 
