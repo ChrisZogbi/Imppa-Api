@@ -25,7 +25,7 @@ export function getSubcripcionByIdProfesor(idProfesor) {
         where subscripcionusuario.IDUsuario = ${idProfesor}`;
 
     return pool.promise().query(query)
-        .then(([rows]) => { return ({ Success: true, Data: rows }) })
+        .then(([rows]) => { return ({ Success: true, Data: rows}) })
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 

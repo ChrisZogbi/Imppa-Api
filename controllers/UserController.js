@@ -56,10 +56,8 @@ export async function getUsersController(req, res) {
     });
 }
 
-export async function getUserByID(req, res) {
-  let id = req.query.Id
-
-  Promise.all([getUserService(id), ObtenerTipoUsuario(id), ObtenerSubcripcionDelUsuario(id)])
+export async function getUserByID(id, res) {
+Promise.all([getUserService(id), ObtenerTipoUsuario(id), ObtenerSubcripcionDelUsuario(id)])
     .then((results) => {
       let resultUsuario = results[0];
       let resultTipoUsuario = results[1];
@@ -214,7 +212,7 @@ export function loginUserController(req, res) {
     .then((response) => {
       console.log("Respuesta" + response.Success)
 
-      if (response.Success) { res.status(200).json(response) }
+      if (response.Success) { getUserByID(response.IdUsuario, res) }
       else {
         LogError(loginUserController.name, response.Data.message)
         res.status(500).json(response);
