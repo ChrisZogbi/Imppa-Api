@@ -210,7 +210,7 @@ export function loginUserController(req, res) {
 
   UserService.getByMail(req.body.Mail)
     .then((response) => {
-      if (response.Data) {
+      if (response.Success) {
         console.log(`${passIngresada}    ${response.Data.Contrasenia}`)
         const result = compareSync(passIngresada, response.Data.Contrasenia, () => { });
 
