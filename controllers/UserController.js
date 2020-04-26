@@ -3,7 +3,7 @@ import * as UserService from '../services/UserService';
 import * as TipoUsuarioController from './TipoUsuarioController';
 import { LogError } from './ErrorLogController';
 import { getSubcripcionByIdProfesor, addUserSubcripcion } from './SubscripcionController'
-import { compareSync } from 'bcrypt';
+import { compareSync } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 
 const ObtenerTipoUsuario = async (idUsuario) => {
