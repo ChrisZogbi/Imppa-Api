@@ -4,24 +4,25 @@ import { getTipoClase, addTipoClase, updateTipoClase, deleteTipoClase } from './
 import { getSubscipcion, addSubscipcion, updateSubscipcion, deleteSubscipcion } from './subscripcionRoutes'
 import { getComentario, addComentario, updateComentario, deleteComentario } from './comentarioRoutes'
 import { getCategoriaClase, addCategoriaClase, updateCategoriaClase, deleteCategoriaClase } from './categoriaClaseRoutes'
-import * as ClaseRoutes from './claseRoutes'
-import * as ClaseController from './categoriaClaseRoutes'
+import * as ClaseRoutes from './claseRoutes';
+import * as ClaseController from './categoriaClaseRoutes';
+import { checkToken } from '../auth/token_validation';
 
 export function assignRoutes(app) {
     app.route('/users/')
-        .get(getUsers)
-        .post(addUser)
-        .put(updateUser)
-        .delete(deleteUser);
+        .get(checkToken, getUsers)
+        .post(checkToken,addUser)
+        .put(checkToken, updateUser)
+        .delete(checkToken, deleteUser);
 
-    app.route('/user?:Id/')
-        .get(getUser);
+    app.route('/user?:Id/', checkToken)
+        .get(checkToken, getUser);
 
     app.route('/login/')
-        .get(loginUser);
+        .post(loginUser);
 
     app.route('/cambioContrasenia/')
-        .put(cambiarContrasenia);
+        .put(checkToken, cambiarContrasenia);
 
     app.route('/tipoUsuario/')
         .get(getTipoUsuario)
@@ -54,23 +55,21 @@ export function assignRoutes(app) {
         .delete(deleteCategoriaClase);
 
     app.route('/habilitarClase/')
-        .post(ClaseRoutes.habilitarClase); 
-    
+        .post(checkToken, ClaseRoutes.habilitarClase);
+
     app.route('/deshabilitarClase/')
-        .post(ClaseRoutes.deshabilitarClase); 
+        .post(checkToken, ClaseRoutes.deshabilitarClase);
 
     app.route('/claseubicacion/')
-        .get(ClaseRoutes.getClaseByUbicacion);
-    
+        .get(checkToken, ClaseRoutes.getClaseByUbicacion);
+
     app.route('/clasesdistancia/')
-        .get(ClaseRoutes.getClasesDistanciaFiltro)
+        .get(checkToken, ClaseRoutes.getClasesDistanciaFiltro)
 
 
     app.route('/clase?:IdProfesor/')
-        .get(ClaseRoutes.getClaseByProfesor);
+        .get(checkToken, ClaseRoutes.getClaseByProfesor);
 
     app.route('/clase/')
-        .post(ClaseRoutes.addClase);
-
-    
+        .post(checkToken, ClaseRoutes.addClase);
 }

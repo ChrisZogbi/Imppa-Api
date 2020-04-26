@@ -1,11 +1,10 @@
 import express from 'express';
-import {
-  getUserByMail, getUserByMailContraseniaService, getUserService, getUsersService, addUserService,
-  updateUserService, deleteUserService, updateContraseniaService
-} from '../services/UserService';
+import * as UserService from '../services/UserService';
 import * as TipoUsuarioController from './TipoUsuarioController';
 import { LogError } from './ErrorLogController';
 import { getSubcripcionByIdProfesor, addUserSubcripcion } from './SubscripcionController'
+import { compareSync } from 'bcrypt';
+import { sign } from 'jsonwebtoken';
 
 const ObtenerTipoUsuario = async (idUsuario) => {
   return new Promise((resolve, reject) => {
@@ -41,7 +40,7 @@ export async function getUsersController(req, res) {
 
   console.log(req.body);
 
-  getUsersService()
+  UserService.getAll()
     .then((response) => {
       console.log("Respuesta" + response.Success)
 
@@ -57,7 +56,7 @@ export async function getUsersController(req, res) {
 }
 
 export async function getUserByID(id, res) {
-Promise.all([getUserService(id), ObtenerTipoUsuario(id), ObtenerSubcripcionDelUsuario(id)])
+  Promise.all([UserService.getById(id), ObtenerTipoUsuario(id), ObtenerSubcripcionDelUsuario(id)])
     .then((results) => {
       let resultUsuario = results[0];
       let resultTipoUsuario = results[1];
@@ -67,7 +66,7 @@ Promise.all([getUserService(id), ObtenerTipoUsuario(id), ObtenerSubcripcionDelUs
         console.log("Todo OK")
         res.status(200).json({
           Success: true,
-          DataUsuario: resultUsuario.Data ,
+          DataUsuario: resultUsuario.Data,
           DataTipoUsuario: resultTipoUsuario.Data,
           DataSubcripcion: resultSubcripcion.Data
         });
@@ -110,19 +109,19 @@ export async function addUserController(req, res) {
   const idSubscripcion = req.body.IdSubscripcion
   const idTipoUsuario = req.body.TipoUsuario
 
-  getUserByMail(req.body.Mail)
+  UserService.getByMail(req.body.Mail)
     .then((response) => {
 
       console.log("Existe usuario con mismo mail: " + response.Success)
       console.log(response);
 
       if (!response.Success) {
-        addUserService(req)
+        UserService.add(req.body)
           .then((responseAdd) => {
             console.log("Respuesta" + responseAdd.Success)
             if (responseAdd.Success) {
               console.log("Id Usuario Insetado: " + responseAdd.InsertId)
-              if(idTipoUsuario === 3){
+              if (idTipoUsuario === 3) {
                 AgregarUserSubcripcion(responseAdd.InsertId, idSubscripcion)
                   .then((responseSubscripcion) => {
                     if (responseSubscripcion.Success) {
@@ -134,7 +133,7 @@ export async function addUserController(req, res) {
                     }
                   });
               }
-              else{
+              else {
                 res.status(200).json(responseAdd);
               }
             }
@@ -149,14 +148,14 @@ export async function addUserController(req, res) {
       }
       else {
         LogError(addUserController.name, response.Data.message)
-        res.status(500).json(response.Data.message);
+        res.status(200).json({ Success: true, Message: "Ya existe un usuario registrado con el mismo Mail", Data: [] });
       }
     })
 }
 
 export function updateUserController(req, res) {
   console.log(req.body);
-  updateUserService(req)
+  UserService.update(req)
     .then((response) => {
       console.log("Respuesta" + response.Success)
 
@@ -173,7 +172,7 @@ export function updateUserController(req, res) {
 
 export function updateContraseniaController(req, res) {
   console.log(req.body);
-  updateContraseniaService(req)
+  UserService.updateContrasenia(req)
     .then((response) => {
       console.log("Respuesta" + response.Success)
 
@@ -190,7 +189,7 @@ export function updateContraseniaController(req, res) {
 
 export function deleteUserController(req, res) {
   console.log(req.body);
-  deleteUserService(req)
+  UserService.remove(req)
     .then((response) => {
       console.log("Respuesta" + response.Success)
 
@@ -207,15 +206,47 @@ export function deleteUserController(req, res) {
 }
 
 export function loginUserController(req, res) {
-  console.log(req.body);
-  getUserByMailContraseniaService(req)
-    .then((response) => {
-      console.log("Respuesta" + response.Success)
+  let passIngresada = req.body.Contrasenia;
 
-      if (response.Success) { getUserByID(response.IdUsuario, res) }
+  UserService.getByMail(req.body.Mail)
+    .then((response) => {
+      if (response.Data) {
+        console.log(`${passIngresada}    ${response.Data.Contrasenia}`)
+        const result = compareSync(passIngresada, response.Data.Contrasenia, () => { });
+
+        if (result) {
+          Promise.all([ObtenerTipoUsuario(response.IdUsuario), ObtenerSubcripcionDelUsuario(response.IdUsuario)])
+            .then((results) => {
+              let resultTipoUsuario = results[0];
+              let resultSubcripcion = results[1];
+
+              response.Data.Contrasenia = undefined;
+              const jToken = sign({ result: response }, 'campeon1986', { expiresIn: "1h" })
+              res.status(200).json(
+                {
+                  Success: true,
+                  Token: jToken,
+                  DataUsuario: response.Data,
+                  DataTipoUsuario: resultTipoUsuario.Data,
+                  DataSubcripcion: resultSubcripcion.Data
+                }
+              );
+            })
+        }
+        else {
+          res.status(200).json({
+            Success: true,
+            Message: "Email y contrasenia no coinciden",
+            Data: []
+          });
+        }
+      }
       else {
-        LogError(loginUserController.name, response.Data.message)
-        res.status(500).json(response);
+        res.status(200).json({
+          Success: true,
+          Message: "Email o contraseña incorrectos",
+          Data: []
+        });
       }
     })
     .catch((err) => {

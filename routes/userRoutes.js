@@ -1,5 +1,6 @@
 import { getUsersController, getUserByID, addUserController, updateUserController, 
          deleteUserController, loginUserController, updateContraseniaController } from '../controllers/UserController';
+import {checkToken} from '../auth/token_validation'
 
 export async function getUsers(req, res) {
     return(getUsersController(req,res));

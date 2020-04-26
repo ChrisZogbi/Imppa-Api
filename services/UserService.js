@@ -1,7 +1,8 @@
 import app from "../app.js";
 import { pool } from "./index";
+import {genSaltSync, hashSync, compareSync} from "bcrypt";
 
-export function getUserByMailContraseniaService(req) {
+export function getByMailContrasenia(req) {
 
     var query = `SELECT * FROM usuarios where Mail = '${req.query.Mail}' and Contrasenia = '${req.query.Contrasenia}'`;
 
@@ -11,7 +12,7 @@ export function getUserByMailContraseniaService(req) {
     return pool.promise().query(query)
         .then(([rows, fields]) => {
             if (rows.length == 1) {
-                return ({ Success: true, IdUsuario: rows[0].ID })
+                return ({ Success: true, IdUsuario: rows[0] })
             }
             else if (rows.length > 1) {
                 return ({ Success: false, Data: { 'message': `Hay mas de un usuario con el mismo mail: ${Mail}` } })
@@ -23,7 +24,7 @@ export function getUserByMailContraseniaService(req) {
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
-export function getUserByMail(Mail) {
+export function getByMail(Mail) {
 
     var query = `SELECT * FROM usuarios where Mail = '${Mail}'`;
 
@@ -33,16 +34,16 @@ export function getUserByMail(Mail) {
         .then(([rows, fields]) => {
             console.log("Numero de rows devueltas " + rows.length);
             if (rows.length >= 1) {
-                return ({ Success: true, Data: { 'message': `Ya existe un usuario con el mismo mail: ${Mail}` } })
+                return ({ Success: true, Data: rows[0]})
             }
             else {
-                return ({ Success: false })
+                return ({ Success: false, Data: rows })
             }
         })
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
-export function getUsersService() {
+export function getAll() {
     var query = `SELECT * FROM usuarios`;
 
     return pool.promise().query(query)
@@ -50,7 +51,7 @@ export function getUsersService() {
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
-export function getUserService(id) {
+export function getById(id) {
     var query = `SELECT * FROM usuarios WHERE ID = ${id}`
 
     return pool.promise().query(query)
@@ -58,13 +59,18 @@ export function getUserService(id) {
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
-export function addUserService(req) {
+export function add(data) {
     var today = new Date();
     var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
 
-    var Usuario = req.body;
+    const salt = genSaltSync(10);
+    data.Contrasenia = hashSync(data.Contrasenia, 10);
+
+    var Usuario = data;
 
     Usuario.AddedDate = date
+
+    console.log("El hash es:" + data.Contrasenia)
 
     var query = `INSERT INTO usuarios
     (TipoUsuario, Mail, Contrasenia, AddedDate, LastLogin, Nombre, Apellido, Telefono1, Telefono2, Habilitado)
@@ -86,8 +92,11 @@ export function addUserService(req) {
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
-export function updateContraseniaService(req) {
+export function updateContrasenia(req) {
     var UserData = req.body;
+
+    const salt = genSaltSync(10);
+    UserData.Contrasenia = hashSync(UserData.Contrasenia, salt);
 
     var query = `UPDATE usuarios
         SET Contrasenia = '${UserData.Contrasenia}'
@@ -100,7 +109,7 @@ export function updateContraseniaService(req) {
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
-export function updateUserService(req) {
+export function update(req) {
     var UserData = req.body;
 
     var query = `UPDATE usuarios
@@ -118,7 +127,7 @@ export function updateUserService(req) {
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
-export function deleteUserService(req) {
+export function remove(req) {
     var UserId = req.body.ID;
 
     var query = `DELETE FROM usuarios WHERE ID = ${UserId}`;
