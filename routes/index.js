@@ -5,13 +5,13 @@ import { getSubscipcion, addSubscipcion, updateSubscipcion, deleteSubscipcion } 
 import { getComentario, addComentario, updateComentario, deleteComentario } from './comentarioRoutes'
 import { getCategoriaClase, addCategoriaClase, updateCategoriaClase, deleteCategoriaClase } from './categoriaClaseRoutes'
 import * as ClaseRoutes from './claseRoutes';
-import * as ClaseController from './categoriaClaseRoutes';
 import { checkToken } from '../auth/token_validation';
+import "../passport";
 
-export function assignRoutes(app) {
+module.exports = function (app, passport) {
     app.route('/users/')
         .get(checkToken, getUsers)
-        .post(checkToken,addUser)
+        .post(checkToken, addUser)
         .put(checkToken, updateUser)
         .delete(checkToken, deleteUser);
 
@@ -20,6 +20,9 @@ export function assignRoutes(app) {
 
     app.route('/login/')
         .post(loginUser);
+
+    app.route('/login/oauth/google')
+        .post(passport.authenticate('googleToken', { session: false }));
 
     app.route('/cambioContrasenia/')
         .put(checkToken, cambiarContrasenia);
