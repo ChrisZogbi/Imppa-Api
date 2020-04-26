@@ -1,6 +1,6 @@
 import app from "../app.js";
 import { pool } from "./index";
-import {genSaltSync, hashSync, compareSync} from "bcrypt";
+import {genSaltSync, hashSync, compareSync} from "bcryptjs";
 
 export function getByMailContrasenia(req) {
 
