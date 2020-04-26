@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon start.js",
+    "start": "node start.js",
     "compile": "./node_modules/.bin/babel ./app -d ./compiled"
   },
   "author": "Chris",
