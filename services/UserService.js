@@ -27,7 +27,7 @@ export function getByMailContrasenia(req) {
 export function getByMail(Mail) {
 
     var query = `SELECT * FROM usuarios where Mail = '${Mail}'`;
-
+    
     console.log(Mail);
 
     return pool.promise().query(query)
