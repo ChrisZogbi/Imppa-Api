@@ -1,5 +1,5 @@
 import { getUsersController, getUserByID, addUserController, updateUserController, 
-         deleteUserController, loginUserController, updateContraseniaController } from '../controllers/UserController';
+         deleteUserController, loginUserController, updateContraseniaController, googleAuth } from '../controllers/UserController';
 import {checkToken} from '../auth/token_validation'
 
 export async function getUsers(req, res) {
@@ -27,6 +27,11 @@ export async function deleteUser(req, res) {
 export async function loginUser(req, res) {
     console.log("Llego");
     return(loginUserController(req, res));
+}
+
+export async function loginGoogle(user, res) {
+    console.log("Llego a google");
+    return(googleAuth(user, res));
 }
 
 export async function cambiarContrasenia(req, res) {

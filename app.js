@@ -1,10 +1,10 @@
 import express from 'express';
-var app = express();
 import { json } from 'body-parser';
-import { assignRoutes } from './routes/index';
-import db from './services/index';
 import passport from 'passport';
 import route from './routes/index';
+import passportAuth from './auth/passport'
+
+var app = express();
 var port=process.env.PORT || 3000;
 
 app.use(json());

@@ -5,6 +5,7 @@ import { LogError } from './ErrorLogController';
 import { getSubcripcionByIdProfesor, addUserSubcripcion } from './SubscripcionController'
 import { compareSync } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
+import { JWT_SECRET } from '../auth/passportConfiguration'
 
 const ObtenerTipoUsuario = async (idUsuario) => {
   return new Promise((resolve, reject) => {
@@ -29,6 +30,16 @@ const ObtenerSubcripcionDelUsuario = async (id) => {
 const AgregarUserSubcripcion = async (idUsuario, idSubscripcion) => {
   return new Promise((resolve, reject) => {
     resolve(addUserSubcripcion(idUsuario, idSubscripcion));
+  })
+    .then((result) => {
+      console.log("Respuesta de la promise: " + result);
+      return (result)
+    });
+};
+
+const generateUserToken = async (UserObject) => {
+  return new Promise((resolve, reject) => {
+    resolve(sign({ result: UserObject }, JWT_SECRET, { expiresIn: "1h" }));
   })
     .then((result) => {
       console.log("Respuesta de la promise: " + result);
@@ -211,8 +222,7 @@ export function loginUserController(req, res) {
   UserService.getByMail(req.body.Mail)
     .then((response) => {
       if (response.Success) {
-        console.log(`${passIngresada}    ${response.Data.Contrasenia}`)
-        const result = compareSync(passIngresada, response.Data.Contrasenia, () => { });
+        const result = compareSync(passIngresada, response.Data.Contrasenia);
 
         if (result) {
           Promise.all([ObtenerTipoUsuario(response.IdUsuario), ObtenerSubcripcionDelUsuario(response.IdUsuario)])
@@ -221,16 +231,22 @@ export function loginUserController(req, res) {
               let resultSubcripcion = results[1];
 
               response.Data.Contrasenia = undefined;
-              const jToken = sign({ result: response }, 'campeon1986', { expiresIn: "1h" })
-              res.status(200).json(
-                {
-                  Success: true,
-                  Token: jToken,
-                  DataUsuario: response.Data,
-                  DataTipoUsuario: resultTipoUsuario.Data,
-                  DataSubcripcion: resultSubcripcion.Data
-                }
-              );
+              generateUserToken(response)
+                .then((jToken) => {
+                  res.status(200).json(
+                    {
+                      Success: true,
+                      Token: jToken,
+                      DataUsuario: response.Data,
+                      DataTipoUsuario: resultTipoUsuario.Data,
+                      DataSubcripcion: resultSubcripcion.Data
+                    }
+                  );
+                })
+                .catch((err) => {
+                  console.log(err);
+                  LogError('generateUserToken', err);
+                });
             })
         }
         else {
@@ -252,5 +268,48 @@ export function loginUserController(req, res) {
     .catch((err) => {
       console.log(err);
       LogError(loginUserController.name, response.Data.message)
+    });
+}
+
+export function googleAuth(user, res) {
+  UserService.getByIdGoogle(user.idGoogle)
+    .then((response) => {
+      if (response.Success) {
+        Promise.all([ObtenerTipoUsuario(response.IdUsuario), ObtenerSubcripcionDelUsuario(response.IdUsuario)])
+          .then((results) => {
+            let resultTipoUsuario = results[0];
+            let resultSubcripcion = results[1];
+            generateUserToken(response)
+              .then((jToken) => {
+                res.status(200).json(
+                  {
+                    Success: true,
+                    Token: jToken,
+                    DataUsuario: response.Data,
+                    DataTipoUsuario: resultTipoUsuario.Data,
+                    DataSubcripcion: resultSubcripcion.Data
+                  }
+                );
+              })
+              .catch((err) => {
+                console.log(err);
+                LogError('generateUserToken', err);
+              });
+          })
+      }
+      else
+      {
+        UserService.addGoogleUser(user)
+        .then((response) => {
+
+        })
+        .catch((err) => {
+
+        });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      LogError(googleAuth.name, response.Data.message)
     });
 }
