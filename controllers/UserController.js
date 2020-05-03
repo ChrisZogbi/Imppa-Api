@@ -131,7 +131,7 @@ export async function addUserController(req, res) {
           .then((responseAdd) => {
             console.log("Respuesta" + responseAdd.Success)
             if (responseAdd.Success) {
-              console.log("Id Usuario Insetado: " + responseAdd.InsertId)
+              console.log("Id Usuario Insertado: " + responseAdd.InsertId)
               if (idTipoUsuario === 3) {
                 AgregarUserSubcripcion(responseAdd.InsertId, idSubscripcion)
                   .then((responseSubscripcion) => {

@@ -11,7 +11,7 @@ import { checkToken } from '../auth/token_validation';
 module.exports = function (app, passport) {
     app.route('/users/')
         .get(checkToken, getUsers)
-        .post(checkToken, addUser)
+        .post(addUser)
         .put(checkToken, updateUser)
         .delete(checkToken, deleteUser);
 
