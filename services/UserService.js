@@ -154,6 +154,7 @@ export function addGoogleUser(UserData)
 {
     var today = new Date();
     var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+    UserData.AddedDate = UserData.LastLogin = date;
 
     var query = `INSERT INTO usuarios
     (TipoUsuario, Mail, Contrasenia, AddedDate, LastLogin, Nombre, Apellido, Telefono1, Telefono2, Habilitado)

@@ -17,16 +17,9 @@ passport.use('googleToken', new GooglePlusTokenStrategy({
     done(null,
       {
         idGoogle: profile.id,
-        TipoUsuario: 2,
         Mail: profile.emails.value,
-        AddedDate: "",
-        LastLogin: "",
         Nombre: profile.name.givenName,
         Apellido: profile.name.familyName,
-        Telefono1: "1231",
-        Telefono2: "123123",
-        Habilitado: "true",
-        IdSubscripcion: null
       }
     );
   } catch (error) {

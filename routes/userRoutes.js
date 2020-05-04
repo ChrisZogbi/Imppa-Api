@@ -29,9 +29,9 @@ export async function loginUser(req, res) {
     return(loginUserController(req, res));
 }
 
-export async function loginGoogle(user, res) {
+export async function loginGoogle(user, req, res) {
     console.log("Llego a google");
-    return(googleAuth(user, res));
+    return(googleAuth(user, req, res));
 }
 
 export async function cambiarContrasenia(req, res) {

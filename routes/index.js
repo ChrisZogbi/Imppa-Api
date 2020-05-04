@@ -36,7 +36,7 @@ module.exports = function (app, passport) {
     app.route('/login/oauth/google/')
         .post((req, res, next) => {
             passport.authenticate('googleToken', (err, user, info) => {
-            loginGoogle(user, res);
+            loginGoogle(user, req, res);
         })(req, res, next)});
 
     app.route('/cambioContrasenia/')

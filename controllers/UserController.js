@@ -6,6 +6,7 @@ import { getSubcripcionByIdProfesor, addUserSubcripcion } from './SubscripcionCo
 import { compareSync } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import { JWT_SECRET } from '../auth/passportConfiguration'
+import { ETipoUsuario } from '../enum'
 
 const ObtenerTipoUsuario = async (idUsuario) => {
   return new Promise((resolve, reject) => {
@@ -132,7 +133,7 @@ export async function addUserController(req, res) {
             console.log("Respuesta" + responseAdd.Success)
             if (responseAdd.Success) {
               console.log("Id Usuario Insertado: " + responseAdd.InsertId)
-              if (idTipoUsuario === 3) {
+              if (idTipoUsuario === ETipoUsuario.Profesor) {
                 AgregarUserSubcripcion(responseAdd.InsertId, idSubscripcion)
                   .then((responseSubscripcion) => {
                     if (responseSubscripcion.Success) {
@@ -271,9 +272,12 @@ export function loginUserController(req, res) {
     });
 }
 
-export function googleAuth(user, res) {
+export function googleAuth(UserG, req, res) {
+  const UserReq = req.body;
+
   UserService.getByIdGoogle(user.idGoogle)
     .then((response) => {
+      //Si devuelve true es que el usuario existe hace el login.
       if (response.Success) {
         Promise.all([ObtenerTipoUsuario(response.IdUsuario), ObtenerSubcripcionDelUsuario(response.IdUsuario)])
           .then((results) => {
@@ -297,15 +301,49 @@ export function googleAuth(user, res) {
               });
           })
       }
-      else
-      {
-        UserService.addGoogleUser(user)
-        .then((response) => {
+      //Sino lo crea
+      else {
+        let UserData = {
+          idGoogle = UserG.idGoogle,
+          TipoUsuario: UserReq.TipoUsuario,
+          Mail: UserG.Mail,
+          Nombre: UserG.Nombre,
+          Apellido: UserG.Apellido,
+          Telefono1: UserReq.Telefono1,
+          Telefono2: UserReq.Telefono2,
+          Habilitado: "true",
+          IdSubscripcion: UserReq.IdSubscripcion
+        }
 
-        })
-        .catch((err) => {
+        UserService.addGoogleUser(UserData)
+          .then((responseAdd) => {
+            console.log("Respuesta" + responseAdd.Success)
+            if (responseAdd.Success) {
+              console.log("Id Usuario Insertado: " + responseAdd.InsertId)
+              if (UserData.TipoUsuario === ETipoUsuario.Profesor) {
+                AgregarUserSubcripcion(responseAdd.InsertId, UserData.idSubscripcion)
+                  .then((responseSubscripcion) => {
+                    if (responseSubscripcion.Success) {
+                      res.status(200).json(responseAdd);
+                    }
+                    else {
+                      LogError(googleAuth.name, responseSubscripcion.Data.message)
+                      res.status(500).json(responseSubscripcion);
+                    }
+                  });
+              }
+              else {
+                res.status(200).json(responseAdd);
+              }
+            }
+            else {
+              LogError(googleAuth.name, responseAdd.Data.message)
+              res.status(500).json(responseAdd);
+            }
+          })
+          .catch((err) => {
 
-        });
+          });
       }
     })
     .catch((err) => {
