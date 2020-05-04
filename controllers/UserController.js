@@ -215,13 +215,13 @@ export function loginUserController(req, res) {
         const result = compareSync(passIngresada, response.Data.Contrasenia, () => { });
 
         if (result) {
-          Promise.all([ObtenerTipoUsuario(response.IdUsuario), ObtenerSubcripcionDelUsuario(response.IdUsuario)])
+          Promise.all([ObtenerTipoUsuario(response.Data.ID), ObtenerSubcripcionDelUsuario(response.Data.ID)])
             .then((results) => {
               let resultTipoUsuario = results[0];
               let resultSubcripcion = results[1];
 
               response.Data.Contrasenia = undefined;
-              const jToken = sign({ result: response }, 'campeon1986', { expiresIn: "1h" })
+              const jToken = sign({ result: response }, 'campeon1986', { expiresIn: "12h" })
               res.status(200).json(
                 {
                   Success: true,

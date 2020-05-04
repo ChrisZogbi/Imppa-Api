@@ -11,7 +11,7 @@ import { checkToken } from '../auth/token_validation';
 export function assignRoutes(app) {
     app.route('/users/')
         .get(checkToken, getUsers)
-        .post(checkToken,addUser)
+        .post(addUser)
         .put(checkToken, updateUser)
         .delete(checkToken, deleteUser);
 
@@ -65,7 +65,6 @@ export function assignRoutes(app) {
 
     app.route('/clasesdistancia/')
         .get(checkToken, ClaseRoutes.getClasesDistanciaFiltro)
-
 
     app.route('/clase?:IdProfesor/')
         .get(checkToken, ClaseRoutes.getClaseByProfesor);
