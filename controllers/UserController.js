@@ -6,6 +6,8 @@ import { getSubcripcionByIdProfesor, addUserSubcripcion } from './SubscripcionCo
 import * as ClaseProfesorService from '../services/ClaseProfesorService'
 import { compareSync } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
+import { JWT_SECRET } from '../auth/passportConfiguration'
+import { ETipoUsuario } from '../enum'
 
 const ObtenerTipoUsuario = async (idUsuario) => {
   return new Promise((resolve, reject) => {
@@ -59,6 +61,16 @@ const TraerDatosUsuario = async (idUsuario, idTipoUsuario) => {
     })
 }
 
+const generateUserToken = async (UserObject) => {
+  return new Promise((resolve, reject) => {
+    resolve(sign({ result: UserObject }, JWT_SECRET, { expiresIn: "12h" }));
+  })
+    .then((result) => {
+      console.log("Respuesta de la promise: " + result);
+      return (result)
+    });
+};
+
 export async function getUsersController(req, res) {
 
   console.log(req.body);
@@ -81,38 +93,40 @@ export async function getUsersController(req, res) {
 export async function getUserByID(req, res) {
   const id = req.query.Id;
 
-  UserService.getById(id) 
+  UserService.getById(id)
     .then((response) => {
 
       if (response.Success) {
         TraerDatosUsuario(id, response.Data[0].TipoUsuario)
           .then((usuarioData) => {
-            if(usuarioData.Success) {
-            response.Data[0].Contrasenia = undefined;
-            const jToken = sign({ result: response }, 'campeon1986', { expiresIn: "12h" })
-            let Usuario = {
-              Success: true,
-              Token: jToken,
-              DataUsuario: response.Data,
-              DataTipoUsuario: usuarioData.DataTipoUsuario,
-              DataSubcripcion: usuarioData.DataSubcripcion
+            if (usuarioData.Success) {
+              response.Data[0].Contrasenia = undefined;
+              const jToken = generateUserToken(response)
+
+              sign({ result: response }, JWT_SECRET, { expiresIn: "12h" })
+              let Usuario = {
+                Success: true,
+                Token: jToken,
+                DataUsuario: response.Data,
+                DataTipoUsuario: usuarioData.DataTipoUsuario,
+                DataSubcripcion: usuarioData.DataSubcripcion
+              }
+
+              if (usuarioData.DataClasesProfesor) {
+                Usuario.DataClasesProfesor = usuarioData.DataClasesProfesor;
+              }
+
+              console.log(Usuario);
+
+              res.status(200).json(Usuario);
             }
-
-            if (usuarioData.DataClasesProfesor) {
-              Usuario.DataClasesProfesor = usuarioData.DataClasesProfesor;
+            else {
+              res.status(200).json({
+                Success: false,
+                Message: "Ha ocurrido un error en getById",
+                Data: err.message
+              });
             }
-
-            console.log(Usuario);
-
-            res.status(200).json(Usuario);
-          }
-          else{
-            res.status(200).json({
-              Success: false,
-              Message: "Ha ocurrido un error en getById",
-              Data: err.message
-            });
-          }
 
           });
       }
@@ -143,8 +157,8 @@ export async function addUserController(req, res) {
           .then((responseAdd) => {
             console.log("Respuesta" + responseAdd.Success)
             if (responseAdd.Success) {
-              console.log("Id Usuario Insetado: " + responseAdd.InsertId)
-              if (idTipoUsuario === 3) {
+              console.log("Id Usuario Insertado: " + responseAdd.InsertId)
+              if (idTipoUsuario === ETipoUsuario.Profesor) {
                 AgregarUserSubcripcion(responseAdd.InsertId, idSubscripcion)
                   .then((responseSubscripcion) => {
                     if (responseSubscripcion.Success) {
@@ -234,30 +248,38 @@ export async function loginUserController(req, res) {
   UserService.getByMail(req.body.Mail)
     .then((response) => {
       if (response.Success) {
-        console.log(`${passIngresada}    ${response.Data.Contrasenia}`)
-        const result = compareSync(passIngresada, response.Data.Contrasenia, () => { });
+        const result = compareSync(passIngresada, response.Data.Contrasenia);
 
         if (result) {
           TraerDatosUsuario(response.Data.ID, response.Data.TipoUsuario)
             .then((usuarioData) => {
 
               response.Data.Contrasenia = undefined;
-              const jToken = sign({ result: response }, 'campeon1986', { expiresIn: "12h" })
-              let Usuario = {
-                Success: true,
-                Token: jToken,
-                DataUsuario: response.Data,
-                DataTipoUsuario: usuarioData.DataTipoUsuario,
-                DataSubcripcion: usuarioData.DataSubcripcion
-              }
 
-              if (usuarioData.DataClasesProfesor) {
-                Usuario.DataClasesProfesor = usuarioData.DataClasesProfesor;
-              }
+              generateUserToken()
+                .then(() => {
+                  const jToken = sign({ result: response }, JWT_SECRET, { expiresIn: "12h" })
+                  let Usuario = {
+                    Success: true,
+                    Token: jToken,
+                    DataUsuario: response.Data,
+                    DataTipoUsuario: usuarioData.DataTipoUsuario,
+                    DataSubcripcion: usuarioData.DataSubcripcion
+                  }
 
-              console.log(Usuario);
+                  if (usuarioData.DataClasesProfesor) {
+                    Usuario.DataClasesProfesor = usuarioData.DataClasesProfesor;
+                  }
 
-              res.status(200).json(Usuario);
+                  console.log(Usuario);
+
+                  res.status(200).json(Usuario);
+                })
+                .catch((err) => {
+                  console.log(err);
+                  LogError('generateUserToken', err);
+                  res.status(200).json({ Success: true, Message: "Error en generateUserToken", Data: err.message });
+                })
             })
         }
         else {
@@ -279,5 +301,85 @@ export async function loginUserController(req, res) {
     .catch((err) => {
       console.log(err);
       LogError(loginUserController.name, response.Data.message)
+    });
+}
+
+export function googleAuth(UserG, req, res) {
+  const UserReq = req.body;
+
+  UserService.getByIdGoogle(UserG.idGoogle)
+    .then((response) => {
+      //Si devuelve true es que el usuario existe hace el login.
+      if (response.Success) {
+        Promise.all([ObtenerTipoUsuario(response.IdUsuario), ObtenerSubcripcionDelUsuario(response.IdUsuario)])
+          .then((results) => {
+            let resultTipoUsuario = results[0];
+            let resultSubcripcion = results[1];
+            generateUserToken(response)
+              .then((jToken) => {
+                res.status(200).json(
+                  {
+                    Success: true,
+                    Token: jToken,
+                    DataUsuario: response.Data,
+                    DataTipoUsuario: resultTipoUsuario.Data,
+                    DataSubcripcion: resultSubcripcion.Data
+                  }
+                );
+              })
+              .catch((err) => {
+                console.log(err);
+                LogError('generateUserToken', err);
+              });
+          })
+      }
+      //Sino lo crea
+      else {
+        let UserData = {
+          idGoogle: UserG.idGoogle,
+          TipoUsuario: UserReq.TipoUsuario,
+          Mail: UserG.Mail,
+          Nombre: UserG.Nombre,
+          Apellido: UserG.Apellido,
+          Telefono1: UserReq.Telefono1,
+          Telefono2: UserReq.Telefono2,
+          Habilitado: "true",
+          IdSubscripcion: UserReq.IdSubscripcion
+        }
+
+        UserService.addGoogleUser(UserData)
+          .then((responseAdd) => {
+            console.log("Respuesta" + responseAdd.Success)
+            if (responseAdd.Success) {
+              console.log("Id Usuario Insertado: " + responseAdd.InsertId)
+              if (UserData.TipoUsuario === ETipoUsuario.Profesor) {
+                AgregarUserSubcripcion(responseAdd.InsertId, UserData.idSubscripcion)
+                  .then((responseSubscripcion) => {
+                    if (responseSubscripcion.Success) {
+                      res.status(200).json(responseAdd);
+                    }
+                    else {
+                      LogError(googleAuth.name, responseSubscripcion.Data.message)
+                      res.status(500).json(responseSubscripcion);
+                    }
+                  });
+              }
+              else {
+                res.status(200).json(responseAdd);
+              }
+            }
+            else {
+              LogError(googleAuth.name, responseAdd.Data.message)
+              res.status(500).json(responseAdd);
+            }
+          })
+          .catch((err) => {
+            res.status(200).json({ Success: true, Message: "Ya existe un usuario registrado con el mismo Mail", Data: err.message });
+          });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      LogError(googleAuth.name, response.Data.message)
     });
 }

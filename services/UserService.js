@@ -138,3 +138,38 @@ export function remove(req) {
         .then(() => { return ({ Success: true }); })
         .catch((err) => { return ({ Success: false, Data: err, Query: query }) });
 }
+
+export function getByIdGoogle(idGoogle)
+{
+    var query = `select * FROM usuarios WHERE idgoogle = ${idGoogle}`;
+
+    return pool.promise().query(query)
+        .then(([rows]) => { return ({ Success: true, Data: rows }); })
+        .catch((err) => { return ({ Success: false, Data: err }) });
+}
+
+export function addGoogleUser(UserData)
+{
+    var today = new Date();
+    var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+    UserData.AddedDate = UserData.LastLogin = date;
+
+    var query = `INSERT INTO usuarios
+    (TipoUsuario, Mail, Contrasenia, AddedDate, LastLogin, Nombre, Apellido, Telefono1, Telefono2, Habilitado)
+    VALUES
+    (${UserData.TipoUsuario},
+    '${UserData.Mail}',
+    '${UserData.AddedDate}',
+    '${UserData.LastLogin}',
+    '${UserData.Nombre}',
+    '${UserData.Apellido}',
+    '${UserData.Telefono1}',
+    '${UserData.Telefono2}',
+    ${UserData.Habilitado},
+    ${UserData.idGoogle});`
+
+    console.log(query);
+    return pool.promise().query(query)
+        .then(([result]) => { return ({ Success: true, InsertId: result.insertId }); })
+        .catch((err) => { return ({ Success: false, Data: err }) });
+}

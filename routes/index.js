@@ -1,14 +1,14 @@
-import { getUsers, getUser, addUser, updateUser, deleteUser, loginUser, cambiarContrasenia } from './userRoutes'
+import { getUsers, getUser, addUser, updateUser, deleteUser, loginUser, cambiarContrasenia, loginGoogle } from './userRoutes'
 import { getTipoUsuario, addTipoUsuario, updateTipoUsuario, deleteTipoUsuario } from './tipoUsuarioRoutes'
 import { getTipoClase, addTipoClase, updateTipoClase, deleteTipoClase } from './tipoClaseRoutes'
 import { getSubscipcion, addSubscipcion, updateSubscipcion, deleteSubscipcion } from './subscripcionRoutes'
 import { getComentario, addComentario, updateComentario, deleteComentario } from './comentarioRoutes'
 import { getCategoriaClase, addCategoriaClase, updateCategoriaClase, deleteCategoriaClase } from './categoriaClaseRoutes'
 import * as ClaseRoutes from './claseRoutes';
-import * as ClaseController from './categoriaClaseRoutes';
 import { checkToken } from '../auth/token_validation';
 
-export function assignRoutes(app) {
+
+module.exports = function (app, passport) {
     app.route('/users/')
         .get(checkToken, getUsers)
         .post(addUser)
@@ -20,6 +20,24 @@ export function assignRoutes(app) {
 
     app.route('/login/')
         .post(loginUser);
+
+    // app.get('/auth/google/',
+    //     passport.authenticate('google', { scope: ['profile'] }));
+
+    // // GET /auth/google/callback
+    // //   Use passport.authenticate() as route middleware to authenticate the
+    // //   request.  If authentication fails, the user will be redirected back to the
+    // //   login page.  Otherwise, the primary route function function will be called,
+    // //   which, in this example, will redirect the user to the home page.
+    // app.get('/auth/google/callback/',
+    //     passport.authenticate('google', { failureRedirect: '/login' }),
+    //     loginGoogle);
+
+    app.route('/login/oauth/google/')
+        .post((req, res, next) => {
+            passport.authenticate('googleToken', (err, user, info) => {
+            loginGoogle(user, req, res);
+        })(req, res, next)});
 
     app.route('/cambioContrasenia/')
         .put(checkToken, cambiarContrasenia);
