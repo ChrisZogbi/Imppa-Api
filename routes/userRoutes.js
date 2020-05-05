@@ -9,7 +9,7 @@ export async function getUsers(req, res) {
 export async function getUser(req, res)
 {
     console.log('Llego a getUserByID')
-    return(getUserByID(req.query.Id, res))
+    return(getUserByID(req, res))
 }
 
 export async function addUser(req, res) {

@@ -1,9 +1,8 @@
 import app from "../app.js";
 import { pool } from "./index";
 
-export function getClaseByIdUsuarioService(req, res) {
-    var idUsuario = req.query.IdProfesor
-
+export function getClaseByIdUsuarioService(idUsuario) {
+    
     var query = `select cp.*, dc.Lunes, dc.Martes, dc.Miercoles, dc.Jueves, dc.Viernes, dc.Sabado, dc.Domingo from ClaseProfesor as cp
                     join ClaseXUsuario on cp.ID = ClaseXUsuario.IDClaseProfesor
                     join diasxclase as dc on cp.ID = dc.IDClaseProfesor

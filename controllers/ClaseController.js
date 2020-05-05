@@ -31,7 +31,7 @@ export function getClasesByID(req) {
 }
 
 export function getClasesByProfesor(req, res) {
-    ClaseProfesorService.getClaseByIdUsuarioService(req)
+    ClaseProfesorService.getClaseByIdUsuarioService(req.query.IdProfesor)
         .then(response => {
             if (response.Success) {
                 res.status(200).json(response)

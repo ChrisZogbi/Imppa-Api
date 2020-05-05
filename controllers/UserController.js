@@ -3,6 +3,7 @@ import * as UserService from '../services/UserService';
 import * as TipoUsuarioController from './TipoUsuarioController';
 import { LogError } from './ErrorLogController';
 import { getSubcripcionByIdProfesor, addUserSubcripcion } from './SubscripcionController'
+import * as ClaseProfesorService from '../services/ClaseProfesorService'
 import { compareSync } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 
@@ -36,6 +37,28 @@ const AgregarUserSubcripcion = async (idUsuario, idSubscripcion) => {
     });
 };
 
+const TraerDatosUsuario = async (idUsuario, idTipoUsuario) => {
+  return Promise.all([ObtenerTipoUsuario(idUsuario), ObtenerSubcripcionDelUsuario(idUsuario), ClaseProfesorService.getClaseByIdUsuarioService(idUsuario)])
+    .then((results) => {
+      let resultTipoUsuario = results[0];
+      let resultSubcripcion = results[1];
+      let resultClaseProfesor = results[2];
+
+      let UsuarioDatos = {
+        Success: true,
+        //DataUsuario: response.Data,
+        DataTipoUsuario: resultTipoUsuario.Data,
+        DataSubcripcion: resultSubcripcion.Data
+      }
+
+      if (idTipoUsuario == 3) {
+        UsuarioDatos.DataClasesProfesor = resultClaseProfesor.Data;
+      }
+
+      return UsuarioDatos;
+    })
+}
+
 export async function getUsersController(req, res) {
 
   console.log(req.body);
@@ -55,53 +78,53 @@ export async function getUsersController(req, res) {
     });
 }
 
-export async function getUserByID(id, res) {
-  Promise.all([UserService.getById(id), ObtenerTipoUsuario(id), ObtenerSubcripcionDelUsuario(id)])
-    .then((results) => {
-      let resultUsuario = results[0];
-      let resultTipoUsuario = results[1];
-      let resultSubcripcion = results[2];
+export async function getUserByID(req, res) {
+  const id = req.query.Id;
 
-      if (resultUsuario.Success && resultTipoUsuario.Success && resultSubcripcion.Success) {
-        console.log("Todo OK")
-        res.status(200).json({
-          Success: true,
-          DataUsuario: resultUsuario.Data,
-          DataTipoUsuario: resultTipoUsuario.Data,
-          DataSubcripcion: resultSubcripcion.Data
-        });
-      }
-      else {
-        let errorUsuario;
-        let errorTipoUsuario;
-        let errorSubcripcion;
-        console.log("Error");
+  UserService.getById(id) 
+    .then((response) => {
 
-        if (!resultUsuario.Success) {
-          errorUsuario = resultUsuario.Data.message;
-          LogError(getUserByID.name, resultUsuario.Data.message);
-        }
+      if (response.Success) {
+        TraerDatosUsuario(id, response.Data[0].TipoUsuario)
+          .then((usuarioData) => {
+            if(usuarioData.Success) {
+            response.Data[0].Contrasenia = undefined;
+            const jToken = sign({ result: response }, 'campeon1986', { expiresIn: "12h" })
+            let Usuario = {
+              Success: true,
+              Token: jToken,
+              DataUsuario: response.Data,
+              DataTipoUsuario: usuarioData.DataTipoUsuario,
+              DataSubcripcion: usuarioData.DataSubcripcion
+            }
 
-        if (!resultTipoUsuario.Success) {
-          errorTipoUsuario = resultTipoUsuario.Data.message;
-          LogError("Consulta TipoUsuario", resultTipoUsuario.Data.message);
-        }
+            if (usuarioData.DataClasesProfesor) {
+              Usuario.DataClasesProfesor = usuarioData.DataClasesProfesor;
+            }
 
-        if (!resultSubcripcion.Success) {
-          errorSubcripcion = resultSubcripcion.Data.message;
-          LogError("Consulta Subcripcion", resultSubcripcion.Data.message);
-        }
+            console.log(Usuario);
 
-        res.status(500).json({
-          ErrorUsuario: errorUsuario,
-          ErrorTipoUsuario: errorTipoUsuario,
-          ErrorSubcripcion: errorSubcripcion
-        });
+            res.status(200).json(Usuario);
+          }
+          else{
+            res.status(200).json({
+              Success: false,
+              Message: "Ha ocurrido un error en getById",
+              Data: err.message
+            });
+          }
+
+          });
       }
     })
     .catch((err) => {
       LogError(getUserByID.name, err)
-      console.log(err)
+      console.log(err);
+      res.status(200).json({
+        Success: false,
+        Message: "Ha ocurrido un error",
+        Data: err.message
+      });
     });
 }
 
@@ -205,7 +228,7 @@ export function deleteUserController(req, res) {
     });
 }
 
-export function loginUserController(req, res) {
+export async function loginUserController(req, res) {
   let passIngresada = req.body.Contrasenia;
 
   UserService.getByMail(req.body.Mail)
@@ -215,22 +238,26 @@ export function loginUserController(req, res) {
         const result = compareSync(passIngresada, response.Data.Contrasenia, () => { });
 
         if (result) {
-          Promise.all([ObtenerTipoUsuario(response.Data.ID), ObtenerSubcripcionDelUsuario(response.Data.ID)])
-            .then((results) => {
-              let resultTipoUsuario = results[0];
-              let resultSubcripcion = results[1];
+          TraerDatosUsuario(response.Data.ID, response.Data.TipoUsuario)
+            .then((usuarioData) => {
 
               response.Data.Contrasenia = undefined;
               const jToken = sign({ result: response }, 'campeon1986', { expiresIn: "12h" })
-              res.status(200).json(
-                {
-                  Success: true,
-                  Token: jToken,
-                  DataUsuario: response.Data,
-                  DataTipoUsuario: resultTipoUsuario.Data,
-                  DataSubcripcion: resultSubcripcion.Data
-                }
-              );
+              let Usuario = {
+                Success: true,
+                Token: jToken,
+                DataUsuario: response.Data,
+                DataTipoUsuario: usuarioData.DataTipoUsuario,
+                DataSubcripcion: usuarioData.DataSubcripcion
+              }
+
+              if (usuarioData.DataClasesProfesor) {
+                Usuario.DataClasesProfesor = usuarioData.DataClasesProfesor;
+              }
+
+              console.log(Usuario);
+
+              res.status(200).json(Usuario);
             })
         }
         else {
