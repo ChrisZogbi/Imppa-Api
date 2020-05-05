@@ -104,16 +104,6 @@ export function addClaseProfesorService(req, res) {
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
-function addDiasClase(idClase, ClaseProfesor) {
-    var query = `INSERT INTO diasxclase
-                            (IDClaseProfesor,Lunes,Martes,Miercoles,Jueves,Viernes,Sabado,Domingo)
-                            VALUES
-                            (${idClase},${ClaseProfesor.Lunes},${ClaseProfesor.Martes},${ClaseProfesor.Miercoles},${ClaseProfesor.Jueves},${ClaseProfesor.Viernes},${ClaseProfesor.Sabado},${ClaseProfesor.Domingo})`
-    return pool.promise().query(query)
-        .then(() => { return ({ Success: true }) })
-        .catch((err) => { return ({ Success: false, Data: err }) });
-}
-
 export function updateClaseProfesorService(req, res) {
     var ClaseProfesorData = req.body;
 
@@ -140,7 +130,7 @@ export function deleteClaseProfesorService(req, res) {
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
-export function DeshabilitarClase(req){
+export function DeshabilitarClase(req) {
     var idClaseProfesor = req.query.IdClaseProfesor;
 
     var query = `UPDATE claseprofesor
@@ -152,7 +142,7 @@ export function DeshabilitarClase(req){
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
-export function HabilitarClase(req){
+export function HabilitarClase(req) {
     var idClaseProfesor = req.query.IdClaseProfesor;
 
     console.log(req.query.IdClaseProfesor)
@@ -160,8 +150,19 @@ export function HabilitarClase(req){
     var query = `UPDATE claseprofesor
                     SET Hablitada = true
                 WHERE ID = ${idClaseProfesor}`;
-    
+
     console.log(query);
+
+    return pool.promise().query(query)
+        .then(() => { return ({ Success: true }) })
+        .catch((err) => { return ({ Success: false, Data: err }) });
+}
+
+function addDiasClase(idClase, ClaseProfesor) {
+    var query = `INSERT INTO diasxclase
+                (IDClaseProfesor,Lunes,Martes,Miercoles,Jueves,Viernes,Sabado,Domingo)
+                VALUES
+                (${idClase},${ClaseProfesor.Lunes},${ClaseProfesor.Martes},${ClaseProfesor.Miercoles},${ClaseProfesor.Jueves},${ClaseProfesor.Viernes},${ClaseProfesor.Sabado},${ClaseProfesor.Domingo})`
 
     return pool.promise().query(query)
         .then(() => { return ({ Success: true }) })

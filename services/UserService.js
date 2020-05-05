@@ -141,8 +141,6 @@ export function remove(req) {
 
 export function getByIdGoogle(idGoogle)
 {
-    var UserId = req.body.ID;
-
     var query = `select * FROM usuarios WHERE idgoogle = ${idGoogle}`;
 
     return pool.promise().query(query)

@@ -275,7 +275,7 @@ export function loginUserController(req, res) {
 export function googleAuth(UserG, req, res) {
   const UserReq = req.body;
 
-  UserService.getByIdGoogle(user.idGoogle)
+  UserService.getByIdGoogle(UserG.idGoogle)
     .then((response) => {
       //Si devuelve true es que el usuario existe hace el login.
       if (response.Success) {
@@ -304,7 +304,7 @@ export function googleAuth(UserG, req, res) {
       //Sino lo crea
       else {
         let UserData = {
-          idGoogle = UserG.idGoogle,
+          idGoogle : UserG.idGoogle,
           TipoUsuario: UserReq.TipoUsuario,
           Mail: UserG.Mail,
           Nombre: UserG.Nombre,
