@@ -48,12 +48,11 @@ const TraerDatosUsuario = async (idUsuario, idTipoUsuario) => {
 
       let UsuarioDatos = {
         Success: true,
-        //DataUsuario: response.Data,
         DataTipoUsuario: resultTipoUsuario.Data,
         DataSubcripcion: resultSubcripcion.Data
       }
 
-      if (idTipoUsuario == 3) {
+      if (idTipoUsuario === ETipoUsuario.Profesor) {
         UsuarioDatos.DataClasesProfesor = resultClaseProfesor.Data;
       }
 
@@ -101,12 +100,8 @@ export async function getUserByID(req, res) {
           .then((usuarioData) => {
             if (usuarioData.Success) {
               response.Data[0].Contrasenia = undefined;
-              const jToken = generateUserToken(response)
-
-              sign({ result: response }, JWT_SECRET, { expiresIn: "12h" })
               let Usuario = {
                 Success: true,
-                Token: jToken,
                 DataUsuario: response.Data,
                 DataTipoUsuario: usuarioData.DataTipoUsuario,
                 DataSubcripcion: usuarioData.DataSubcripcion
@@ -256,9 +251,8 @@ export async function loginUserController(req, res) {
 
               response.Data.Contrasenia = undefined;
 
-              generateUserToken()
-                .then(() => {
-                  const jToken = sign({ result: response }, JWT_SECRET, { expiresIn: "12h" })
+              generateUserToken(response.Data)
+                .then((jToken) => {
                   let Usuario = {
                     Success: true,
                     Token: jToken,
@@ -315,7 +309,7 @@ export function googleAuth(UserG, req, res) {
           .then((results) => {
             let resultTipoUsuario = results[0];
             let resultSubcripcion = results[1];
-            generateUserToken(response)
+            generateUserToken(response.Data)
               .then((jToken) => {
                 res.status(200).json(
                   {

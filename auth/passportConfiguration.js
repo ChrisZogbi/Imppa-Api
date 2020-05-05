@@ -1,5 +1,5 @@
 module.exports = {
-    JWT_SECRET: 'Immpa2020',
+    JWT_SECRET: 'Imppa2020',
     oauth: {
       google: {
         clientID: '1019027372677-87ct1ori6curodj4cm6ktgthifo8ul23.apps.googleusercontent.com',
