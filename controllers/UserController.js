@@ -8,13 +8,13 @@ import { compareSync } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import { JWT_SECRET } from '../auth/passportConfiguration'
 import { ETipoUsuario } from '../enum'
+import { NText } from 'mssql';
 
 const ObtenerTipoUsuario = async (idUsuario) => {
   return new Promise((resolve, reject) => {
     resolve(TipoUsuarioController.getTipoUsuarioByIdUsuario(idUsuario));
   })
     .then((result) => {
-      console.log("Respuesta de la promise: " + result);
       return (result)
     });
 };
@@ -24,7 +24,6 @@ const ObtenerSubcripcionDelUsuario = async (id) => {
     resolve(getSubcripcionByIdProfesor(id));
   })
     .then((result) => {
-      console.log("Respuesta de la promise: " + result);
       return (result)
     });
 };
@@ -34,7 +33,6 @@ const AgregarUserSubcripcion = async (idUsuario, idSubscripcion) => {
     resolve(addUserSubcripcion(idUsuario, idSubscripcion));
   })
     .then((result) => {
-      console.log("Respuesta de la promise: " + result);
       return (result)
     });
 };
@@ -65,7 +63,6 @@ const generateUserToken = async (UserObject) => {
     resolve(sign({ result: UserObject }, JWT_SECRET, { expiresIn: "12h" }));
   })
     .then((result) => {
-      console.log("Respuesta de la promise: " + result);
       return (result)
     });
 };
@@ -111,9 +108,18 @@ export async function getUserByID(req, res) {
                 Usuario.DataClasesProfesor = usuarioData.DataClasesProfesor;
               }
 
-              console.log(Usuario);
-
-              res.status(200).json(Usuario);
+              console.log("Pide token" + req.query.needToken);
+              if (req.query.needToken) {
+                generateUserToken(response.Data[0])
+                  .then((jToken) => {
+                    Usuario['Token'] = jToken;
+                    res.status(200).json(Usuario);
+                  })
+              }
+              else
+              {
+                res.status(200).json(Usuario);
+              }
             }
             else {
               res.status(200).json({
@@ -138,8 +144,8 @@ export async function getUserByID(req, res) {
 }
 
 export async function addUserController(req, res) {
-  const idSubscripcion = req.body.IdSubscripcion
-  const idTipoUsuario = req.body.TipoUsuario
+  const idSubscripcion = req.body.IdSubscripcion;
+  const idTipoUsuario = req.body.TipoUsuario;
 
   UserService.getByMail(req.body.Mail)
     .then((response) => {
@@ -151,28 +157,24 @@ export async function addUserController(req, res) {
         UserService.add(req.body)
           .then((responseAdd) => {
             console.log("Respuesta" + responseAdd.Success)
-            if (responseAdd.Success) {
-              console.log("Id Usuario Insertado: " + responseAdd.InsertId)
+            if (responseAdd.Success && responseAdd.InsertId) {
               if (idTipoUsuario === ETipoUsuario.Profesor) {
                 AgregarUserSubcripcion(responseAdd.InsertId, idSubscripcion)
                   .then((responseSubscripcion) => {
-                    if (responseSubscripcion.Success) {
-                      res.status(200).json(responseAdd);
-                    }
-                    else {
+                    if (!responseSubscripcion.Success) {
                       LogError(addUserController.name, responseSubscripcion.Data.message)
                       res.status(500).json(responseSubscripcion);
                     }
                   });
-              }
-              else {
-                res.status(200).json(responseAdd);
               }
             }
             else {
               LogError(addUserController.name, responseAdd.Data.message)
               res.status(500).json(responseAdd);
             }
+
+            let idUsuarioInsertado = { query: { Id: responseAdd.InsertId, needToken: true } }
+            getUserByID(idUsuarioInsertado, res)
           })
           .catch((err) => {
             console.log(err);
@@ -306,24 +308,24 @@ export function googleAuth(req, res) {
       //Si devuelve true es que el usuario existe hace el login.
       if (response.Success) {
         TraerDatosUsuario(response.Data[0].ID, response.Data[0].TipoUsuario)
-        .then((usuarioData) => {
-          generateUserToken(response.Data[0])
-          .then((jToken) => {
-            res.status(200).json(
-              {
-                Success: true,
-                Token: jToken,
-                DataUsuario: response.Data,
-                DataTipoUsuario: usuarioData.DataTipoUsuario,
-                DataSubcripcion: usuarioData.DataSubcripcion
-              }
-            );
+          .then((usuarioData) => {
+            generateUserToken(response.Data[0])
+              .then((jToken) => {
+                res.status(200).json(
+                  {
+                    Success: true,
+                    Token: jToken,
+                    DataUsuario: response.Data,
+                    DataTipoUsuario: usuarioData.DataTipoUsuario,
+                    DataSubcripcion: usuarioData.DataSubcripcion
+                  }
+                );
+              })
+              .catch((err) => {
+                console.log(err);
+                LogError('generateUserToken', err);
+              });
           })
-          .catch((err) => {
-            console.log(err);
-            LogError('generateUserToken', err);
-          });
-        })
       }
       //Sino lo crea
       else {
