@@ -298,43 +298,41 @@ export async function loginUserController(req, res) {
     });
 }
 
-export function googleAuth(UserG, req, res) {
+export function googleAuth(req, res) {
   const UserReq = req.body;
 
-  UserService.getByIdGoogle(UserG.idGoogle)
+  UserService.getByIdGoogle(UserReq.idGoogle)
     .then((response) => {
       //Si devuelve true es que el usuario existe hace el login.
       if (response.Success) {
-        Promise.all([ObtenerTipoUsuario(response.IdUsuario), ObtenerSubcripcionDelUsuario(response.IdUsuario)])
-          .then((results) => {
-            let resultTipoUsuario = results[0];
-            let resultSubcripcion = results[1];
-            generateUserToken(response.Data)
-              .then((jToken) => {
-                res.status(200).json(
-                  {
-                    Success: true,
-                    Token: jToken,
-                    DataUsuario: response.Data,
-                    DataTipoUsuario: resultTipoUsuario.Data,
-                    DataSubcripcion: resultSubcripcion.Data
-                  }
-                );
-              })
-              .catch((err) => {
-                console.log(err);
-                LogError('generateUserToken', err);
-              });
+        TraerDatosUsuario(response.Data[0].ID, response.Data[0].TipoUsuario)
+        .then((usuarioData) => {
+          generateUserToken(response.Data[0])
+          .then((jToken) => {
+            res.status(200).json(
+              {
+                Success: true,
+                Token: jToken,
+                DataUsuario: response.Data,
+                DataTipoUsuario: usuarioData.DataTipoUsuario,
+                DataSubcripcion: usuarioData.DataSubcripcion
+              }
+            );
           })
+          .catch((err) => {
+            console.log(err);
+            LogError('generateUserToken', err);
+          });
+        })
       }
       //Sino lo crea
       else {
         let UserData = {
-          idGoogle: UserG.idGoogle,
+          idGoogle: UserReq.idGoogle,
           TipoUsuario: UserReq.TipoUsuario,
-          Mail: UserG.Mail,
-          Nombre: UserG.Nombre,
-          Apellido: UserG.Apellido,
+          Mail: UserReq.Mail,
+          Nombre: UserReq.Nombre,
+          Apellido: UserReq.Apellido,
           Telefono1: UserReq.Telefono1,
           Telefono2: UserReq.Telefono2,
           Habilitado: "true",
@@ -347,7 +345,8 @@ export function googleAuth(UserG, req, res) {
             if (responseAdd.Success) {
               console.log("Id Usuario Insertado: " + responseAdd.InsertId)
               if (UserData.TipoUsuario === ETipoUsuario.Profesor) {
-                AgregarUserSubcripcion(responseAdd.InsertId, UserData.idSubscripcion)
+                console.log("Entro a la subscripcion: " + responseAdd.InsertId)
+                AgregarUserSubcripcion(responseAdd.InsertId, UserData.IdSubscripcion)
                   .then((responseSubscripcion) => {
                     if (responseSubscripcion.Success) {
                       res.status(200).json(responseAdd);

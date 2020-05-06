@@ -34,10 +34,11 @@ module.exports = function (app, passport) {
     //     loginGoogle);
 
     app.route('/login/oauth/google/')
-        .post((req, res, next) => {
-            passport.authenticate('googleToken', (err, user, info) => {
-            loginGoogle(user, req, res);
-        })(req, res, next)});
+    .post(loginGoogle)
+        // .post((req, res, next) => {
+        //     passport.authenticate('googleToken', (err, user, info) => {
+        //     loginGoogle(user, req, res);
+        // })(req, res, next)});
 
     app.route('/cambioContrasenia/')
         .put(checkToken, cambiarContrasenia);

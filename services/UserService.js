@@ -141,10 +141,10 @@ export function remove(req) {
 
 export function getByIdGoogle(idGoogle)
 {
-    var query = `select * FROM usuarios WHERE idgoogle = ${idGoogle}`;
+    var query = `select * FROM usuarios WHERE Id_Google = ${idGoogle}`;
 
     return pool.promise().query(query)
-        .then(([rows]) => { return ({ Success: true, Data: rows }); })
+        .then(([rows]) => { return ({ Success: rows.length > 0 ? true : false, Data: rows }); })
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
@@ -155,7 +155,7 @@ export function addGoogleUser(UserData)
     UserData.AddedDate = UserData.LastLogin = date;
 
     var query = `INSERT INTO usuarios
-    (TipoUsuario, Mail, Contrasenia, AddedDate, LastLogin, Nombre, Apellido, Telefono1, Telefono2, Habilitado)
+    (TipoUsuario, Mail, AddedDate, LastLogin, Nombre, Apellido, Telefono1, Telefono2, Habilitado, Id_Google)
     VALUES
     (${UserData.TipoUsuario},
     '${UserData.Mail}',
