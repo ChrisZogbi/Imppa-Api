@@ -48,9 +48,9 @@ export function getClasesByProfesor(req, res) {
         });
 }
 
-export function getClasesByFilter(req, res) {
+export function getClasesDistancia(req, res) {
     console.log('Llego al controller man');
-    ClaseProfesorService.getClaseByFilter(req)
+    ClaseProfesorService.getClaseDistancia(req.body)
         .then(response => {
             if (response.Success) {
                 res.status(200).json(response)
@@ -99,14 +99,14 @@ export async function addClase(req, res) {
                         else {
                             LogError(addClase.name, responseClasexUsuario.Data.message);
                             console.log("Error en Clase X Usuario");
-                            res.status(500).json(responseClasexUsuario);
+                            res.status(200).json(responseClasexUsuario);
                         }
 
                     });
             }
             else {
                 LogError(addClase.name, response.Data.message);
-                res.status(500).json(response);
+                res.status(200).json(response);
             }
         })
         .catch((err) => {

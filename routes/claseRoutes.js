@@ -5,7 +5,7 @@ export async function getClaseByProfesor(req, res) {
 }
 
 export async function getClasesDistanciaFiltro(req, res) {
-    return (ClaseController.getClasesByFilter(req, res));
+    return (ClaseController.getClasesDistancia(req, res));
 }
 
 export async function addClase(req, res) {

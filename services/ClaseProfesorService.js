@@ -1,5 +1,6 @@
 import app from "../app.js";
 import { pool } from "./index";
+import {ETipoClase} from '../enum'
 
 export function getClaseByIdUsuarioService(idUsuario) {
 
@@ -31,14 +32,13 @@ export function getClaseByIDService(req, res) {
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
-export function getClaseByFilter(req) {
-    const claseFilter = req.body;
-
+export function getClaseDistancia(claseFilter) {
     let query =
         `select cp.* from claseprofesor as cp join diasxclase dc on cp.ID = dc.IDClaseProfesor
         where 
-        cp.IDTipoClase = 1 `
+        cp.IDTipoClase = ${ETipoClase.ADistancia} `
 
+    console.log("Filtra Categoria: " + claseFilter.FiltraCategoria);    
     if (claseFilter.FiltraCategoria) {
         query = query + `AND cp.IDCategoriaClase = ${claseFilter.IdCategoria} `
     }
@@ -74,7 +74,7 @@ export function getClaseByUbicacion(req) {
                     join usuarios as u on cu.IDUsuario = u.ID
                     join diasxclase as dc on cp.ID = dc.IDClaseProfesor
                     join categoriaclase as cc on cc.ID = cp.IDCategoriaClase
-         where IDTipoClase = 2 
+         where IDTipoClase = ${ETipoClase.Presencial} 
          and (latitud < ${bordeSuperior} AND latitud > ${bordeInferior})
          and ( longitud < ${bordeDerecho} AND  longitud> ${bordeIzquierdo})`
 
