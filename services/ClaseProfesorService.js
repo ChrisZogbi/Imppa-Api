@@ -1,6 +1,6 @@
 import app from "../app.js";
 import { pool } from "./index";
-import {ETipoClase} from '../enum'
+import { ETipoClase } from '../enum'
 
 export function getClaseByIdUsuarioService(idUsuario) {
 
@@ -38,7 +38,6 @@ export function getClaseDistancia(claseFilter) {
         where 
         cp.IDTipoClase = ${ETipoClase.ADistancia} `
 
-    console.log("Filtra Categoria: " + claseFilter.FiltraCategoria);    
     if (claseFilter.FiltraCategoria) {
         query = query + `AND cp.IDCategoriaClase = ${claseFilter.IdCategoria} `
     }
@@ -105,6 +104,7 @@ export function addClaseProfesorService(req, res) {
 
 export async function updateClase(ClaseData) {
     return new Promise((resolve, reject) => {
+
         console.log("Empezo la promise en el service");
         pool.getConnection(function (err, connection) {
             connection.beginTransaction(function (err) {
@@ -117,93 +117,63 @@ export async function updateClase(ClaseData) {
                     });
                 }
                 else {
-                    Promise.all(
-                        [
-                            updateClaseProfesorService(ClaseData),
-                            updateDiasXClase(
-                                ClaseData.IdClase,
-                                {
-                                    Lunes: ClaseData.Lunes,
-                                    Martes: ClaseData.Martes,
-                                    Miercoles: ClaseData.Miercoles,
-                                    Jueves: ClaseData.Jueves,
-                                    Viernes: ClaseData.Viernes,
-                                    Sabado: ClaseData.Sabado,
-                                    Domingo: ClaseData.Domingo
-                                }
-                            )
-                        ])
-                        .then((results) => {
-                            let resultClaseProfesor = results[0];
-                            let resultDiasXClase = results[1];
-                            console.log("Paso por ambos updates");
-                            console.log("ResultClaseProfesor " + resultClaseProfesor.Success);
-                            console.log("resultDiasXClase " + resultDiasXClase.Success);
+                    let queryUpdateClaseProfesor =
+                        `UPDATE claseprofesor
+                            SET 
+                            IDCategoriaClase = ${ClaseData.IdCategoriaClase}
+                            ,IDTipoClase = ${ClaseData.IdTipoClase}
+                            ,Precio = '${ClaseData.Precio}'
+                            ,Latitud = '${ClaseData.Latitud}'
+                            ,Longitud = '${ClaseData.Longitud}'
+                        WHERE ID = ${ClaseData.IdClase}`;
 
-                            if (resultClaseProfesor.Success && resultDiasXClase.Success) {
+                    connection.query(queryUpdateClaseProfesor, function (err, results) {
+                        if (err) {          //Query Error (Rollback and release connection)
+                            connection.rollback(function () {
+                                connection.release();
+                                resolve({ Success: false, Data: err });
+                                //Failure
+                            });
+                        }
+                        let queryUpdateDiasClase =
+                            `UPDATE diasxclase
+                                    SET Lunes = ${ClaseData.Lunes}
+                                    ,Martes = ${ClaseData.Martes}
+                                    ,Miercoles = ${ClaseData.Miercoles}
+                                    ,Jueves = ${ClaseData.Jueves}
+                                    ,Viernes = ${ClaseData.Viernes}
+                                    ,Sabado = ${ClaseData.Sabado}
+                                    ,Domingo = ${ClaseData.Domingo}
+                                WHERE IDClaseProfesor = ${ClaseData.IdClase}`;
 
-                                console.log("Piola mono");
-                                connection.commit(function (err) {
-                                    if (err) {
-                                        connection.rollback(function () {
-                                            connection.release();
-                                            resolve({ Success: false, Data: err });
-                                        });
-                                    }
-                                    else {
-                                        connection.release();
-                                        resolve({ Success: true });
-                                    }
-                                })
-
-
-                            }
-                            else {
-                                console.log("Falla en algun update");
+                        connection.query(queryUpdateDiasClase, function (err, results) {
+                            if (err) {          //Query Error (Rollback and release connection)
                                 connection.rollback(function () {
                                     connection.release();
+                                    resolve({ Success: false, Data: err });
                                     //Failure
-                                    resolve({ Success: false, Data: resultClaseProfesor.Data ? resultClaseProfesor.Data : resultDiasXClase.Data });
                                 });
-                            };
-                        })
+                            }
+                            connection.commit(function (err) {
+                                if (err) {
+                                    connection.rollback(function () {
+                                        connection.release();
+                                        resolve({ Success: false, Data: err });
+                                        //Failure
+                                    });
+                                } else {
+                                    connection.release();
+                                    //Success
+                                    resolve({ Success: true });
+                                }
+                            });
+                        });
+                    });
                 }
             })
         });
     })
         .then((result) => { return (result) });
-}
-
-function updateClaseProfesorService(ClaseProfesorData) {
-
-    var query = `UPDATE claseprofesor
-                    SET 
-                    IDCategoriaClase = ${ClaseProfesorData.IdCategoriaClase}
-                    ,IDTipoClase = ${ClaseProfesorData.IdTipoClase}
-                    ,Precio = '${ClaseProfesorData.Precio}'
-                    ,Latitud = '${ClaseProfesorData.Latitud}'
-                    ,Longitud = '${ClaseProfesorData.Longitud}'
-                WHERE ID = ${ClaseProfesorData.IdClase}`;
-    console.log(query);
-    return pool.promise().query(query)
-        .then(() => { return ({ Success: true }) })
-        .catch((err) => { return ({ Success: false, Data: err }) });
-}
-
-function updateDiasXClase(IdClaseProfesor, DiasClase) {
-    var query = `UPDATE diasxclase
-                    SET Lunes = ${DiasClase.Lunes}
-                    ,Martes = ${DiasClase.Martes}
-                    ,Miercoles = ${DiasClase.Miercoles}
-                    ,Jueves = ${DiasClase.Jueves}
-                    ,Viernes = ${DiasClase.Viernes}
-                    ,Sabado = ${DiasClase.Sabado}
-                    ,Domingo = ${DiasClase.Domingo}
-                WHERE IDClaseProfesor = ${IdClaseProfesor}`;
-    console.log(query);
-    return pool.promise().query(query)
-        .then(() => { return ({ Success: true }) })
-        .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
 export function deleteClaseProfesorService(idClaseProfesor) {

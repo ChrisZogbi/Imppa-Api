@@ -124,7 +124,7 @@ export function updateClaseController(req, res) {
                 res.status(200).json({ Success: true, Data: 'Se actualizo correctamente la clase.' });
             }
             else {
-                errorMessage = `Error al intentar actualizar ClaseProfesor. ID: ${req.body.IdClaseProfesor}` + response.Data;
+                errorMessage = `Error al intentar actualizar ClaseProfesor. ID: ${req.body.IdClase}` + response.Data;
                 LogError(updateClaseController.name, errorMessage);
                 console.log(errorMessage);
                 res.status(200).json({ Success: false, Data: errorMessage })
