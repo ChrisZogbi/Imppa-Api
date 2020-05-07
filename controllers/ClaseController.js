@@ -11,7 +11,7 @@ const AgregarClaseXUsuario = async (idUsuario, idClase) => {
             console.log("Respuesta de la promise: " + result);
             return (result)
         });
-};
+}
 
 export function getClasesByID(req) {
     ClaseProfesorService.getClaseByIDService(req, res)
