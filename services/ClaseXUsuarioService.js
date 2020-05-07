@@ -39,6 +39,6 @@ export function deleteClaseXUsuarioService(IdUsuario, IdClaseProfesor) {
                 WHERE IdUsuario = ${IdUsuario}  and IdClaseProfesor = ${IdClaseProfesor}`;
 
     return pool.promise().query(query)
-        .then((rows, fields) => { return ({ Success: true, Rows: rows, Fields: fields }) })
+        .then(() => { return ({ Success: true }) })
         .catch((err) => { return ({ Success: false, Data: err }) });
 }

@@ -91,6 +91,9 @@ module.exports = function (app, passport) {
     app.route('/clase/')
         .post(checkToken, ClaseRoutes.addClase);
 
+    app.route('/actualizarClase/')
+        .put(checkToken, ClaseRoutes.updateClase)
+
     app.route('/borrarClase/')
         .delete(checkToken, ClaseRoutes.deleteClase)
 }

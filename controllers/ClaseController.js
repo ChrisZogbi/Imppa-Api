@@ -116,14 +116,18 @@ export async function addClase(req, res) {
 }
 
 export function updateClaseController(req, res) {
-    ClaseProfesorService.updateClaseProfesorService(req)
+    let errorMessage;
+    ClaseProfesorService.updateClase(req.body)
         .then(response => {
+            console.log("Volvio del caos");
             if (response.Success) {
-                res.status(200).json(response);
+                res.status(200).json({ Success: true, Data: 'Se actualizo correctamente la clase.' });
             }
             else {
-                LogError(updateClaseController.name, response.Data.message);
-                res.status(500).json(response);
+                errorMessage = `Error al intentar actualizar ClaseProfesor. ID: ${req.body.IdClaseProfesor}` + response.Data;
+                LogError(updateClaseController.name, errorMessage);
+                console.log(errorMessage);
+                res.status(200).json({ Success: false, Data: errorMessage })
             }
         })
         .catch((err) => {
@@ -143,7 +147,7 @@ export async function deleteClase(req, res) {
                 ClaseProfesorService.deleteClaseProfesorService(req.body.IdClaseProfesor)
                     .then((response) => {
                         if (response.Success) {
-                            res.status(200).json({ Success: true, Data: 'Se ha eliminado la clase correctamente.' })
+                            res.status(200).json({ Success: true, affectedRowss: response.RowsAfectadas, Data: 'Se ha eliminado la clase correctamente.' })
                         }
                     })
                     .catch((err) => {
