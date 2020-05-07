@@ -18,6 +18,10 @@ export async function getClaseByUbicacion(req, res) {
     return(ClaseController.getClasesByUbicacion(req,res));
 }
 
+export async function deleteClase(req, res) {
+    console.log("Borrar clase Route");
+    return(ClaseController.deleteClase(req,res));
+}
 export async function habilitarClase(req, res) {
     console.log("HabilitarClase Route inicio");
     return(ClaseController.habilitarClase(req,res));

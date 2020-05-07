@@ -132,68 +132,74 @@ export function updateClaseController(req, res) {
         });
 }
 
-export function deleteClase(req, res) {
-    ClaseProfesorService.deleteClaseProfesorService(req)
-        .then(response => {
-            if (response.Success) {
-                ClaseXUsuarioService.deleteClaseXUsuarioService()
-                    .then(responseClasexUsuario => {
-                        if (responseClasexUsuario.Success) {
-                            res.status(200).json(responseClasexUsuario);
+export async function deleteClase(req, res) {
+    let errorMessage;
+    Promise.all([ClaseXUsuarioService.deleteClaseXUsuarioService(req.body.IdUsuario, req.body.IdClaseProfesor), ClaseProfesorService.deleteDiasXClase(req.body.IdClaseProfesor)])
+        .then((results) => {
+            let resultClaseXUsuario = results[0];
+            let resultDiasXClase = results[1];
+            console.log("Paso las 2 promises");
+            if (resultClaseXUsuario.Success && resultDiasXClase.Success) {
+                ClaseProfesorService.deleteClaseProfesorService(req.body.IdClaseProfesor)
+                    .then((response) => {
+                        if (response.Success) {
+                            res.status(200).json({ Success: true, Data: 'Se ha eliminado la clase correctamente.' })
                         }
-                        else {
-                            LogError(updateClaseController.name, responseClasexUsuario.Data.message);
-                            res.status(500).json(responseClasexUsuario);
-                        }
+                    })
+                    .catch((err) => {
+                        errorMessage = `Error al intentar borrar ClaseProfesor. ID: ${req.body.IdClaseProfesor}` + err.message;
+                        LogError(deleteClase.name, errorMessage);
+                        console.log(errorMessage);
+                        res.status(200).json({ Success: false, Data: errorMessage })
                     });
-
-                res.status(200).json(responseClasexUsuario);
             }
             else {
-                LogError(addClase.name, responseClasexUsuario.Data.message);
-                res.status(500).json(responseClasexUsuario);
+                errorMessage = 'Error al intentar borrar los dias y/o la ClaseXUsuario ' + resultClaseXUsuario.Data ? resultClaseXUsuario.Data : resultDiasXClase.Data;
+                LogError(deleteClase.name, errorMessage);
+                console.log(errorMessage);
+                res.status(200).json({ Success: false, Data: errorMessage })
             }
         })
         .catch((err) => {
-            LogError(getClasesByProfesor.name, err.message);
+            errorMessage = 'Error al intentar borrar los dias y/o la ClaseXUsuario ' + err.message;
+            LogError(deleteClase.name, errorMessage);
+            console.log(errorMessage);
+            res.status(200).json({ Success: false, Data: errorMessage })
+        });
+}
+
+export async function habilitarClase(req, res) {
+    ClaseProfesorService.HabilitarClase(req)
+        .then(response => {
+            if (response.Success) {
+                res.status(200).json(response)
+            }
+            else {
+                LogError(getClasesByID.name, response.Data.message);
+                console.log(response.Data);
+                res.status(500).json(response.Data);
+            }
+        })
+        .catch((err) => {
+            LogError(habilitarClase.name, err.message);
             console.log(err);
         });
 }
 
-export function habilitarClase(req, res)
-{
-    ClaseProfesorService.HabilitarClase(req)
-    .then(response => {
-        if (response.Success) {
-            res.status(200).json(response)
-        }
-        else {
-            LogError(getClasesByID.name, response.Data.message);
-            console.log(response.Data);
-            res.status(500).json(response.Data);
-        }
-    })
-    .catch((err) => {
-        LogError(habilitarClase.name, err.message);
-        console.log(err);
-    });
-}
-
-export function deshabilitarClase(req, res)
-{
+export async function deshabilitarClase(req, res) {
     ClaseProfesorService.DeshabilitarClase(req)
-    .then(response => {
-        if (response.Success) {
-            res.status(200).json(response)
-        }
-        else {
-            LogError(getClasesByID.name, response.Data.message);
-            console.log(response.Data);
-            res.status(500).json(response.Data);
-        }
-    })
-    .catch((err) => {
-        LogError(deshabilitarClase.name, err.message);
-        console.log(err);
-    });
+        .then(response => {
+            if (response.Success) {
+                res.status(200).json(response)
+            }
+            else {
+                LogError(getClasesByID.name, response.Data.message);
+                console.log(response.Data);
+                res.status(500).json(response.Data);
+            }
+        })
+        .catch((err) => {
+            LogError(deshabilitarClase.name, err.message);
+            console.log(err);
+        });
 }

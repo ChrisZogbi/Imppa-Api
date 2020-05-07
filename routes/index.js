@@ -34,11 +34,11 @@ module.exports = function (app, passport) {
     //     loginGoogle);
 
     app.route('/login/oauth/google/')
-    .post(loginGoogle)
-        // .post((req, res, next) => {
-        //     passport.authenticate('googleToken', (err, user, info) => {
-        //     loginGoogle(user, req, res);
-        // })(req, res, next)});
+        .post(loginGoogle)
+    // .post((req, res, next) => {
+    //     passport.authenticate('googleToken', (err, user, info) => {
+    //     loginGoogle(user, req, res);
+    // })(req, res, next)});
 
     app.route('/cambioContrasenia/')
         .put(checkToken, cambiarContrasenia);
@@ -90,4 +90,7 @@ module.exports = function (app, passport) {
 
     app.route('/clase/')
         .post(checkToken, ClaseRoutes.addClase);
+
+    app.route('/borrarClase/')
+        .delete(checkToken, ClaseRoutes.deleteClase)
 }

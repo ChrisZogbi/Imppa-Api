@@ -2,7 +2,7 @@ import app from "../app.js";
 import { pool } from "./index";
 
 export function getClaseByIdUsuarioService(idUsuario) {
-    
+
     var query = `select cp.*, dc.Lunes, dc.Martes, dc.Miercoles, dc.Jueves, dc.Viernes, dc.Sabado, dc.Domingo from ClaseProfesor as cp
                     join ClaseXUsuario on cp.ID = ClaseXUsuario.IDClaseProfesor
                     join diasxclase as dc on cp.ID = dc.IDClaseProfesor
@@ -111,6 +111,7 @@ export function updateClaseProfesorService(req, res) {
                     ,Precio = '${ClaseProfesorData.Precio}'
                     ,Latitud = '${ClaseProfesorData.Latitud}'
                     ,Longitud = '${ClaseProfesorData.Longitud}'
+                    ,Lunes 
                 WHERE ID = ${ClaseProfesorData.IdClaseProfesor}`;
     console.log(query);
     return pool.promise().query(query)
@@ -118,13 +119,20 @@ export function updateClaseProfesorService(req, res) {
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
-export function deleteClaseProfesorService(req, res) {
-    var idClaseProfesor = req.body.IdClaseProfesor;
-
+export function deleteClaseProfesorService(idClaseProfesor) {
     var query = `DELETE FROM claseprofesor
-                WHERE ID = ?`;
+                WHERE ID = ${idClaseProfesor}`;
 
-    return pool.promise().query(query, [idClaseProfesor])
+    return pool.promise().query(query)
+        .then(() => { return ({ Success: true }) })
+        .catch((err) => { return ({ Success: false, Data: err }) });
+}
+
+export function deleteDiasXClase(idClaseProfesor) {
+    var query = `DELETE FROM diasxclase
+                WHERE IDClaseProfesor = ${idClaseProfesor}`;
+
+    return pool.promise().query(query)
         .then(() => { return ({ Success: true }) })
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
@@ -153,7 +161,7 @@ export function HabilitarClase(req) {
     console.log(query);
 
     return pool.promise().query(query)
-        .then(() => { return ({ Success: true }) })
+        .then((rows, fields) => { return ({ Success: true }) })
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
