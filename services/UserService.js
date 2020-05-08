@@ -109,17 +109,14 @@ export function updateContrasenia(req) {
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
-export function update(req) {
-    var UserData = req.body;
-
+export function update(UserData) {
     var query = `UPDATE usuarios
-                    SET TipoUsuario = ${UserData.TipoUsuario}
-                    ,Mail = '${UserData.Mail}'
+                    SET
+                    Mail = '${UserData.Mail}'
                     ,Nombre = '${UserData.Nombre}'
                     ,Apellido = '${UserData.Apellido}'
                     ,Telefono1 = ${UserData.Telefono1}
                     ,Telefono2 = ${UserData.Telefono2}
-                    ,Habilitado = ${UserData.Habilitado}
                 WHERE ID = ${UserData.ID}`;
     console.log(query);
     return pool.promise().query(query)

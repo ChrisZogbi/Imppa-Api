@@ -189,11 +189,11 @@ export async function addUserController(req, res) {
 
 export function updateUserController(req, res) {
   console.log(req.body);
-  UserService.update(req)
+  UserService.update(req.body)
     .then((response) => {
       console.log("Respuesta" + response.Success)
 
-      if (response.Success) { res.status(200).json(response) }
+      if (response.Success) { res.status(200).json({Success: true, Data: `Se actualizo correctamente el usuario ${req.body.Mail}`}) }
       else {
         LogError(updateUserController.name, response.Data.message)
         res.status(500).json(response);
