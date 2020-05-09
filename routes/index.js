@@ -83,7 +83,7 @@ module.exports = function (app, passport) {
         .get(checkToken, ClaseRoutes.getClaseByUbicacion);
 
     app.route('/clasesdistancia/')
-        .get(checkToken, ClaseRoutes.getClasesDistanciaFiltro)
+        .post(checkToken, ClaseRoutes.getClasesDistanciaFiltro)
 
     app.route('/clase?:IdProfesor/')
         .get(checkToken, ClaseRoutes.getClaseByProfesor);
