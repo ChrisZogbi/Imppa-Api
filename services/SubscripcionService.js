@@ -29,8 +29,7 @@ export function getSubcripcionByIdProfesor(idProfesor) {
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
-export function addSubcripcionService(req) {
-    let Subcripcion = req.body
+export function addSubcripcionService(Subcripcion) {
 
     var query = `INSERT INTO Subscripcion (Nombre, Descripcion, precio, CantClases) VALUES ('${Subcripcion.Nombre}', '${Subcripcion.Descripcion}', ${Subcripcion.Precio}, ${Subcripcion.CantidadClases}) `;
 

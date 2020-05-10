@@ -52,7 +52,7 @@ export async function getSubcripcionByIdProfesor(idProfesor) {
 export async function addSubscipcionController(req, res) {
   console.log(req.body);
 
-  SubscripcionService.addSubcripcionService(req)
+  SubscripcionService.addSubcripcionService(req.body)
     .then((response) => {
       console.log("Respuesta" + response.Success)
 
