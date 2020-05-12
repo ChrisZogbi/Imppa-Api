@@ -1,6 +1,6 @@
 import express, { response } from 'express';
-import { getTipoUsuarioByIdUsuarioService, getTipoUsuarioService, deleteTipoUsuarioService, updateTipoUsuarioService, addTipoUsuarioService } from '../services/TipoUsuarioService';
 import { LogError } from './ErrorLogController';
+import { getTipoUsuarioByIdUsuarioService, getTipoUsuarioService, deleteTipoUsuarioService, updateTipoUsuarioService, addTipoUsuarioService } from '../services/TipoUsuarioService';
 
 export function getTipoUsuarioController(req, res) {
   getTipoUsuarioService(req)

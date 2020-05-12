@@ -71,7 +71,7 @@ const generateUserToken = async (UserObject) => {
 
 export async function getUsersController(req, res) {
 
-  console.log(req.body);
+  console.log("Obtener todos los usuarios");
 
   UserService.getAll()
     .then((response) => {

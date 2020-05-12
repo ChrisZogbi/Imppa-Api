@@ -61,7 +61,6 @@ export function getClaseDistancia(claseFilter) {
 
 export function getClaseByUbicacion(req) {
     const alumnoUbicacion = req.query;
-    console.log()
 
     let bordeSuperior = parseFloat(alumnoUbicacion.Latitud) + 0.02;
     let bordeInferior = parseFloat(alumnoUbicacion.Latitud) - 0.02;
@@ -69,15 +68,18 @@ export function getClaseByUbicacion(req) {
     let bordeIzquierdo = parseFloat(alumnoUbicacion.Longitud) - 0.02;
 
     const query =
-        `select u.Nombre, u.Apellido, u.telefono1 as Telefono, cp.Precio, cp.Latitud, cp.Longitud, dc.Lunes, dc.Martes, dc.Miercoles, dc.Jueves, dc.Viernes, dc.Sabado, dc.Domingo, cc.ID as IdCategoria, cc.NombreCategoria
+        `select 
+            u.Nombre, u.Apellido, u.telefono1 as Telefono, cp.Precio, cp.Latitud, cp.Longitud, 
+            dc.Lunes, dc.Martes, dc.Miercoles, dc.Jueves, dc.Viernes, dc.Sabado, dc.Domingo, 
+            cc.ID as IdCategoria, cc.NombreCategoria
         from claseprofesor as cp
                     join clasexusuario as cu on cp.ID = cu.IDClaseProfesor
                     join usuarios as u on cu.IDUsuario = u.ID
                     join diasxclase as dc on cp.ID = dc.IDClaseProfesor
                     join categoriaclase as cc on cc.ID = cp.IDCategoriaClase
-         where IDTipoClase = ${ETipoClase.Presencial} 
-         and (latitud < ${bordeSuperior} AND latitud > ${bordeInferior})
-         and ( longitud < ${bordeDerecho} AND  longitud> ${bordeIzquierdo})`
+        where IDTipoClase = ${ETipoClase.Presencial} 
+        and (latitud < ${bordeSuperior} AND latitud > ${bordeInferior})
+        and ( longitud < ${bordeDerecho} AND  longitud> ${bordeIzquierdo})`
 
     console.log(query);
     return pool.promise().query(query)
