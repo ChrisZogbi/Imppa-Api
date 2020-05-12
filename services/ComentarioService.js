@@ -1,31 +1,35 @@
 import app from "../app.js";
 import { pool } from "./index";
 
-export function getComentariosByIdProfesorService(req, res)
+export function getComentariosProfesorService(idProfesor)
 {
-    var idProfesor = req.body.IdProfesor
+    var query = `SELECT * FROM comentarios WHERE IDProfesor = ${idProfesor}`;
 
-    var query = `SELECT * FROM comentarios WHERE IDProfesor = ?`;
-
-    return pool.promise().query(query, [idProfesor])
+    return pool.promise().query(query)
             .then(([rows]) => {return ({Success: true, Data: rows})})
             .catch((err) => { return ({Success: false, Data: err})});
 }
 
-export function getComentarioByIdService(req, res)
+export function getComentariosClaseService(idClaseProfesor)
 {
-    var query = `SELECT * FROM comentarios WHERE ID = ?`
-    var idUsuario = req.body.IDUsuario;
+    var query = `SELECT * FROM comentarios WHERE IDClaseProfesor = ${idClaseProfesor}`;
 
-    return pool.promise().query(query, [idUsuario])
+    return pool.promise().query(query)
+            .then(([rows]) => {return ({Success: true, Data: rows})})
+            .catch((err) => { return ({Success: false, Data: err})});
+}
+
+export function getComentarioByIdService(idComentario)
+{
+    var query = `SELECT * FROM comentarios WHERE ID = ${idComentario}`
+
+    return pool.promise().query(query)
             .then(([rows]) => {return ({Success: true, Data: rows})})
             .catch((err) => { return ({Success: false, Data: err})});   
 }
 
-export function addComentarioService(req, res)
+export function addComentarioService(comentarioData)
 {
-    var Data = req.body;
-
     var query =  `INSERT INTO comentarios VALUES (?, ?)`
 
     console.log(query);

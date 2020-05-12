@@ -1,6 +1,6 @@
 import express from 'express';
 import * as UserService from '../services/UserService';
-import * as TipoUsuarioController from './TipoUsuarioController';
+import {getTipoUsuarioByIdUsuarioService} from '../services/TipoUsuarioService';
 import { LogError } from './ErrorLogController';
 import { getSubcripcionByIdProfesor, addUserSubcripcion } from './SubscripcionController'
 import * as ClaseProfesorService from '../services/ClaseProfesorService'
@@ -10,9 +10,11 @@ import { JWT_SECRET } from '../auth/passportConfiguration'
 import { ETipoUsuario } from '../enum'
 import { NText } from 'mssql';
 
+const _ = require("lodash");
+
 const ObtenerTipoUsuario = async (idUsuario) => {
   return new Promise((resolve, reject) => {
-    resolve(TipoUsuarioController.getTipoUsuarioByIdUsuario(idUsuario));
+    resolve(getTipoUsuarioByIdUsuarioService(idUsuario));
   })
     .then((result) => {
       return (result)
@@ -56,7 +58,7 @@ const TraerDatosUsuario = async (idUsuario, idTipoUsuario) => {
 
       return UsuarioDatos;
     })
-}
+};
 
 const generateUserToken = async (UserObject) => {
   return new Promise((resolve, reject) => {
@@ -73,9 +75,22 @@ export async function getUsersController(req, res) {
 
   UserService.getAll()
     .then((response) => {
-      console.log("Respuesta" + response.Success)
 
-      if (response.Success) { res.status(200).json(response) }
+      if (response.Success) { 
+        let Usuarios =   response.Data;
+        _.forEach(Usuarios, (value) => {
+          value.TipoUsuario = {
+            IdTipoUsuario: value.TipoUsuario,
+            TUsuario: value.Tipo
+          }
+          value.Tipo = undefined;
+        });
+        
+        res.status(200).json({
+          Success: true,
+          Data: Usuarios
+        }); 
+      }
       else {
         LogError(getUsersController.name, response.Data.message)
         res.status(500).json(response);

@@ -43,6 +43,14 @@ import {LogError} from './ErrorLogController';
     });
   }
 } 
+
+export function getComentariosProfesor(req){
+
+}
+
+export function getComentarioByClase(res){
+
+}
   
 export async function addComentarioController(req) {
     console.log(req.body);
