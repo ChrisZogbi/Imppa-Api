@@ -3,6 +3,9 @@ import * as ClaseProfesorService from '../services/ClaseProfesorService';
 import * as ClaseXUsuarioService from '../services/ClaseXUsuarioService';
 import { LogError } from './ErrorLogController';
 
+const _ = require("lodash");
+
+
 const AgregarClaseXUsuario = async (idUsuario, idClase) => {
     return new Promise((resolve, reject) => {
         resolve(ClaseXUsuarioService.addClaseXUsuarioService(idUsuario, idClase));
@@ -52,17 +55,43 @@ export function getClasesDistancia(req, res) {
     console.log('Llego al controller man');
     ClaseProfesorService.getClaseDistancia(req.body)
         .then(response => {
+            let ClasesDistancia = [];
             if (response.Success) {
-                res.status(200).json(response)
+                _.forEach(response.Data, (value) => {
+                    ClasesDistancia.push(
+                        {
+                            DataClase: {
+                                IdClaseProfesor: value.IdClaseProfesor,
+                                CategoriaClase: {ID: value.IdCategoriaClase, Nombre: value.NombreCategoria},
+                                IDTipoClase: value.IDTipoClase,
+                                Precio: value.Precio,
+                                Lunes: value.Lunes,
+                                Martes: value.Martes,
+                                Miercoles: value.Miercoles,
+                                Jueves: value.Jueves,
+                                Viernes: value.Viernes,
+                                Sabado: value.Sabado,
+                                Domingo: value.Domingo
+                            },
+                            DataProfesor: {
+                                IdProfesor: value.IdProfesor,
+                                Nombre: value.Nombre,
+                                Apellido: value.Apellido,
+                                Telefono: value.Telefono
+                            }
+                        }
+                    );
+                });
+                res.status(200).json({ Success: true, Data: ClasesDistancia })
             }
             else {
-                LogError(getClasesByFilter.name, response.Data.message);
+                LogError(getClasesDistancia.name, response.Data.message);
                 console.log(response.Data);
                 res.status(500).json(response);
             }
         })
         .catch((err) => {
-            LogError(getClasesByFilter.name, err);
+            LogError(getClasesDistancia.name, err);
             console.log(err);
         });
 }

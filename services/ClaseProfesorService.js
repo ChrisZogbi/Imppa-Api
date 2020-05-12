@@ -35,11 +35,29 @@ export function getClaseByIDService(req, res) {
 export function getClaseDistancia(claseFilter) {
     let query =
         `select 
-            cp.* 
+            u.ID as IdProfesor,
+            u.Nombre,
+            u.Apellido,
+            u.Telefono1 as Telefono,
+            cp.ID as IdClaseProfesor,
+            cp.IDTipoClase,
+            cp.Precio,
+            cc.ID as IdCategoriaClase,
+            cc.NombreCategoria,
+            dc.Lunes,
+            dc.Martes,
+            dc.Miercoles,
+            dc.Jueves,
+            dc.Viernes,
+            dc.Sabado,
+            dc.Domingo
         from 
             claseprofesor as cp join diasxclase dc on cp.ID = dc.IDClaseProfesor
+                                join clasexusuario cu on cu.IDClaseProfesor = cp.ID
+                                join usuarios u on u.id = cu.IDUsuario
+                                join categoriaclase cc on cc.ID = cp.IDCategoriaClase
         where 
-            cp.IDTipoClase = ${ETipoClase.ADistancia}`
+            cp.Hablitada = true and cp.IDTipoClase = ${ETipoClase.ADistancia}`
 
     if (claseFilter.FiltraCategoria) {
         query = query + `AND cp.IDCategoriaClase = ${claseFilter.IdCategoria}`
@@ -69,7 +87,7 @@ export function getClaseByUbicacion(req) {
 
     const query =
         `select 
-            u.Nombre, u.Apellido, u.telefono1 as Telefono, cp.Precio, cp.Latitud, cp.Longitud, 
+            u.ID, u.Nombre, u.Apellido, u.telefono1 as Telefono, cp.Precio, cp.Latitud, cp.Longitud, 
             dc.Lunes, dc.Martes, dc.Miercoles, dc.Jueves, dc.Viernes, dc.Sabado, dc.Domingo, 
             cc.ID as IdCategoria, cc.NombreCategoria
         from claseprofesor as cp
