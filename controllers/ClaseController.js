@@ -99,8 +99,36 @@ export function getClasesDistancia(req, res) {
 export function getClasesByUbicacion(req, res) {
     ClaseProfesorService.getClaseByUbicacion(req)
         .then(response => {
+            let ClaseUbicacion = [];
             if (response.Success) {
-                res.status(200).json(response)
+                _.forEach(response.Data, (value) => {
+                    ClaseUbicacion.push(
+                        {
+                            DataClase: {
+                                IdClaseProfesor: value.IdClaseProfesor,
+                                CategoriaClase: {ID: value.IdCategoriaClase, Nombre: value.NombreCategoria},
+                                IDTipoClase: value.IDTipoClase,
+                                Precio: value.Precio,
+                                Latitud: value.Latitud,
+                                Longitud: value.Longitud,
+                                Lunes: value.Lunes,
+                                Martes: value.Martes,
+                                Miercoles: value.Miercoles,
+                                Jueves: value.Jueves,
+                                Viernes: value.Viernes,
+                                Sabado: value.Sabado,
+                                Domingo: value.Domingo
+                            },
+                            DataProfesor: {
+                                IdProfesor: value.IdProfesor,
+                                Nombre: value.Nombre,
+                                Apellido: value.Apellido,
+                                Telefono: value.Telefono
+                            }
+                        }
+                    );
+                });
+                res.status(200).json({ Success: true, Data: ClaseUbicacion })
             }
             else {
                 LogError(getClasesByUbicacion.name, response.Data.message);

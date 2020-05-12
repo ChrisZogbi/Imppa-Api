@@ -35,22 +35,10 @@ export function getClaseByIDService(req, res) {
 export function getClaseDistancia(claseFilter) {
     let query =
         `select 
-            u.ID as IdProfesor,
-            u.Nombre,
-            u.Apellido,
-            u.Telefono1 as Telefono,
-            cp.ID as IdClaseProfesor,
-            cp.IDTipoClase,
-            cp.Precio,
-            cc.ID as IdCategoriaClase,
-            cc.NombreCategoria,
-            dc.Lunes,
-            dc.Martes,
-            dc.Miercoles,
-            dc.Jueves,
-            dc.Viernes,
-            dc.Sabado,
-            dc.Domingo
+            u.ID as IdProfesor, u.Nombre, u.Apellido, u.Telefono1 as Telefono,
+            cp.ID as IdClaseProfesor, cp.Precio,
+            cc.ID as IdCategoriaClase, cc.NombreCategoria,
+            dc.Lunes, dc.Martes, dc.Miercoles, dc.Jueves, dc.Viernes, dc.Sabado, dc.Domingo
         from 
             claseprofesor as cp join diasxclase dc on cp.ID = dc.IDClaseProfesor
                                 join clasexusuario cu on cu.IDClaseProfesor = cp.ID
@@ -87,15 +75,15 @@ export function getClaseByUbicacion(req) {
 
     const query =
         `select 
-            u.ID, u.Nombre, u.Apellido, u.telefono1 as Telefono, cp.Precio, cp.Latitud, cp.Longitud, 
-            dc.Lunes, dc.Martes, dc.Miercoles, dc.Jueves, dc.Viernes, dc.Sabado, dc.Domingo, 
-            cc.ID as IdCategoria, cc.NombreCategoria
+            u.ID as IdProfesor, u.Nombre, u.Apellido, u.telefono1 as Telefono, cp.Precio, cp.Latitud, cp.Longitud, 
+            cc.ID as IdCategoria, cc.NombreCategoria,
+            dc.Lunes, dc.Martes, dc.Miercoles, dc.Jueves, dc.Viernes, dc.Sabado, dc.Domingo
         from claseprofesor as cp
                     join clasexusuario as cu on cp.ID = cu.IDClaseProfesor
                     join usuarios as u on cu.IDUsuario = u.ID
                     join diasxclase as dc on cp.ID = dc.IDClaseProfesor
                     join categoriaclase as cc on cc.ID = cp.IDCategoriaClase
-        where IDTipoClase = ${ETipoClase.Presencial} 
+        where cp.Hablitada = true and IDTipoClase = ${ETipoClase.Presencial} 
         and (latitud < ${bordeSuperior} AND latitud > ${bordeInferior})
         and ( longitud < ${bordeDerecho} AND  longitud> ${bordeIzquierdo})`
 
