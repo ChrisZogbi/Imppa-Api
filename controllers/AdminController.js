@@ -41,44 +41,24 @@ export async function getAllUsers(req, res) {
         });
 }
 
-export async function getCategoriaClaseController(req, res) {
+export async function getAllCategoriaClase(req, res) {
+    getCategoriaClaseService(req)
+        .then((response) => {
+            console.log("Respuesta" + response.Success)
 
-    console.log('lala' + req.baseUrl);
-    if (req.query.NombreCategoria) {
-        getCategoriaClaseByNombreCategoriaService(req)
-            .then((response) => {
-                console.log("Respuesta" + response.Success)
+            if (response.Success) { res.status(200).json(response) }
+            else {
+                LogError(getAllCategoriaClase.name, response.Data.message)
+                res.status(500).json(response);
+            }
+        })
+        .catch((err) => {
+            res.status(500).json({ Success: false, Data: `Error en getAllCategoriaClase. Message: ${err.message}` });
+        });
 
-                if (response.Success) { res.status(200).json(response) }
-                else {
-                    LogError(getCategoriaClaseController.name, response.Data.message)
-                    res.status(500).json(response);
-                }
-
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }
-    else {
-        getCategoriaClaseService(req)
-            .then((response) => {
-                console.log("Respuesta" + response.Success)
-
-                if (response.Success) { res.status(200).json(response) }
-                else {
-                    LogError(getCategoriaClaseController.name, response.Data.message)
-                    res.status(500).json(response);
-                }
-
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }
 }
 
-export async function addCategoriaClaseController(req, res) {
+export async function addCategoriaClase(req, res) {
     console.log(req.body);
 
     addCategoriaClaseService(req)
@@ -96,7 +76,7 @@ export async function addCategoriaClaseController(req, res) {
         });
 }
 
-export async function updateCategoriaClaseController(req, res) {
+export async function updateCategoriaClase(req, res) {
     console.log(req.body);
 
     updateCategoriaClaseService(req)
@@ -114,7 +94,7 @@ export async function updateCategoriaClaseController(req, res) {
         });
 }
 
-export async function deleteCategoriaClaseController(req, res) {
+export async function deleteCategoriaClase(req, res) {
     console.log(req.body);
 
     deleteCategoriaClaseService(req)
@@ -148,7 +128,7 @@ export async function getAllTipoUsuario(req, res) {
         });
 }
 
-export async function addTipoUsuarioController(req, res) {
+export async function addTipoUsuario(req, res) {
     console.log(req.body);
 
     addTipoUsuarioService(req)
@@ -166,7 +146,7 @@ export async function addTipoUsuarioController(req, res) {
         });
 }
 
-export function updateTipoUsuarioController(req, res) {
+export function updateTipoUsuario(req, res) {
     console.log(req.body);
 
     updateTipoUsuarioService(req)
@@ -184,7 +164,7 @@ export function updateTipoUsuarioController(req, res) {
         });
 }
 
-export function deleteTipoUsuarioController(req, res) {
+export function deleteTipoUsuario(req, res) {
     console.log(req.body);
 
     deleteTipoUsuarioService(req).then((response) => {
@@ -199,61 +179,4 @@ export function deleteTipoUsuarioController(req, res) {
         .catch((err) => {
             console.log(err);
         });
-}
-
-export async function addCategoriaClaseController(req, res) {
-    console.log(req.body);
-
-    addCategoriaClaseService(req)
-    .then((response) => {
-      console.log("Respuesta" + response.Success)
-      
-      if(response.Success){res.status(200).json(response)}
-      else
-      {
-        LogError(addCategoriaClaseController.name, response.Data.message)
-        res.status(500).json(response);
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-}
-
-export function updateCategoriaClaseController(req, res) {
-  console.log(req.body);
-
-  updateCategoriaClaseService(req)
-  .then((response) => {
-    console.log("Respuesta" + response.Success)
-    
-    if(response.Success){res.status(200).json(response)}
-    else
-    {
-      LogError(updateCategoriaClaseController.name, response.Data.message)
-      res.status(500).json(response);
-    }
-  })
-  .catch((err) => {
-    console.log(err);
-  });
-}
-
-export function deleteCategoriaClaseController(req, res) {
-  console.log(req.body);
-
-  deleteCategoriaClaseService(req)
-  .then((response) => {
-    console.log("Respuesta" + response.Success)
-    
-    if(response.Success){res.status(200).json(response)}
-    else
-    {
-      LogError(deleteCategoriaClaseController.name, response.Data.message)
-      res.status(500).json(response);
-    }
-  })
-  .catch((err) => {
-    console.log(err);
-  });
 }

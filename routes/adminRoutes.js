@@ -9,29 +9,29 @@ export let getTipoUsuario = async (req, res) => {
 }
 
 export let addTipoUsuario = async (req, res) => {
-    return (AdminController.addTipoUsuarioController(req, res));
+    return (AdminController.addTipoUsuario(req, res));
 }
 
 export let updateTipoUsuario = async (req, res) => {
-    return (AdminController.updateTipoUsuarioController(req, res));
+    return (AdminController.updateTipoUsuario(req, res));
 }
 
 export let deleteTipoUsuario = async (req, res) => {
-    return (AdminController.deleteTipoUsuarioController(req, res));
+    return (AdminController.deleteTipoUsuario(req, res));
 }
 
 export let getCategoriaClase = async (req, res) => {
-    return (AdminController.getCategoriaClaseController(req, res));
+    return (AdminController.getAllCategoriaClase(req, res));
 }
 
 export let addCategoriaClase = async (req, res) => {
-    return (AdminController.addCategoriaClaseController(req, res));
+    return (AdminController.addCategoriaClase(req, res));
 }
 
 export let updateCategoriaClase = async (req, res) => {
-    return (AdminController.updateCategoriaClaseController(req, res));
+    return (AdminController.updateCategoriaClase(req, res));
 }
 
 export let deleteCategoriaClase = async (req, res) => {
-    return (AdminController.deleteCategoriaClaseController(req, res));
+    return (AdminController.deleteCategoriaClase(req, res));
 } 
