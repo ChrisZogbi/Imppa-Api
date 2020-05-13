@@ -121,7 +121,7 @@ export function deleteSubscripcion(req, res) {
 
 /* #region CategoriaClase */
 
-export async function getCategoriaClaseController(req, res) {
+export async function getAllCategoriaClase(req, res) {
 
     console.log('lala' + req.baseUrl);
     if (req.query.NombreCategoria) {
