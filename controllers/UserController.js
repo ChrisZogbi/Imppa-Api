@@ -69,7 +69,7 @@ const generateUserToken = async (UserObject) => {
     });
 };
 
-export async function getUsersController(req, res) {
+export async function getAllUsersController(req, res) {
 
   console.log(req.body);
 

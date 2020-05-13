@@ -1,16 +1,15 @@
 import { getUsers, getUser, addUser, updateUser, deleteUser, loginUser, cambiarContrasenia, loginGoogle } from './userRoutes'
-import { getTipoUsuario, addTipoUsuario, updateTipoUsuario, deleteTipoUsuario } from './tipoUsuarioRoutes'
 import { getTipoClase, addTipoClase, updateTipoClase, deleteTipoClase } from './tipoClaseRoutes'
 import { getSubscipcion, addSubscipcion, updateSubscipcion, deleteSubscipcion } from './subscripcionRoutes'
 import { getComentario, addComentario, updateComentario, deleteComentario } from './comentarioRoutes'
-import { getCategoriaClase, addCategoriaClase, updateCategoriaClase, deleteCategoriaClase } from './categoriaClaseRoutes'
+import * as AdminRoutes from './adminRoutes'
 import * as ClaseRoutes from './claseRoutes';
 import { checkToken } from '../auth/token_validation';
 
 
 module.exports = function (app, passport) {
     app.route('/users/')
-        .get(checkToken, getUsers)
+        .get(checkToken, AdminRoutes.getAllUsers)
         .post(addUser)
         .put(checkToken, updateUser)
         .delete(checkToken, deleteUser);
@@ -21,33 +20,17 @@ module.exports = function (app, passport) {
     app.route('/login/')
         .post(loginUser);
 
-    // app.get('/auth/google/',
-    //     passport.authenticate('google', { scope: ['profile'] }));
-
-    // // GET /auth/google/callback
-    // //   Use passport.authenticate() as route middleware to authenticate the
-    // //   request.  If authentication fails, the user will be redirected back to the
-    // //   login page.  Otherwise, the primary route function function will be called,
-    // //   which, in this example, will redirect the user to the home page.
-    // app.get('/auth/google/callback/',
-    //     passport.authenticate('google', { failureRedirect: '/login' }),
-    //     loginGoogle);
-
     app.route('/login/oauth/google/')
         .post(loginGoogle)
-    // .post((req, res, next) => {
-    //     passport.authenticate('googleToken', (err, user, info) => {
-    //     loginGoogle(user, req, res);
-    // })(req, res, next)});
 
     app.route('/cambioContrasenia/')
         .put(checkToken, cambiarContrasenia);
 
     app.route('/tipoUsuario/')
-        .get(getTipoUsuario)
-        .post(addTipoUsuario)
-        .put(updateTipoUsuario)
-        .delete(deleteTipoUsuario);
+        .get(AdminRoutes.getTipoUsuario)
+        .post(AdminRoutes.addTipoUsuario)
+        .put(AdminRoutes.updateTipoUsuario)
+        .delete(AdminRoutes.deleteTipoUsuario);
 
     app.route('/tipoClase/')
         .get(getTipoClase)
@@ -68,10 +51,10 @@ module.exports = function (app, passport) {
         .delete(deleteComentario);
 
     app.route('/categoriaClase/')
-        .get(getCategoriaClase)
-        .post(addCategoriaClase)
-        .put(updateCategoriaClase)
-        .delete(deleteCategoriaClase);
+        .get(AdminRoutes.getCategoriaClase)
+        .post(AdminRoutes.addCategoriaClase)
+        .put(AdminRoutes.updateCategoriaClase)
+        .delete(AdminRoutes.deleteCategoriaClase);
 
     app.route('/habilitarClase/')
         .post(checkToken, ClaseRoutes.habilitarClase);
