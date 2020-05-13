@@ -76,7 +76,7 @@ export function getClaseByUbicacion(req) {
     const query =
         `select 
             u.ID as IdProfesor, u.Nombre, u.Apellido, u.telefono1 as Telefono, cp.Precio, cp.Latitud, cp.Longitud, 
-            cc.ID as IdCategoria, cc.NombreCategoria,
+            cc.ID as IdCategoriaClase, cc.NombreCategoria,
             dc.Lunes, dc.Martes, dc.Miercoles, dc.Jueves, dc.Viernes, dc.Sabado, dc.Domingo
         from claseprofesor as cp
                     join clasexusuario as cu on cp.ID = cu.IDClaseProfesor
