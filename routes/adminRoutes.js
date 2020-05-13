@@ -35,3 +35,19 @@ export let updateCategoriaClase = async (req, res) => {
 export let deleteCategoriaClase = async (req, res) => {
     return (AdminController.deleteCategoriaClase(req, res));
 } 
+
+export let getAllSubscripciones = async (req, res) => {
+    return (AdminController.getAllSubscripcion(req,res));
+}
+
+export let  addSubscripcion = async (req, res) => {
+    return(AdminController.addSubscripcion(req, res));
+}
+
+export let updateSubscripcion = async (req, res) => {
+    return(AdminController.updateSubscripcion(req, res));
+}
+
+export let deleteSubscripcion = async (req, res) => {
+    return(AdminController.deleteSubscripcion(req, res));
+} 
