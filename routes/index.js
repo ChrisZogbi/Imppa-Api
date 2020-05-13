@@ -1,6 +1,5 @@
 import { getUsers, getUser, addUser, updateUser, deleteUser, loginUser, cambiarContrasenia, loginGoogle } from './userRoutes'
 import { getTipoClase, addTipoClase, updateTipoClase, deleteTipoClase } from './tipoClaseRoutes'
-import { getSubscipcion, addSubscipcion, updateSubscipcion, deleteSubscipcion } from './subscripcionRoutes'
 import { getComentario, addComentario, updateComentario, deleteComentario } from './comentarioRoutes'
 import * as AdminRoutes from './adminRoutes'
 import * as ClaseRoutes from './claseRoutes';
@@ -39,10 +38,10 @@ module.exports = function (app, passport) {
         .delete(deleteTipoClase);
 
     app.route('/subscripcion/')
-        .get(getSubscipcion)
-        .post(addSubscipcion)
-        .put(updateSubscipcion)
-        .delete(deleteSubscipcion);
+        .get(AdminRoutes.getAllSubscripciones)
+        .post(AdminRoutes.addSubscripcion)
+        .put(AdminRoutes.updateSubscripcion)
+        .delete(AdminRoutes.deleteSubscripcion);
 
     app.route('/comentario/')
         .get(getComentario)

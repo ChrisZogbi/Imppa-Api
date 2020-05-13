@@ -2,7 +2,7 @@ import app from "../app.js";
 import { pool } from "./index";
 //import { Request } from "mssql";
 
-export function getSubcripcionService(req) {
+export function getAllSubcripcion() {
     var query = `SELECT * FROM Subscripcion`;
     console.log(query);
     return pool.promise().query(query)

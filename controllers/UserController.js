@@ -1,8 +1,8 @@
 import express from 'express';
 import * as UserService from '../services/UserService';
-import {getTipoUsuarioByIdUsuarioService} from '../services/TipoUsuarioService';
+import { getTipoUsuarioByIdUsuarioService } from '../services/TipoUsuarioService';
 import { LogError } from './ErrorLogController';
-import { getSubcripcionByIdProfesor, addUserSubcripcion } from './SubscripcionController'
+import * as SubscripcionService from '../services/SubscripcionService'
 import * as ClaseProfesorService from '../services/ClaseProfesorService'
 import { compareSync } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
@@ -21,9 +21,9 @@ const ObtenerTipoUsuario = async (idUsuario) => {
     });
 };
 
-const ObtenerSubcripcionDelUsuario = async (id) => {
+const ObtenerSubcripcionDelUsuario = async (idProfesor) => {
   return new Promise((resolve, reject) => {
-    resolve(getSubcripcionByIdProfesor(id));
+    resolve(SubscripcionService.getSubcripcionByIdProfesor(idProfesor));
   })
     .then((result) => {
       return (result)
@@ -69,38 +69,6 @@ const generateUserToken = async (UserObject) => {
     });
 };
 
-export async function getAllUsersController(req, res) {
-
-  console.log(req.body);
-
-  UserService.getAll()
-    .then((response) => {
-
-      if (response.Success) { 
-        let Usuarios =   response.Data;
-        _.forEach(Usuarios, (value) => {
-          value.TipoUsuario = {
-            IdTipoUsuario: value.TipoUsuario,
-            TUsuario: value.Tipo
-          }
-          value.Tipo = undefined;
-        });
-        
-        res.status(200).json({
-          Success: true,
-          Data: Usuarios
-        }); 
-      }
-      else {
-        LogError(getUsersController.name, response.Data.message)
-        res.status(500).json(response);
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-}
-
 export async function getUserByID(req, res) {
   const id = req.query.Id;
 
@@ -122,19 +90,8 @@ export async function getUserByID(req, res) {
               if (usuarioData.DataClasesProfesor) {
                 Usuario.DataClasesProfesor = usuarioData.DataClasesProfesor;
               }
-
-              console.log("Pide token" + req.query.needToken);
-              if (req.query.needToken) {
-                generateUserToken(response.Data[0])
-                  .then((jToken) => {
-                    Usuario['Token'] = jToken;
-                    res.status(200).json(Usuario);
-                  })
-              }
-              else
-              {
-                res.status(200).json(Usuario);
-              }
+              
+              res.status(200).json(Usuario);
             }
             else {
               res.status(200).json({
@@ -208,7 +165,7 @@ export function updateUserController(req, res) {
     .then((response) => {
       console.log("Respuesta" + response.Success)
 
-      if (response.Success) { res.status(200).json({Success: true, Data: `Se actualizo correctamente el usuario ${req.body.Mail}`}) }
+      if (response.Success) { res.status(200).json({ Success: true, Data: `Se actualizo correctamente el usuario ${req.body.Mail}` }) }
       else {
         LogError(updateUserController.name, response.Data.message)
         res.status(500).json(response);

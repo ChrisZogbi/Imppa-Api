@@ -5,6 +5,7 @@ import { getCategoriaClaseService, getCategoriaClaseByNombreCategoriaService, ad
     from '../services/CategoriaClaseService';
 import * as UserService from '../services/UserService'
 import { getTipoUsuario } from '../routes/adminRoutes';
+import * as SubscripcionService from '../services/SubscripcionService';
 
 const _ = require("lodash");
 
@@ -40,6 +41,85 @@ export async function getAllUsers(req, res) {
             console.log(err);
         });
 }
+
+/* #region Subscripcion */
+
+export function getAllSubscripcion(req, res) {
+    SubscripcionService.getAllSubcripcion()
+        .then((response) => {
+            console.log("Respuesta" + response.Success)
+
+            if (response.Success) { res.status(200).json(response) }
+            else {
+                LogError(getAllSubscipcion.name, response.Data.message)
+                res.status(500).json(response);
+            }
+
+        })
+        .catch((err) => {
+            res.status(500).json(response);
+            console.log(err);
+        });
+}
+
+export async function addSubscripcion(req, res) {
+    console.log(req.body);
+
+    SubscripcionService.addSubcripcionService(req.body)
+        .then((response) => {
+            console.log("Respuesta" + response.Success)
+
+            if (response.Success) { res.status(200).json(response) }
+            else {
+                LogError(addSubscipcionController.name, response.Data.message)
+                res.status(500).json(response);
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json(response);
+        });
+}
+
+export function updateSubscripcion(req, res) {
+    console.log(req.body);
+
+    SubscripcionService.updateSubcripcionService(req)
+        .then((response) => {
+            console.log("Respuesta" + response.Success)
+
+            if (response.Success) { res.status(200).json(response) }
+            else {
+                LogError(updateSubscipcionController.name, response.Data.message)
+                res.status(500).json(response);
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(500).json(response);
+        });
+}
+
+export function deleteSubscripcion(req, res) {
+    console.log(req.body);
+
+    SubscripcionService.deleteSubcripcionService(req).then((response) => {
+        console.log("Respuesta" + response.Success)
+
+        if (response.Success) { res.status(200).json(response) }
+        else {
+            LogError(deleteSubscipcionController.name, response.Data.message)
+            res.status(500).json(response);
+        }
+    })
+        .catch((err) => {
+            console.log(err);
+        });
+}
+
+/* #endregion */
+
+/* #region CategoriaClase */
 
 export async function getCategoriaClaseController(req, res) {
 
@@ -129,8 +209,13 @@ export async function deleteCategoriaClaseController(req, res) {
         })
         .catch((err) => {
             console.log(err);
+            res.status(500).json(response);
         });
 }
+
+/* #endregion */
+
+/* #region TipoUsuario */
 
 export async function getAllTipoUsuario(req, res) {
     getAllTipoUsuarioService()
@@ -200,3 +285,5 @@ export function deleteTipoUsuarioController(req, res) {
             console.log(err);
         });
 }
+
+/* #endregion */
