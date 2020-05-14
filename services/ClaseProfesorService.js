@@ -54,7 +54,9 @@ export function getClaseDistancia(claseFilter) {
     }
 
     if (claseFilter.FiltraPrecio) {
-        query = query + `AND (cp.Precio >= ${claseFilter.PrecioMin} and cp.Precio <= ${claseFilter.PrecioMax}) `
+        let filtroPrecio = claseFilter.PrecioMin ? `${claseFilter.PrecioMin}` : `0`;
+        filtroPrecio = claseFilter.PrecioMax ? filtroPrecio + ` AND cp.Precio <= ${claseFilter.PrecioMax}` : filtroPrecio;
+        query = query + `AND (cp.Precio >= ${filtroPrecio}) `;
     }
 
     if (claseFilter.FiltraDias) {
