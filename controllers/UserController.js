@@ -9,7 +9,6 @@ import { ETipoUsuario } from '../enum'
 import * as Auth from '../auth/token_validation'
 import { NText } from 'mssql';
 
-const _ = require("lodash");
 
 const ObtenerTipoUsuario = async (idUsuario) => {
   return new Promise((resolve, reject) => {

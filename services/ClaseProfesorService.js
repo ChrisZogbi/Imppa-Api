@@ -2,6 +2,8 @@ import app from "../app.js";
 import { pool } from "./index";
 import { ETipoClase } from '../enum'
 
+const _ = require("lodash");
+
 export function getClaseByIdUsuarioService(idUsuario) {
 
     var query = `select cp.*, dc.Lunes, dc.Martes, dc.Miercoles, dc.Jueves, dc.Viernes, dc.Sabado, dc.Domingo from ClaseProfesor as cp
@@ -56,11 +58,11 @@ export function getClaseDistancia(claseFilter) {
     }
 
     if (claseFilter.FiltraDias) {
-        query = query + `AND (dc.Lunes = ${claseFilter.Lunes} or dc.Martes = ${claseFilter.Martes} or dc.Miercoles = ${claseFilter.Miercoles} or dc.Jueves = ${claseFilter.Jueves}
-            or  dc.Viernes = ${claseFilter.Viernes} or dc.Sabado = ${claseFilter.Sabado} or dc.Domingo = ${claseFilter.Domingo})`
+        let filtroDias;
+        let dias = _.keys(_.pickBy(claseFilter.Dias, _.identity));
+        _.forEach(dias, (value) => filtroDias = !filtroDias ? `dc.${value} = true ` : filtroDias + `or dc.${value} = true `);
+        query = query + `AND (${filtroDias})`
     }
-
-    console.log(query)
 
     return pool.promise().query(query)
         .then(([rows]) => { return ({ Success: true, Data: rows }) })
