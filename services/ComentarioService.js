@@ -1,7 +1,7 @@
 import app from "../app.js";
 import { pool } from "./index";
 
-export function getComentariosProfesorService(idProfesor)
+export function getComentariosProfesor(idProfesor)
 {
     var query = `SELECT * FROM comentarios WHERE IDProfesor = ${idProfesor}`;
 
@@ -10,7 +10,7 @@ export function getComentariosProfesorService(idProfesor)
             .catch((err) => { return ({Success: false, Data: err})});
 }
 
-export function getComentariosClaseService(idClaseProfesor)
+export function getComentariosClase(idClaseProfesor)
 {
     var query = `SELECT * FROM comentarios WHERE IDClaseProfesor = ${idClaseProfesor}`;
 
@@ -19,7 +19,16 @@ export function getComentariosClaseService(idClaseProfesor)
             .catch((err) => { return ({Success: false, Data: err})});
 }
 
-export function getComentarioByIdService(idComentario)
+export function getComentarioAlumno(idAlumno)
+{
+    var query = `SELECT * FROM comentarios WHERE IDAlumno = ${idAlumno}`;
+
+    return pool.promise().query(query)
+            .then(([rows]) => {return ({Success: true, Data: rows})})
+            .catch((err) => { return ({Success: false, Data: err})});
+}
+
+export function getComentarioById(idComentario)
 {
     var query = `SELECT * FROM comentarios WHERE ID = ${idComentario}`
 
@@ -28,7 +37,7 @@ export function getComentarioByIdService(idComentario)
             .catch((err) => { return ({Success: false, Data: err})});   
 }
 
-export function addComentarioService(comentarioData)
+export function addComentario(comentarioData)
 {
     var query =  `INSERT INTO comentarios VALUES (?, ?)`
 
@@ -38,7 +47,7 @@ export function addComentarioService(comentarioData)
             .catch((err) => { return ({Success: false, Data: err})});
 }
 
-export function updateComentarioService(req, res)
+export function updateComentario(req, res)
 {
     var ComentarioData = req.body;
 
@@ -52,7 +61,7 @@ export function updateComentarioService(req, res)
             .catch((err) => { return ({Success: false, Data: err})});
 }
 
-export function deleteComentarioService(req, res)
+export function deleteComentario(req, res)
 {
     var idComentario = req.body.IdComentario;
 
