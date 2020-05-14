@@ -45,24 +45,26 @@ export function getClaseDistancia(claseFilter) {
                                 join usuarios u on u.id = cu.IDUsuario
                                 join categoriaclase cc on cc.ID = cp.IDCategoriaClase
         where 
-            cp.Hablitada = true and cp.IDTipoClase = ${ETipoClase.ADistancia}`
+            cp.Hablitada = true and cp.IDTipoClase = ${ETipoClase.ADistancia} `
 
     if (claseFilter.FiltraCategoria) {
-        query = query + `AND cp.IDCategoriaClase = ${claseFilter.IdCategoria}`
+        query = query + `AND cp.IDCategoriaClase = ${claseFilter.IdCategoria} `
     }
 
     if (claseFilter.FiltraPrecio) {
-        query = query + `AND (cp.Precio >= ${claseFilter.PrecioMin} and cp.Precio <= ${claseFilter.PrecioMax})`
+        query = query + `AND (cp.Precio >= ${claseFilter.PrecioMin} and cp.Precio <= ${claseFilter.PrecioMax}) `
     }
 
     if (claseFilter.FiltraDias) {
-        query = query + `AND (dc.Lunes = ${claseFilter.Lunes} and dc.Martes = ${claseFilter.Martes} and dc.Miercoles = ${claseFilter.Miercoles} and dc.Jueves = ${claseFilter.Jueves}
-            and  dc.Viernes = ${claseFilter.Viernes} and dc.Sabado = ${claseFilter.Sabado} and dc.Domingo = ${claseFilter.Domingo})`
+        query = query + `AND (dc.Lunes = ${claseFilter.Lunes} or dc.Martes = ${claseFilter.Martes} or dc.Miercoles = ${claseFilter.Miercoles} or dc.Jueves = ${claseFilter.Jueves}
+            or  dc.Viernes = ${claseFilter.Viernes} or dc.Sabado = ${claseFilter.Sabado} or dc.Domingo = ${claseFilter.Domingo})`
     }
+
+    console.log(query)
 
     return pool.promise().query(query)
         .then(([rows]) => { return ({ Success: true, Data: rows }) })
-        .catch((err) => { return ({ Success: false, Data: err }) });
+        .catch((err) => { return ({ Success: false, Data: err, Query: query }) });
 }
 
 export function getClaseByUbicacion(req) {

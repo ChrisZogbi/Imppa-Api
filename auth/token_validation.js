@@ -1,7 +1,8 @@
 import { verify } from 'jsonwebtoken';
 import {JWT_SECRET} from './passportConfiguration'
+import { sign } from 'jsonwebtoken';
 
-export let checkToken = (req, res, next) => {
+export const checkToken = (req, res, next) => {
     let token = req.get("authorization");
     if (token) {
         token = token.slice(7);
@@ -24,3 +25,12 @@ export let checkToken = (req, res, next) => {
         });
     }
 };
+
+export const generateUserToken = async (UserObject) => {
+    return new Promise((resolve, reject) => {
+      resolve(sign({ result: UserObject }, JWT_SECRET, { expiresIn: "12h" }));
+    })
+      .then((result) => {
+        return (result)
+      });
+  };

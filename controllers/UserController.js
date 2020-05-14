@@ -5,9 +5,8 @@ import { LogError } from './ErrorLogController';
 import * as SubscripcionService from '../services/SubscripcionService'
 import * as ClaseProfesorService from '../services/ClaseProfesorService'
 import { compareSync } from 'bcryptjs';
-import { sign } from 'jsonwebtoken';
-import { JWT_SECRET } from '../auth/passportConfiguration'
 import { ETipoUsuario } from '../enum'
+import * as Auth from '../auth/token_validation'
 import { NText } from 'mssql';
 
 const _ = require("lodash");
@@ -58,15 +57,6 @@ const TraerDatosUsuario = async (idUsuario, idTipoUsuario) => {
 
       return UsuarioDatos;
     })
-};
-
-const generateUserToken = async (UserObject) => {
-  return new Promise((resolve, reject) => {
-    resolve(sign({ result: UserObject }, JWT_SECRET, { expiresIn: "12h" }));
-  })
-    .then((result) => {
-      return (result)
-    });
 };
 
 export async function getUserByID(req, res) {
@@ -225,7 +215,7 @@ export async function loginUserController(req, res) {
 
               response.Data.Contrasenia = undefined;
 
-              generateUserToken(response.Data)
+              Auth.generateUserToken(response.Data)
                 .then((jToken) => {
                   let Usuario = {
                     Success: true,
@@ -281,7 +271,7 @@ export function googleAuth(req, res) {
       if (response.Success) {
         TraerDatosUsuario(response.Data[0].ID, response.Data[0].TipoUsuario)
           .then((usuarioData) => {
-            generateUserToken(response.Data[0])
+            Auth.generateUserToken(response.Data[0])
               .then((jToken) => {
                 res.status(200).json(
                   {
