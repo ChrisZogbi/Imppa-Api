@@ -79,13 +79,13 @@ export async function getUserByID(req, res) {
               if (usuarioData.DataClasesProfesor) {
                 Usuario.DataClasesProfesor = usuarioData.DataClasesProfesor;
               }
-              
+
               res.status(200).json(Usuario);
             }
             else {
               res.status(200).json({
                 Success: false,
-                Message: "Ha ocurrido un error en getById",
+                Message: "Ha ocurrido un error en getUserById",
                 Data: err.message
               });
             }
