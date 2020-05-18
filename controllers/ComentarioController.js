@@ -36,6 +36,7 @@ export function getComentariosProfesor(req, res) {
         });
     })
     .catch((err) => {
+      res.status(200).json({ Success: false, Data: `Error buscar comentarios IdProfesor: ${idProfesor}. Mensaje de error: ${err.message}` });
       LogError(getComentariosProfesor.name, `Error buscar comentarios IdProfesor: ${idProfesor}. Mensaje de error: ${err.message}`);
     });
 }
@@ -53,6 +54,7 @@ export function getComentarioClase(req, res) {
     })
     .catch((err) => {
       LogError(getComentarioClase.name, `Error buscar comentarios IdClaseProfesor: ${idClaseProfesor}. Mensaje de error: ${err.message}`);
+      res.status(200).json({ Success: false, Data: `Error buscar comentarios IdClaseProfesor: ${idClaseProfesor}. Mensaje de error: ${err.message}` });
     });
 }
 
@@ -69,6 +71,7 @@ export function getComentarioAlumno(req, res) {
     })
     .catch((err) => {
       LogError(getComentarioAlumno.name, `Error buscar comentarios idAlumno: ${idAlumno}. Mensaje de error: ${err.message}`);
+      res.status(200).json({ Success: false, Data: `Error buscar comentarios idAlumno: ${idAlumno}. Mensaje de error: ${err.message}` });
     });
 }
 
