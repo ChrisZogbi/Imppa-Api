@@ -64,8 +64,8 @@ export function getComentarioAlumno(req, res) {
     .then((response) => {
       if (!response.Success) { return res.status(200).json(response) }
 
-      ObtenerObjetoComentario(response.Data).
-        then((result) => {
+      ObtenerObjetoComentario(response.Data)
+        .then((result) => {
           res.status(200).json({ Success: true, Comentarios: result });
         });
     })
