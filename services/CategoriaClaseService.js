@@ -27,15 +27,15 @@ export function ExisteCategoria(nombreCategoria) {
 
 export function addCategoriaClaseService(nombreCategoria) {
     return ExisteCategoria(nombreCategoria)
-            .then((existeCategoria) => {
-                if (existeCategoria) { return ({ Success: false, Data: `Ya existe la categoria ${nombreCategoria}` }) };
-                var query = `INSERT INTO categoriaclase (NombreCategoria, Habilitado) VALUES ('${req.body.Categoria}', true) `;
-                return pool.promise().query(query)
-                    .then(() => { return ({ Success: true }) })
-                    .catch((err) => { return ({ Success: false, Data: err }) });
-            })
-            .catch((err) => { return ({ Success: false, Data: err }) });
-    }
+        .then((existeCategoria) => {
+            if (existeCategoria) { return ({ Success: false, Data: `Ya existe la categoria ${nombreCategoria}` }) };
+            var query = `INSERT INTO categoriaclase (NombreCategoria, Habilitado) VALUES ('${req.body.Categoria}', true) `;
+            return pool.promise().query(query)
+                .then(() => { return ({ Success: true }) })
+                .catch((err) => { return ({ Success: false, Data: err }) });
+        })
+        .catch((err) => { return ({ Success: false, Data: err }) });
+}
 
 export function updateCategoriaClaseService(req, res) {
     var DatosActualizar = req.body;
