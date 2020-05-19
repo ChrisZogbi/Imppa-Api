@@ -19,13 +19,18 @@ module.exports = function (app, passport) {
         .put(checkToken, AuthRoute.cambiarContrasenia);
 
     app.route('/users/')
-        .get(checkToken, AdminRoutes.getAllUsers)
+        // .get(checkToken, AdminRoutes.getAllUsers)
+        // .post(addUser)
+        // .put(checkToken, updateUser)
+        // .delete(checkToken, deleteUser);
+        .get(AdminRoutes.getAllUsers)
         .post(addUser)
-        .put(checkToken, updateUser)
-        .delete(checkToken, deleteUser);
+        .put(updateUser)
+        .delete(deleteUser);
 
     app.route('/user?:Id/', checkToken)
-        .get(checkToken, getUser);
+        //.get(checkToken, getUser);
+        .get(getUser);
 
     app.route('/tipoUsuario/')
         .get(AdminRoutes.getTipoUsuario)
@@ -58,29 +63,34 @@ module.exports = function (app, passport) {
         .delete(AdminRoutes.deleteCategoriaClase);
 
     app.route('/habilitarClase/')
-        .post(checkToken, ClaseRoutes.habilitarClase);
+        //.post(checkToken, ClaseRoutes.habilitarClase);
+        .post(ClaseRoutes.habilitarClase);
 
     app.route('/deshabilitarClase/')
-        .post(checkToken, ClaseRoutes.deshabilitarClase);
+        //.post(checkToken, ClaseRoutes.deshabilitarClase);
+        .post(ClaseRoutes.deshabilitarClase);
 
     app.route('/claseubicacion/')
-        .get(checkToken, ClaseRoutes.getClaseByUbicacion);
+        //.get(checkToken, ClaseRoutes.getClaseByUbicacion);
+        .get(ClaseRoutes.getClaseByUbicacion);
+
 
     app.route('/clasesdistancia/')
-        .post(checkToken, ClaseRoutes.getClasesDistanciaFiltro);
+        .post(ClaseRoutes.getClasesDistanciaFiltro);
 
     app.route('/clase?:IdProfesor/')
-        .get(checkToken, ClaseRoutes.getClaseByProfesor);
+        .get(ClaseRoutes.getClaseByProfesor);
 
     app.route('/clase/')
-        .post(checkToken, ClaseRoutes.addClase);
+        .post(ClaseRoutes.addClase);
 
     app.route('/actualizarClase/')
         .put(checkToken, ClaseRoutes.updateClase);
 
     app.route('/borrarClase/')
-        .delete(checkToken, ClaseRoutes.deleteClase);
+        .delete(ClaseRoutes.deleteClase)
 
     app.route('/token/')
-        .post(AuthRoute.token);
+        .post(AuthRoute.token)
+        .put(ClaseRoutes.updateClase);
 }

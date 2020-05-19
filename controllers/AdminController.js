@@ -23,7 +23,7 @@ export async function getAllUsers(req, res) {
                         IdTipoUsuario: value.TipoUsuario,
                         TUsuario: value.Tipo
                     }
-                    value.Tipo = undefined;
+                    value.Tipo = value.Contrasenia = undefined;
                 });
 
                 res.status(200).json({
