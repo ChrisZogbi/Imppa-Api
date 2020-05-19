@@ -50,7 +50,7 @@ export function getAll() {
             tu.Tipo
         FROM
             usuarios as u inner join tipousuario as tu on u.TipoUsuario = tu.ID
-            order by AddedDate desc `
+            order by ID desc `
 
     return pool.promise().query(query)
         .then(([rows]) => { return ({ Success: true, Data: rows }); })
