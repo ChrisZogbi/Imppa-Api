@@ -2,10 +2,10 @@ import app from "../app.js";
 import { pool } from "./index";
 
 export function existeRefreshToken(idUsuario, refreshToken) {
-    var query = `SELECT top 1 FROM refreshtoken where IdUsuario = ${idUsuario} and Token = ${refreshToken}, and Habilitado = true `;
+    var query = `select u.* from refreshtoken rt join usuarios u on rt.IdUsuario = u.ID where Token = '${refreshToken}' and rt.Habilitado = true  limit 1 `;
     console.log(query);
     return pool.promise().query(query)
-        .then(([rows]) => { return rows.length === 1 })
+        .then(([rows]) => { return { Success: rows.length === 1, Data: rows[0] } })
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
@@ -13,7 +13,7 @@ export function traerRefreshToken(refreshToken) {
     var query = `SELECT * FROM refreshtoken where token = '${refreshToken}' order by id desc`;
     console.log(query);
     return pool.promise().query(query)
-        .then(([rows]) => {return ({ Success: true, Data: rows })})
+        .then(([rows]) => { return ({ Success: true, Data: rows }) })
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 

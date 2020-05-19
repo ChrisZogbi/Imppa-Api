@@ -152,13 +152,21 @@ export async function loginUser(req, res) {
 
 export async function obtenerTokenNuevo(req, res) {
     let refreshToken = req.body.RefreshToken;
+    let idUsuario = req.body.IdUsuario;
+    console.log(refreshToken);
 
-    TokenService.existeRefreshToken(refreshToken)
+    TokenService.existeRefreshToken(idUsuario, refreshToken)
         .then((response) => {
-            Auth.generateUserToken()
+            if (!response.Success) { return res.status(401).json({ Success: false, Data: 'El RefreshToken enviado no existe en nuestros registros.' }) }
+
+            Auth.generateUserToken(response.Data)
+                .then((token) => {
+                    if (!token.Success) { return res.status(401).json({ Success: false, Data: `Error al generar el token nuevo. RefreshToken enviado: ${refreshToken}` }) }
+                    return res.status(200).json({ Success: true, Token: token.Token });
+                });
         })
         .catch((err) => {
-
+            return res.status(401).json({ Success: false, Data: `Ocurrio un error al intentar obtener un Token nuevo. RefreshToken enviado: ${refreshToken}` });
         });
 
 }

@@ -23,7 +23,7 @@ module.exports = function (app, passport) {
         // .post(addUser)
         // .put(checkToken, updateUser)
         // .delete(checkToken, deleteUser);
-        .get(AdminRoutes.getAllUsers)
+        .get(checkToken, AdminRoutes.getAllUsers)
         .post(addUser)
         .put(updateUser)
         .delete(deleteUser);
@@ -92,5 +92,4 @@ module.exports = function (app, passport) {
 
     app.route('/token/')
         .post(AuthRoute.token)
-        .put(ClaseRoutes.updateClase);
 }
