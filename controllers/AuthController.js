@@ -2,6 +2,10 @@ import { LogError } from './ErrorLogController';
 import * as Auth from '../auth/token_validation';
 import * as TokenService from '../services/RefreshTokenService'
 import { response } from 'express';
+import * as UserService from '../services/UserService';
+import { compareSync } from 'bcryptjs';
+import * as UserController from './UserController'
+import { auth } from 'googleapis/build/src/apis/abusiveexperiencereport';
 
 export function googleAuth(req, res) {
     const UserReq = req.body;
@@ -10,7 +14,7 @@ export function googleAuth(req, res) {
         .then((response) => {
             //Si devuelve true es que el usuario existe hace el login.
             if (response.Success) {
-                TraerDatosUsuario(response.Data[0].ID, response.Data[0].TipoUsuario)
+                UserController.TraerDatosUsuario(response.Data[0].ID, response.Data[0].TipoUsuario)
                     .then((usuarioData) => {
                         Auth.generateUserToken(response.Data[0])
                             .then((jToken) => {
@@ -82,7 +86,7 @@ export function googleAuth(req, res) {
         });
 }
 
-export async function loginUserController(req, res) {
+export async function loginUser(req, res) {
     let passIngresada = req.body.Contrasenia;
 
     UserService.getByMail(req.body.Mail)
@@ -91,18 +95,19 @@ export async function loginUserController(req, res) {
                 const result = compareSync(passIngresada, response.Data.Contrasenia);
 
                 if (result) {
-                    TraerDatosUsuario(response.Data.ID, response.Data.TipoUsuario)
+                    UserController.TraerDatosUsuario(response.Data.ID, response.Data.TipoUsuario)
                         .then((usuarioData) => {
 
                             response.Data.Contrasenia = undefined;
-                            Promise.all([Auth.generateUserToken(response.Data), Auth.generateRefreshToken(resonse.Data)])
-                                .then((reuslts) => {
+                            Promise.all([Auth.generateUserToken(response.Data), Auth.generateRefreshToken(response.Data)])
+                                .then((results) => {
                                     let jToken = results[0];
-                                    let jRToken = resutls[1];
+                                    let jRToken = results[1];
+                                    if (!jToken.Success || !jRToken.Success) { return res.status(200).json({ Success: false, Data: { Message: `Error al generar los tokens`, Token: jToken.Data, RefreshToken: jRToken.Data } }) }
                                     let Usuario = {
                                         Success: true,
-                                        Token: jToken,
-                                        RefreshToken: jRToken,
+                                        Token: jToken.Token,
+                                        RefreshToken: jRToken.RefreshToken,
                                         DataUsuario: response.Data,
                                         DataTipoUsuario: usuarioData.DataTipoUsuario,
                                         DataSubcripcion: usuarioData.DataSubcripcion
@@ -114,17 +119,17 @@ export async function loginUserController(req, res) {
 
                                     console.log(Usuario);
 
-                                    res.status(200).json(Usuario);
+                                    return res.status(200).json(Usuario);
                                 })
                                 .catch((err) => {
                                     console.log(err);
                                     LogError('generateUserToken', err);
-                                    res.status(200).json({ Success: true, Message: "Error en generateUserToken", Data: err.message });
+                                    return res.status(200).json({ Success: true, Message: "Error en generateUserToken", Data: err.message });
                                 })
                         })
                 }
                 else {
-                    res.status(200).json({
+                    return res.status(200).json({
                         Success: true,
                         Message: "Email y contrasenia no coinciden",
                         Data: []
@@ -132,7 +137,7 @@ export async function loginUserController(req, res) {
                 }
             }
             else {
-                res.status(200).json({
+                return res.status(200).json({
                     Success: true,
                     Message: "Email o contraseña incorrectos",
                     Data: []
@@ -145,16 +150,49 @@ export async function loginUserController(req, res) {
         });
 }
 
-export async function obtenerTokenNuevo(req, res)
-{
-    let refreshToken = req.RefreshToken;
+export async function obtenerTokenNuevo(req, res) {
+    let refreshToken = req.body.RefreshToken;
 
     TokenService.existeRefreshToken(refreshToken)
-    .then((response) => {
-        
-    })
-    .catch((err) => {
+        .then((response) => {
+            Auth.generateUserToken()
+        })
+        .catch((err) => {
 
-    });
+        });
 
+}
+
+export function cambiarContrasenia(req, res) {
+    console.log(req.body);
+    UserService.updateContrasenia(req)
+        .then((response) => {
+            console.log("Respuesta" + response.Success)
+
+            if (response.Success) { res.status(200).json(response) }
+            else {
+                LogError(updateContraseniaController.name, response.Data.message)
+                res.status(500).json(response);
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+}
+
+export function traerRefreshtoken(req, res) {
+    console.log(req.body);
+    TokenService.traerRefreshToken(req.body.RefreshToken)
+        .then((response) => {
+            console.log("Respuesta" + response.Success)
+
+            if (response.Success) { return res.status(200).json(response.Data) }
+            else {
+                LogError(traerRefreshtoken.name, response.Data.message)
+                return res.status(500).json(response);
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+        });
 }

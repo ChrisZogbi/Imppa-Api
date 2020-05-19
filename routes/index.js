@@ -1,4 +1,5 @@
-import { getUsers, getUser, addUser, updateUser, deleteUser, loginUser, cambiarContrasenia, loginGoogle } from './userRoutes'
+import { getUsers, getUser, addUser, updateUser, deleteUser, cambiarContraseniaAuthRoute } from './userRoutes'
+import * as AuthRoute from './authRoute'
 import { getTipoClase, addTipoClase, updateTipoClase, deleteTipoClase } from './tipoClaseRoutes'
 import { getComentario, addComentario, updateComentario, deleteComentario } from './comentarioRoutes'
 import * as AdminRoutes from './adminRoutes'
@@ -7,6 +8,16 @@ import { checkToken } from '../auth/token_validation';
 
 
 module.exports = function (app, passport) {
+
+    app.route('/login/')
+        .post(AuthRoute.loginUser);
+
+    app.route('/login/oauth/google/')
+        .post(AuthRoute.loginGoogle);
+
+    app.route('/cambioContrasenia/')
+        .put(checkToken, AuthRoute.cambiarContrasenia);
+
     app.route('/users/')
         .get(checkToken, AdminRoutes.getAllUsers)
         .post(addUser)
@@ -15,15 +26,6 @@ module.exports = function (app, passport) {
 
     app.route('/user?:Id/', checkToken)
         .get(checkToken, getUser);
-
-    app.route('/login/')
-        .post(loginUser);
-
-    app.route('/login/oauth/google/')
-        .post(loginGoogle)
-
-    app.route('/cambioContrasenia/')
-        .put(checkToken, cambiarContrasenia);
 
     app.route('/tipoUsuario/')
         .get(AdminRoutes.getTipoUsuario)
@@ -74,8 +76,11 @@ module.exports = function (app, passport) {
         .post(checkToken, ClaseRoutes.addClase);
 
     app.route('/actualizarClase/')
-        .put(checkToken, ClaseRoutes.updateClase)
+        .put(checkToken, ClaseRoutes.updateClase);
 
     app.route('/borrarClase/')
-        .delete(checkToken, ClaseRoutes.deleteClase)
+        .delete(checkToken, ClaseRoutes.deleteClase);
+
+    app.route('/token/')
+        .post(AuthRoute.token);
 }

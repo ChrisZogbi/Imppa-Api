@@ -9,8 +9,16 @@ export function existeRefreshToken(idUsuario, refreshToken) {
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
+export function traerRefreshToken(refreshToken) {
+    var query = `SELECT * FROM refreshtoken where token = '${refreshToken}' order by id desc`;
+    console.log(query);
+    return pool.promise().query(query)
+        .then(([rows]) => {return ({ Success: true, Data: rows })})
+        .catch((err) => { return ({ Success: false, Data: err }) });
+}
+
 export function saveRefreshToken(idUsuario, refreshToken) {
-    var query = `INSERT INTO refreshtoken (IdUsuario, Token, Habilitado) VALUES (${idUsuario}, ${refreshToken}, true) `;
+    var query = `INSERT INTO refreshtoken (IdUsuario, Token, Habilitado) VALUES (${idUsuario}, '${refreshToken}', true) `;
 
     console.log(query);
     return pool.promise().query(query)
