@@ -30,7 +30,7 @@ const ObtenerSubcripcionDelUsuario = async (idProfesor) => {
 
 const AgregarUserSubcripcion = async (idUsuario, idSubscripcion) => {
   return new Promise((resolve, reject) => {
-    resolve(addUserSubcripcion(idUsuario, idSubscripcion));
+    resolve(SubscripcionService.addUserSubcripcion(idUsuario, idSubscripcion));
   })
     .then((result) => {
       return (result)
@@ -60,6 +60,7 @@ const TraerDatosUsuario = async (idUsuario, idTipoUsuario) => {
 
 export async function getUserByID(req, res) {
   const id = req.query.Id;
+  console.log("Id Usuario: " + req.query.idSubscripcion)
 
   UserService.getById(id)
     .then((response) => {
@@ -119,22 +120,26 @@ export async function addUserController(req, res) {
           .then((responseAdd) => {
             console.log("Respuesta" + responseAdd.Success)
             if (responseAdd.Success && responseAdd.InsertId) {
+              
               if (idTipoUsuario === ETipoUsuario.Profesor) {
                 AgregarUserSubcripcion(responseAdd.InsertId, idSubscripcion)
                   .then((responseSubscripcion) => {
+                    
                     if (!responseSubscripcion.Success) {
                       LogError(addUserController.name, responseSubscripcion.Data.message)
-                      res.status(500).json(responseSubscripcion);
+                      return res.status(500).json(responseSubscripcion);
                     }
+
                   });
               }
+
             }
             else {
               LogError(addUserController.name, responseAdd.Data.message)
-              res.status(500).json(responseAdd);
+              return res.status(500).json(responseAdd);
             }
 
-            let idUsuarioInsertado = { query: { Id: responseAdd.InsertId, needToken: true } }
+            let idUsuarioInsertado = { query: { Id: responseAdd.InsertId } }
             getUserByID(idUsuarioInsertado, res)
           })
           .catch((err) => {
