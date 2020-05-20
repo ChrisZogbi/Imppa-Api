@@ -1,7 +1,7 @@
 import { getUsers, getUser, addUser, updateUser, deleteUser, cambiarContraseniaAuthRoute } from './userRoutes'
 import * as AuthRoute from './authRoute'
 import { getTipoClase, addTipoClase, updateTipoClase, deleteTipoClase } from './tipoClaseRoutes'
-import { getComentario, addComentario, updateComentario, deleteComentario } from './comentarioRoutes'
+import * as ComentarioRoute from './comentarioRoutes'
 import * as AdminRoutes from './adminRoutes'
 import * as ClaseRoutes from './claseRoutes';
 import { checkToken } from '../auth/token_validation';
@@ -51,10 +51,18 @@ module.exports = function (app, passport) {
         .delete(AdminRoutes.deleteSubscripcion);
 
     app.route('/comentario/')
-        .get(getComentario)
-        .post(addComentario)
-        .put(updateComentario)
-        .delete(deleteComentario);
+        .post(ComentarioRoute.addComentario)
+        .put(ComentarioRoute.updateComentario)
+        .delete(ComentarioRoute.deleteComentario);
+
+    app.route('/comentarioProfesor/:IdProfesor')
+        .get(ComentarioRoute.getComentarioProfesor);
+
+    app.route('/comentarioAlumno/:IdAlumno')
+        .get(ComentarioRoute.getComentarioAlumno);
+
+    app.route('/comentarioClase/:IdClaseProfesor')
+        .get(ComentarioRoute.getComentarioClase);
 
     app.route('/categoriaClase/')
         .get(AdminRoutes.getCategoriaClase)

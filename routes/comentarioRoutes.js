@@ -1,18 +1,28 @@
-import {getComentarioController, addComentarioController, updateComentarioController, deleteComentarioController} from '../controllers/ComentarioController';
+import * as ComentarioController from '../controllers/ComentarioController';
 
-export let getComentario = async (req, res) => {
-    console.log("GetUsers Route inicio" + req.baseUrl);
-    return( getComentarioController(req,res));
+export let getComentarioProfesor = async (req, res) => {
+    console.log("getComentarioProfesor Route inicio");
+    return( ComentarioController.getComentariosProfesor(req, res));
+}
+
+export let getComentarioAlumno = async (req, res) => {
+    console.log("getComentarioAlumno Route inicio");
+    return( ComentarioController.getComentarioAlumno(req, res));
+}
+
+export let getComentarioClase = async (req, res) => {
+    console.log("GetComentarioClase Route inicio" + req.baseUrl);
+    return( ComentarioController.getComentarioClase(req, res));
 }
 
 export let  addComentario = async (req, res) => {
-    return(addComentarioController(req, res));
+    return(ComentarioController.addComentarioController(req, res));
 }
 
 export let updateComentario = async (req, res) => {
-    return(updateComentarioController(req, res));
+    return(ComentarioController.updateComentarioController(req, res));
 }
 
 export let deleteComentario = async (req, res) => {
-    return(deleteComentarioController(req, res));
+    return(ComentarioController.deleteComentarioController(req, res));
 } 

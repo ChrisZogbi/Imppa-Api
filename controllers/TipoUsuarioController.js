@@ -30,7 +30,7 @@ export async function getTipoUsuarioByIdUsuario(idUsuario) {
 export async function addTipoUsuarioController(req, res) {
   console.log(req.body);
 
-  addTipoUsuarioService(req)
+  addTipoUsuarioService(req.body.Tipo)
     .then((response) => {
       console.log("Respuesta" + response.Success)
 

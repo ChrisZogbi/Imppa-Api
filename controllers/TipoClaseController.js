@@ -1,5 +1,5 @@
 import express, { response } from 'express';
-import {getTipoClaseService, addTipoClaseService, updateTipoClaseService, deleteTipoClaseService}  from '../services/TipoClaseService';
+import {getTipoClaseService, addTipoClase, updateTipoClaseService, deleteTipoClaseService}  from '../services/TipoClaseService';
 import {LogError} from './ErrorLogController';
 
  export function getTipoClaseController(req, res) {
@@ -26,15 +26,15 @@ import {LogError} from './ErrorLogController';
 export async function addTipoClaseController(req, res) {
     console.log(req.body);
 
-    addTipoClaseService(req)
+    addTipoClase(req.body.TipoClase)
     .then((response) => {
       console.log("Respuesta" + response.Success)
       
-      if(response.Success){res.status(200).json(response)}
+      if(response.Success){return res.status(200).json(response)}
       else
       {
         LogError(addTipoClaseController.name, response.Data.message)
-        res.status(500).json(response);
+        return res.status(200).json(response);
       }
     })
     .catch((err) => {

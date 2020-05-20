@@ -23,11 +23,28 @@ export function getTipoUsuarioByIdUsuarioService(IdUsurio) {
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
-export function addTipoUsuarioService(req) {
-    var query = `INSERT INTO tipousuario (tipo) VALUES (?) `;
+export function ExisteTipoUsuario(tipoUsuario) {
+    var query = `SELECT * FROM tipousuario WHERE Tipo = ${tipoUsuario}`;
 
-    return pool.promise().query(query, [req.body.Tipo])
-        .then(() => { return ({ Success: true, Data: 'Se agregó exitosamente el Tipo Usuario' }) })
+    return pool.promise().query(query)
+        .then(([rows]) => { return rows.length > 0 })
+        .catch((err) => { return ({ Success: false, Data: err }) });
+}
+
+export function addTipoUsuarioService(tipoUsuario) {
+    tipoUsuario = tipoUsuario.charAt(0).toUpperCase() + tipoUsuario.slice(1)
+    
+    return ExisteTipoUsuario(tipoUsuario)
+        .then((existeTipoTipoUsuario) => {
+
+            if (existeTipoTipoUsuario) { return ({ Success: false, Data: `Ya existe el Tipo Usuario ${tipoUsuario}` }) };
+
+            var query = `INSERT INTO tipousuario (tipo) VALUES ('${tipoUsuario}') `;
+
+            return pool.promise().query(query)
+                .then(() => { return ({ Success: true }) })
+                .catch((err) => { return ({ Success: false, Data: err }) });
+        })
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
