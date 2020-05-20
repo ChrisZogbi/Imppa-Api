@@ -1,8 +1,8 @@
 import app from "../app.js";
 import { pool } from "./index";
 
-const selectComentario =  
-                            `
+const selectComentario =
+    `
                             SELECT 
                                 c.ID as IdComentario,
                                 up.ID as IdProfesor,
@@ -27,7 +27,7 @@ const selectComentario =
 
 export function getComentariosProfesor(idProfesor) {
     var query = ` ${selectComentario} WHERE IDProfesor = ${idProfesor}`;
-    
+
     return pool.promise().query(query)
         .then(([rows]) => { return ({ Success: true, Data: rows }) })
         .catch((err) => { return ({ Success: false, Data: err }) });
@@ -57,29 +57,44 @@ export function getComentarioById(idComentario) {
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
-export function addComentario(comentarioData) {
-    var query = `
-                    INSERT INTO comentarios
-                    (
-                        IDProfesor,
-                        IDAlumno,
-                        Comentario,
-                        Puntaje,
-                        IDClaseProfesor
-                    )
-                    VALUES
-                    (
-                        ${comentarioData.IDProfesor},
-                        ${comentarioData.IDAlumno},
-                        '${comentarioData.Comentario}',
-                        ${comentarioData.Puntaje},
-                        ${comentarioData.IDClaseProfesor}
-                    )
-                        `
+export function ExisteComentario(idProfesor, idAlumno, idClaseProfesor) {
+    var query = `SELECT * FROM comentarios WHERE IDProfesor = ${idProfesor} and IDAlumno = ${idAlumno} and IDClaseProfesor = ${idClaseProfesor}`;
 
     return pool.promise().query(query)
-        .then(() => { return ({ Success: true }) })
+        .then(([rows]) => { return rows.length > 0 })
         .catch((err) => { return ({ Success: false, Data: err }) });
+}
+
+export function addComentario(comentarioData) {
+
+    return ExisteComentario(comentarioData.IDProfesor, comentarioData.IDAlumno, comentarioData.IDClaseProfesor)
+        .then((existeComentario) => {
+            
+            if (existeComentario) { return ({ Success: false, Data: `Ya has hecho un comentario para esta clase. IdClase: ${comentarioData.IDClaseProfesor}, Alumno: ${comentarioData.IDAlumno} ` }) };
+
+            var query = `
+                INSERT INTO comentarios
+                (
+                    IDProfesor,
+                    IDAlumno,
+                    Comentario,
+                    Puntaje,
+                    IDClaseProfesor
+                )
+                VALUES
+                (
+                    ${comentarioData.IDProfesor},
+                    ${comentarioData.IDAlumno},
+                    '${comentarioData.Comentario}',
+                    ${comentarioData.Puntaje},
+                    ${comentarioData.IDClaseProfesor}
+                )
+                    `
+
+            return pool.promise().query(query)
+                .then(() => { return ({ Success: true }) })
+                .catch((err) => { return ({ Success: false, Data: err }) });
+        });
 }
 
 export function updateComentario(req, res) {

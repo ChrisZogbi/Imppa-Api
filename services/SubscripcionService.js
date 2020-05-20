@@ -47,18 +47,11 @@ export function addSubcripcionService(Subcripcion) {
 }
 
 export function ExisteSubcripcion(nombreSubscripcion) {
-    
-
-    
     var query = `SELECT * FROM subscripcion WHERE Nombre = '${nombreSubscripcion}' `;
 
     return pool.promise().query(query)
         .then(([rows]) => { return rows.length > 0 })
         .catch((err) => { return ({ Success: false, Data: err }) });
-}
-
-export function addTipoUsuarioService(req) {
-
 }
 
 export function addUserSubcripcion(idUsuario, idSubscripcion) {
