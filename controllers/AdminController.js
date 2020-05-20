@@ -71,7 +71,7 @@ export async function addSubscripcion(req, res) {
 
             if (response.Success) { res.status(200).json(response) }
             else {
-                LogError(addSubscipcionController.name, response.Data.message)
+                LogError(addSubscripcion.name, response.Data.message)
                 res.status(500).json(response);
             }
         })

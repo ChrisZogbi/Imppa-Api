@@ -26,10 +26,15 @@ export function ExisteCategoria(nombreCategoria) {
 }
 
 export function addCategoriaClaseService(nombreCategoria) {
+    nombreCategoria = nombreCategoria.charAt(0).toUpperCase() + nombreCategoria.slice(1)
+
     return ExisteCategoria(nombreCategoria)
         .then((existeCategoria) => {
+
             if (existeCategoria) { return ({ Success: false, Data: `Ya existe la categoria ${nombreCategoria}` }) };
-            var query = `INSERT INTO categoriaclase (NombreCategoria, Habilitado) VALUES ('${req.body.Categoria}', true) `;
+
+            var query = `INSERT INTO categoriaclase (NombreCategoria, Habilitado) VALUES ('${nombreCategoria}', true) `;
+
             return pool.promise().query(query)
                 .then(() => { return ({ Success: true }) })
                 .catch((err) => { return ({ Success: false, Data: err }) });

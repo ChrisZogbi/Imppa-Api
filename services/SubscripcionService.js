@@ -25,19 +25,40 @@ export function getSubcripcionByIdProfesor(idProfesor) {
         where subscripcionusuario.IDUsuario = ${idProfesor}`;
 
     return pool.promise().query(query)
-        .then(([rows]) => { return ({ Success: true, Data: rows}) })
+        .then(([rows]) => { return ({ Success: true, Data: rows }) })
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
 export function addSubcripcionService(Subcripcion) {
+    let nombreSubscripcion = Subcripcion.Nombre.charAt(0).toUpperCase() + Subcripcion.Nombre.slice(1)
+    
+    return ExisteSubcripcion(nombreSubscripcion)
+        .then((existeSubscripcion) => {
 
-    var query = `INSERT INTO Subscripcion (Nombre, Descripcion, precio, CantClases) VALUES ('${Subcripcion.Nombre}', '${Subcripcion.Descripcion}', ${Subcripcion.Precio}, ${Subcripcion.CantidadClases}) `;
+            if (existeSubscripcion) { return ({ Success: false, Data: `Ya existe la Subscripcion ${Subcripcion.Nombre}` }) };
 
-    console.log(query);
+            var query = `INSERT INTO Subscripcion (Nombre, Descripcion, precio, CantClases) VALUES ('${Subcripcion.Nombre}', '${Subcripcion.Descripcion}', ${Subcripcion.Precio}, ${Subcripcion.CantidadClases}) `;
+
+            return pool.promise().query(query)
+                .then(() => { return ({ Success: true }) })
+                .catch((err) => { return ({ Success: false, Data: err }) });
+        })
+        .catch((err) => { return ({ Success: false, Data: err }) });
+}
+
+export function ExisteSubcripcion(nombreSubscripcion) {
+    
+
+    
+    var query = `SELECT * FROM subscripcion WHERE Nombre = '${nombreSubscripcion}' `;
 
     return pool.promise().query(query)
-        .then(() => { return ({ Success: true }) })
+        .then(([rows]) => { return rows.length > 0 })
         .catch((err) => { return ({ Success: false, Data: err }) });
+}
+
+export function addTipoUsuarioService(req) {
+
 }
 
 export function addUserSubcripcion(idUsuario, idSubscripcion) {

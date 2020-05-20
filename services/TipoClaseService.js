@@ -18,10 +18,15 @@ export function ExisteTipoClase(tipoClaseDescripcion) {
 }
 
 export function addTipoClase(tipoClaseDescripcion) {
+    tipoClaseDescripcion = tipoClaseDescripcion.charAt(0).toUpperCase() + tipoClaseDescripcion.slice(1)
+
     return ExisteTipoClase(tipoClaseDescripcion)
         .then((existeTipoClaseDescripcion) => {
+
             if (existeTipoClaseDescripcion) { return ({ Success: false, Data: `Ya existe el Tipo Clase ${tipoClaseDescripcion}` }) };
+            
             var query = `INSERT INTO tipoclase (Tipo) VALUES ('${tipoClaseDescripcion}') `;;
+            
             return pool.promise().query(query)
                 .then(() => { return ({ Success: true }) })
                 .catch((err) => { return ({ Success: false, Data: err }) });
