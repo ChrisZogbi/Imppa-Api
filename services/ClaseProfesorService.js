@@ -100,22 +100,83 @@ export function getClaseByUbicacion(req) {
 }
 
 export function addClaseProfesorService(req, res) {
-    var ClaseProfesor = req.body;
+    return new Promise((resolve, reject) => {
 
-    var query = `INSERT INTO claseprofesor
-                    (IDCategoriaClase, IDTipoClase, Precio, Latitud, Longitud, Hablitada)
-                  VALUES
-                    (${ClaseProfesor.IDCategoriaClase},${ClaseProfesor.IDTipoClase},${ClaseProfesor.Precio},
-                        ${ClaseProfesor.Latitud},${ClaseProfesor.Longitud}, true);`
+        console.log("Empezo la promise en el service");
+        pool.getConnection((err, connection) => {
+            connection.beginTransaction((err) => {
+                if (err) {                  //Transaction Error (Rollback and release connection)
+                    console.log("Error al empezar la transaccion");
+                    connection.rollback(() => {
+                        connection.release();
+                        resolve({ Success: false, Data: err });
+                        //Failure
+                    });
+                }
+                else {
+                    var ClaseProfesor = req.body;
 
-    console.log(query);
-    return pool.promise().query(query)
-        .then(([result]) => {
-            return addDiasClase(result.insertId, ClaseProfesor).then(resultDias => {
-                if (resultDias.Success) { return ({ Success: true, InsertID: result.insertId }) }
-            });
-        })
-        .catch((err) => { return ({ Success: false, Data: err }) });
+                    var queryInsertClaseProfesor = `
+                                INSERT INTO claseprofesor
+                                    (IDCategoriaClase, IDTipoClase, Precio, Latitud, Longitud, Hablitada)
+                                VALUES
+                                    (${ClaseProfesor.IDCategoriaClase},${ClaseProfesor.IDTipoClase},${ClaseProfesor.Precio},
+                                        ${ClaseProfesor.Latitud},${ClaseProfesor.Longitud}, true);`
+
+                    connection.query(queryInsertClaseProfesor, (err, result) => {
+                        if (err) {          //Query Error (Rollback and release connection)
+                            connection.rollback(function () {
+                                connection.release();
+                                resolve({ Success: false, Data: err });
+                                //Failure
+                            });
+                        }
+                        
+                        var queryInsertDiasClase = `
+                            INSERT INTO diasxclase
+                                (IDClaseProfesor,Lunes,Martes,Miercoles,Jueves,Viernes,Sabado,Domingo)
+                            VALUES
+                                (${result.insertId},${ClaseProfesor.Lunes},${ClaseProfesor.Martes},${ClaseProfesor.Miercoles},${ClaseProfesor.Jueves},${ClaseProfesor.Viernes},${ClaseProfesor.Sabado},${ClaseProfesor.Domingo})`
+
+                        connection.query(queryInsertDiasClase, function (err) {
+                            if (err) {          //Query Error (Rollback and release connection)
+                                connection.rollback(function () {
+                                    connection.release();
+                                    resolve({ Success: false, Data: err });
+                                    //Failure
+                                });
+                            }
+                            connection.commit(function (err) {
+                                if (err) {
+                                    connection.rollback(function () {
+                                        connection.release();
+                                        resolve({ Success: false, Data: err });
+                                        //Failure
+                                    });
+                                } else {
+                                    connection.release();
+                                    //Success
+                                    resolve({ Success: true,  InsertID: result.insertId});
+                                }
+                            });
+                        });
+                    });
+                }
+            })
+        });
+    })
+        .then((result) => { return (result) });
+
+
+
+
+
+
+
+
+
+
+
 }
 
 export async function updateClase(ClaseData) {
@@ -143,7 +204,7 @@ export async function updateClase(ClaseData) {
                             ,Longitud = '${ClaseData.Longitud}'
                         WHERE ID = ${ClaseData.IdClase}`;
 
-                    connection.query(queryUpdateClaseProfesor, function (err, results) {
+                    connection.query(queryUpdateClaseProfesor, (err, results) => {
                         if (err) {          //Query Error (Rollback and release connection)
                             connection.rollback(function () {
                                 connection.release();
@@ -235,17 +296,6 @@ export function HabilitarClase(req) {
 
     return pool.promise().query(query)
         .then((rows, fields) => { return ({ Success: true }) })
-        .catch((err) => { return ({ Success: false, Data: err }) });
-}
-
-function addDiasClase(idClase, ClaseProfesor) {
-    var query = `INSERT INTO diasxclase
-                (IDClaseProfesor,Lunes,Martes,Miercoles,Jueves,Viernes,Sabado,Domingo)
-                VALUES
-                (${idClase},${ClaseProfesor.Lunes},${ClaseProfesor.Martes},${ClaseProfesor.Miercoles},${ClaseProfesor.Jueves},${ClaseProfesor.Viernes},${ClaseProfesor.Sabado},${ClaseProfesor.Domingo})`
-
-    return pool.promise().query(query)
-        .then(() => { return ({ Success: true }) })
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
