@@ -102,16 +102,10 @@ export function getClaseByUbicacion(req) {
 export function addClaseProfesorService(req, res) {
     return new Promise((resolve, reject) => {
 
-        console.log("Empezo la promise en el service");
         pool.getConnection((err, connection) => {
             connection.beginTransaction((err) => {
                 if (err) {                  //Transaction Error (Rollback and release connection)
-                    console.log("Error al empezar la transaccion");
-                    connection.rollback(() => {
-                        connection.release();
-                        resolve({ Success: false, Data: err });
-                        //Failure
-                    });
+                    connection.rollback(() => { connection.release(); resolve({ Success: false, Data: err }); });
                 }
                 else {
                     var ClaseProfesor = req.body;
@@ -125,38 +119,26 @@ export function addClaseProfesorService(req, res) {
 
                     connection.query(queryInsertClaseProfesor, (err, result) => {
                         if (err) {          //Query Error (Rollback and release connection)
-                            connection.rollback(function () {
-                                connection.release();
-                                resolve({ Success: false, Data: err });
-                                //Failure
-                            });
+                            connection.rollback(function () { connection.release(); resolve({ Success: false, Data: err }); });
                         }
-                        
+
                         var queryInsertDiasClase = `
-                            INSERT INTO diasxclase
-                                (IDClaseProfesor,Lunes,Martes,Miercoles,Jueves,Viernes,Sabado,Domingo)
-                            VALUES
-                                (${result.insertId},${ClaseProfesor.Lunes},${ClaseProfesor.Martes},${ClaseProfesor.Miercoles},${ClaseProfesor.Jueves},${ClaseProfesor.Viernes},${ClaseProfesor.Sabado},${ClaseProfesor.Domingo})`
+                                INSERT INTO diasxclase
+                                    (IDClaseProfesor,Lunes,Martes,Miercoles,Jueves,Viernes,Sabado,Domingo)
+                                VALUES
+                                    (${result.insertId},${ClaseProfesor.Lunes},${ClaseProfesor.Martes},${ClaseProfesor.Miercoles},${ClaseProfesor.Jueves},${ClaseProfesor.Viernes},${ClaseProfesor.Sabado},${ClaseProfesor.Domingo})`
 
                         connection.query(queryInsertDiasClase, function (err) {
-                            if (err) {          //Query Error (Rollback and release connection)
-                                connection.rollback(function () {
-                                    connection.release();
-                                    resolve({ Success: false, Data: err });
-                                    //Failure
-                                });
+                            if (err) {
+                                connection.rollback(function () { connection.release(); resolve({ Success: false, Data: err }); });
                             }
                             connection.commit(function (err) {
                                 if (err) {
-                                    connection.rollback(function () {
-                                        connection.release();
-                                        resolve({ Success: false, Data: err });
-                                        //Failure
-                                    });
+                                    connection.rollback(function () { connection.release(); resolve({ Success: false, Data: err }); });
                                 } else {
                                     connection.release();
                                     //Success
-                                    resolve({ Success: true,  InsertID: result.insertId});
+                                    resolve({ Success: true, InsertID: result.insertId });
                                 }
                             });
                         });
@@ -166,17 +148,6 @@ export function addClaseProfesorService(req, res) {
         });
     })
         .then((result) => { return (result) });
-
-
-
-
-
-
-
-
-
-
-
 }
 
 export async function updateClase(ClaseData) {
