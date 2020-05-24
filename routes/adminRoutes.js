@@ -37,6 +37,7 @@ export let deleteCategoriaClase = async (req, res) => {
 } 
 
 export let getAllSubscripciones = async (req, res) => {
+    console.log("Llego al route")
     return (AdminController.getAllSubscripcion(req,res));
 }
 

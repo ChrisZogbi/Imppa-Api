@@ -3,11 +3,13 @@ import { pool } from "./index";
 //import { Request } from "mssql";
 
 export function getAllSubcripcion() {
+    console.log("Llego al service");
+    
     var query = `SELECT * FROM Subscripcion`;
     console.log(query);
     return pool.promise().query(query)
         .then(([rows]) => { return ({ Success: true, Data: rows }) })
-        .catch((err) => { return ({ Success: false, Data: err }) });
+        .catch((err) => { return ({ Success: false, error: `Ocurrio un error en ${getAllSubcripcion.name}. Error: ${err.message}` }) });
 }
 
 export function getSubcripcionByIdService(req) {
