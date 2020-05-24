@@ -99,7 +99,7 @@ export function getClaseByUbicacion(req) {
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
-export function addClaseProfesorService(req, res) {
+export function addClaseProfesorService(req) {
     return new Promise((resolve, reject) => {
 
         pool.getConnection((err, connection) => {
@@ -108,25 +108,19 @@ export function addClaseProfesorService(req, res) {
                     connection.rollback(() => { connection.release(); resolve({ Success: false, Data: err }); });
                 }
                 else {
-                    var ClaseProfesor = req.body;
-
-                    var queryInsertClaseProfesor = `
-                                INSERT INTO claseprofesor
-                                    (IDCategoriaClase, IDTipoClase, Precio, Latitud, Longitud, Hablitada)
-                                VALUES
-                                    (${ClaseProfesor.IDCategoriaClase},${ClaseProfesor.IDTipoClase},${ClaseProfesor.Precio},
-                                        ${ClaseProfesor.Latitud},${ClaseProfesor.Longitud}, true);`
+                    const ClaseProfesor = req.body;
+                    const queryInsertClaseProfesor = `
+                                INSERT INTO claseprofesor (IDCategoriaClase, IDTipoClase, Precio, Latitud, Longitud, Hablitada) VALUES 
+                                (${ClaseProfesor.IDCategoriaClase},${ClaseProfesor.IDTipoClase},${ClaseProfesor.Precio}, ${ClaseProfesor.Latitud},${ClaseProfesor.Longitud}, true);`
 
                     connection.query(queryInsertClaseProfesor, (err, result) => {
                         if (err) {          //Query Error (Rollback and release connection)
                             connection.rollback(function () { connection.release(); resolve({ Success: false, Data: err }); });
                         }
 
-                        var queryInsertDiasClase = `
-                                INSERT INTO diasxclase
-                                    (IDClaseProfesor,Lunes,Martes,Miercoles,Jueves,Viernes,Sabado,Domingo)
-                                VALUES
-                                    (${result.insertId},${ClaseProfesor.Lunes},${ClaseProfesor.Martes},${ClaseProfesor.Miercoles},${ClaseProfesor.Jueves},${ClaseProfesor.Viernes},${ClaseProfesor.Sabado},${ClaseProfesor.Domingo})`
+                        const queryInsertDiasClase = `
+                                INSERT INTO diasxclase (IDClaseProfesor,Lunes,Martes,Miercoles,Jueves,Viernes,Sabado,Domingo) VALUES 
+                                (${result.insertId},${ClaseProfesor.Lunes},${ClaseProfesor.Martes},${ClaseProfesor.Miercoles},${ClaseProfesor.Jueves},${ClaseProfesor.Viernes},${ClaseProfesor.Sabado},${ClaseProfesor.Domingo})`
 
                         connection.query(queryInsertDiasClase, function (err) {
                             if (err) {
@@ -166,8 +160,7 @@ export async function updateClase(ClaseData) {
                 }
                 else {
                     let queryUpdateClaseProfesor =
-                        `UPDATE claseprofesor
-                            SET 
+                        `UPDATE claseprofesor SET 
                             IDCategoriaClase = ${ClaseData.IdCategoriaClase}
                             ,IDTipoClase = ${ClaseData.IdTipoClase}
                             ,Precio = '${ClaseData.Precio}'
@@ -180,7 +173,6 @@ export async function updateClase(ClaseData) {
                             connection.rollback(function () {
                                 connection.release();
                                 resolve({ Success: false, Data: err });
-                                //Failure
                             });
                         }
                         let queryUpdateDiasClase =
@@ -199,7 +191,6 @@ export async function updateClase(ClaseData) {
                                 connection.rollback(function () {
                                     connection.release();
                                     resolve({ Success: false, Data: err });
-                                    //Failure
                                 });
                             }
                             connection.commit(function (err) {
@@ -207,11 +198,9 @@ export async function updateClase(ClaseData) {
                                     connection.rollback(function () {
                                         connection.release();
                                         resolve({ Success: false, Data: err });
-                                        //Failure
                                     });
                                 } else {
                                     connection.release();
-                                    //Success
                                     resolve({ Success: true });
                                 }
                             });
