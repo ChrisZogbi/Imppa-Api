@@ -5,7 +5,6 @@ import { LogError } from './ErrorLogController';
 
 const _ = require("lodash");
 
-
 const AgregarClaseXUsuario = async (idUsuario, idClase) => {
     return new Promise((resolve, reject) => {
         resolve(ClaseXUsuarioService.addClaseXUsuarioService(idUsuario, idClase));
@@ -52,6 +51,7 @@ export function getClasesByProfesor(req, res) {
 }
 
 export function getClasesDistancia(req, res) {
+    ObtenerArrayHorariosClase(req.body.Horarios);
     console.log('Llego al controller man');
     ClaseProfesorService.getClaseDistancia(req.body)
         .then(response => {
@@ -62,7 +62,7 @@ export function getClasesDistancia(req, res) {
                         {
                             DataClase: {
                                 IdClaseProfesor: value.IdClaseProfesor,
-                                CategoriaClase: {ID: value.IdCategoriaClase, Nombre: value.NombreCategoria},
+                                CategoriaClase: { ID: value.IdCategoriaClase, Nombre: value.NombreCategoria },
                                 IDTipoClase: value.IDTipoClase,
                                 Precio: value.Precio,
                                 Lunes: value.Lunes,
@@ -106,7 +106,7 @@ export function getClasesByUbicacion(req, res) {
                         {
                             DataClase: {
                                 IdClaseProfesor: value.IdClaseProfesor,
-                                CategoriaClase: {ID: value.IdCategoriaClase, Nombre: value.NombreCategoria},
+                                CategoriaClase: { ID: value.IdCategoriaClase, Nombre: value.NombreCategoria },
                                 IDTipoClase: value.IDTipoClase,
                                 Precio: value.Precio,
                                 Latitud: value.Latitud,
@@ -262,5 +262,27 @@ export async function deshabilitarClase(req, res) {
         .catch((err) => {
             LogError(deshabilitarClase.name, err.message);
             console.log(err);
+        });
+}
+
+const ObtenerArrayHorariosClase = async (horarios) => {
+    return new Promise((resolve, reject) => {
+        try {
+
+            let horariosArray = horarios.split("");
+            horariosArray = _.keys(_.pickBy(horariosArray, (value, key) => { if (value === '1') { return value } }));
+            resolve()
+        }
+        catch (error) {
+            console.log("Llego a ObtenerArrayHorariosClase catch");
+            reject({ Success: false, error: `Error en ObtenerArrayHorarios. Error: ${error.message} ` })
+        }
+    })
+        .then((result) => {
+            console.log("Respuesta de la promise: " + result);
+            return (result)
+        })
+        .catch((error) => {
+            console.log(error);
         });
 }

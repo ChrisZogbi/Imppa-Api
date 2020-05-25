@@ -30,6 +30,7 @@ const ObtenerSubcripcionDelUsuario = async (idProfesor) => {
 
 const AgregarUserSubcripcion = async (idUsuario, idSubscripcion) => {
   return new Promise((resolve, reject) => {
+    console
     resolve(SubscripcionService.addUserSubcripcion(idUsuario, idSubscripcion));
   })
     .then((result) => {
@@ -60,7 +61,7 @@ const TraerDatosUsuario = async (idUsuario, idTipoUsuario) => {
 
 export async function getUserByID(req, res) {
   const id = req.query.Id;
-  console.log("Id Usuario: " + req.query.idSubscripcion)
+  console.log("Id Usuario: " + req.query.id)
 
   UserService.getById(id)
     .then((response) => {
@@ -80,7 +81,7 @@ export async function getUserByID(req, res) {
               if (usuarioData.DataClasesProfesor) {
                 Usuario.DataClasesProfesor = usuarioData.DataClasesProfesor;
               }
-              
+
               res.status(200).json(Usuario);
             }
             else {
@@ -109,48 +110,34 @@ export async function addUserController(req, res) {
   const idSubscripcion = req.body.IdSubscripcion;
   const idTipoUsuario = req.body.TipoUsuario;
 
-  UserService.getByMail(req.body.Mail)
-    .then((response) => {
+  let response = await UserService.getByMail(req.body.Mail);
 
-      console.log("Existe usuario con mismo mail: " + response.Success)
-      console.log(response);
+  if (response.Success) {
+    LogError(addUserController.name, response.Data.message)
+    return res.status(400).json({ Success: true, error: "Ya existe un usuario registrado con el mismo Mail" });
+  }
 
-      if (!response.Success) {
-        UserService.add(req.body)
-          .then((responseAdd) => {
-            console.log("Respuesta" + responseAdd.Success)
-            if (responseAdd.Success && responseAdd.InsertId) {
-              
-              if (idTipoUsuario === ETipoUsuario.Profesor) {
-                AgregarUserSubcripcion(responseAdd.InsertId, idSubscripcion)
-                  .then((responseSubscripcion) => {
-                    
-                    if (!responseSubscripcion.Success) {
-                      LogError(addUserController.name, responseSubscripcion.Data.message)
-                      return res.status(500).json(responseSubscripcion);
-                    }
+  let responseAdd = await UserService.add(req.body);
 
-                  });
-              }
+  console.log("agrego bien");
+  if (!responseAdd.Success || !responseAdd.InsertId) {
+    LogError(addUserController.name, responseAdd.Data.message)
+    return res.status(400).json({ Success: false, error: `Ocurrio un error al agregar el usuario. Error ${responseAdd.Data.message} ` });
+  }
 
-            }
-            else {
-              LogError(addUserController.name, responseAdd.Data.message)
-              return res.status(500).json(responseAdd);
-            }
+  console.log(ETipoUsuario.Profesor);
+  if (idTipoUsuario == ETipoUsuario.Profesor) {
+      console.log("Se agrega subcripcion");
+      let responseSubscripcion = await AgregarUserSubcripcion(responseAdd.InsertId, idSubscripcion);
 
-            let idUsuarioInsertado = { query: { Id: responseAdd.InsertId } }
-            getUserByID(idUsuarioInsertado, res)
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+      if (!responseSubscripcion.Success) {
+        LogError(addUserController.name, responseSubscripcion.Data.message)
+        return res.status(400).json({ Success: false, error: `Ocurrio un error al agregar el usuario. Error ${responseAdd.Data.message} ` });
       }
-      else {
-        LogError(addUserController.name, response.Data.message)
-        res.status(200).json({ Success: true, Message: "Ya existe un usuario registrado con el mismo Mail", Data: [] });
-      }
-    })
+  }
+
+  let idUsuarioInsertado = { query: { Id: responseAdd.InsertId } };
+  return getUserByID(idUsuarioInsertado, res);
 }
 
 export function updateUserController(req, res) {
