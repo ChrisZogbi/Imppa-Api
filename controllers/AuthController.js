@@ -98,7 +98,7 @@ export async function loginUser(req, res) {
                     UserController.TraerDatosUsuario(response.Data.ID, response.Data.TipoUsuario)
                         .then((usuarioData) => {
 
-                            response.Data.Contrasenia = undefined;
+                            response.Data.Contrasenia = response.Data.TipoUsuario = undefined;
                             Promise.all([Auth.generateUserToken(response.Data), Auth.generateRefreshToken(response.Data)])
                                 .then((results) => {
                                     let jToken = results[0];
