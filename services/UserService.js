@@ -76,8 +76,6 @@ export function add(data) {
 
     Usuario.AddedDate = date
 
-    console.log("El hash es:" + data.Contrasenia)
-
     var query = `INSERT INTO usuarios
     (TipoUsuario, Mail, Contrasenia, AddedDate, LastLogin, Nombre, Apellido, Telefono1, Telefono2, Habilitado)
     VALUES
@@ -92,7 +90,6 @@ export function add(data) {
     '${Usuario.Telefono2}',
     ${Usuario.Habilitado});`
 
-    console.log(query);
     return pool.promise().query(query)
         .then(([result]) => { return ({ Success: true, InsertId: result.insertId }); })
         .catch((err) => { return ({ Success: false, Data: err }) });

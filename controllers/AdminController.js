@@ -44,22 +44,18 @@ export async function getAllUsers(req, res) {
 
 /* #region Subscripcion */
 
-export function getAllSubscripcion(req, res) {
-    SubscripcionService.getAllSubcripcion()
-        .then((response) => {
-            console.log("Respuesta" + response.Success)
-
-            if (response.Success) { res.status(200).json(response) }
-            else {
-                LogError(getAllSubscipcion.name, response.Data.message)
-                res.status(500).json(response);
-            }
-
-        })
-        .catch((err) => {
-            res.status(500).json(response);
-            console.log(err);
-        });
+export async function getAllSubscripcion(req, res) {
+    try {
+        let response = await SubscripcionService.getAllSubcripcion();
+        if (response.Success) { return res.status(200).json(response) }
+        else {
+            LogError(getAllSubscripcion.name, response.Data.message);
+            return res.status(400).json({ Success: false, error: response.error});
+        }
+    }
+    catch (error) {
+        return res.status(500).json({ Success: false, error: `Error en ${getAllSubscripcion.name}. Message: ${error.message}`});
+    }
 }
 
 export async function addSubscripcion(req, res) {
