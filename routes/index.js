@@ -19,7 +19,7 @@ module.exports = function (app, passport) {
         .put(checkToken, AuthRoute.cambiarContrasenia);
 
     app.route('/users/')
-        .get(checkToken, AdminRoutes.getAllUsers)
+        .get(AdminRoutes.getAllUsers)
         // .post(addUser)
         // .put(checkToken, updateUser)
         // .delete(checkToken, deleteUser);

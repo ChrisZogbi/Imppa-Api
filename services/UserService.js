@@ -1,6 +1,9 @@
 import app from "../app.js";
 import { pool } from "./index";
-import {genSaltSync, hashSync, compareSync} from "bcryptjs";
+import { genSaltSync, hashSync, compareSync } from "bcryptjs";
+import { User } from '../models/UserModel'
+import { UserType } from '../models/TipoUsuarioModel'
+import { Subcription, UserSubcription } from "../models/SubscripcionModel.js";
 
 export function getByMailContrasenia(req) {
 
@@ -27,14 +30,14 @@ export function getByMailContrasenia(req) {
 export function getByMail(Mail) {
 
     var query = `SELECT * FROM usuarios where Mail = '${Mail}'`;
-    
+
     console.log(Mail);
 
     return pool.promise().query(query)
         .then(([rows, fields]) => {
             console.log("Numero de rows devueltas " + rows.length);
             if (rows.length >= 1) {
-                return ({ Success: true, Data: rows[0]})
+                return ({ Success: true, Data: rows[0] })
             }
             else {
                 return ({ Success: false, Data: rows })
@@ -44,24 +47,21 @@ export function getByMail(Mail) {
 }
 
 export function getAll() {
-    var query = 
-        `SELECT 
-            u.*,
-            tu.Tipo
-        FROM
-            usuarios as u inner join tipousuario as tu on u.TipoUsuario = tu.ID
-            order by ID desc `
 
-    return pool.promise().query(query)
-        .then(([rows]) => { return ({ Success: true, Data: rows }); })
+    return User.findAll({
+        include: [{ model: UserType, required: true }, { model: UserSubcription, required: true, include: [{ model: Subcription }] }]
+    })
+        .then(usuarios => {
+            return ({ Success: true, Data: usuarios });
+        })
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
 export function getById(id) {
-    var query = `SELECT * FROM usuarios WHERE ID = ${id}`
-
-    return pool.promise().query(query)
-        .then(([rows]) => { return ({ Success: true, Data: rows }); })
+    return User.findByPk(id)
+        .then(usuario => {
+            return ({ Success: true, Data: usuario });
+        })
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
@@ -139,8 +139,7 @@ export function remove(req) {
         .catch((err) => { return ({ Success: false, Data: err, Query: query }) });
 }
 
-export function getByIdGoogle(idGoogle)
-{
+export function getByIdGoogle(idGoogle) {
     var query = `select * FROM usuarios WHERE Id_Google = ${idGoogle}`;
 
     return pool.promise().query(query)
@@ -148,8 +147,7 @@ export function getByIdGoogle(idGoogle)
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
-export function addGoogleUser(UserData)
-{
+export function addGoogleUser(UserData) {
     var today = new Date();
     var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
     UserData.AddedDate = UserData.LastLogin = date;

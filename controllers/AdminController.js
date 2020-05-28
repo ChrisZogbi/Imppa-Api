@@ -10,12 +10,9 @@ import * as SubscripcionService from '../services/SubscripcionService';
 const _ = require("lodash");
 
 export async function getAllUsers(req, res) {
-
-    console.log(req.body);
-
     UserService.getAll()
         .then((response) => {
-
+            return res.json(response.Data);
             if (response.Success) {
                 let Usuarios = response.Data;
                 _.forEach(Usuarios, (value) => {
@@ -32,7 +29,7 @@ export async function getAllUsers(req, res) {
                 });
             }
             else {
-                LogError(getUsersController.name, response.Data.message)
+                LogError(getAllUsers.name, response.Data.message)
                 res.status(500).json(response);
             }
         })
