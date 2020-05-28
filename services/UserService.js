@@ -2,8 +2,8 @@ import app from "../app.js";
 import { pool } from "./index";
 import { genSaltSync, hashSync, compareSync } from "bcryptjs";
 import { User } from '../models/UserModel'
-import { UserType } from '../models/TipoUsuarioModel'
 import { Subcription, UserSubcription } from "../models/SubscripcionModel.js";
+import { UserType } from "../models/TipoUsuarioModel.js";
 
 export function getByMailContrasenia(req) {
 
@@ -49,7 +49,10 @@ export function getByMail(Mail) {
 export function getAll() {
 
     return User.findAll({
-        include: [{ model: UserType, required: true }, { model: UserSubcription, required: true, include: [{ model: Subcription }] }]
+        attributes: ['ID', 'Mail', 'Nombre', 'Apellido', 'Telefono1'],
+        include: [
+            { model: UserType, attributes: ['Tipo'] },
+            { model: UserSubcription, attributes: ['ID'], include: [{ model: Subcription }] }]
     })
         .then(usuarios => {
             return ({ Success: true, Data: usuarios });
@@ -65,34 +68,23 @@ export function getById(id) {
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
-export function add(data) {
-    var today = new Date();
-    var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+export const add = async (data) => {
+    try {
 
-    const salt = genSaltSync(10);
-    data.Contrasenia = hashSync(data.Contrasenia, 10);
+        var today = new Date();
+        var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
 
-    var Usuario = data;
+        const salt = genSaltSync(10);
+        data.Contrasenia = hashSync(data.Contrasenia, salt);
+        data.AddedDate = date;
 
-    Usuario.AddedDate = date
+        let newUser = await User.create(data);
 
-    var query = `INSERT INTO usuarios
-    (TipoUsuario, Mail, Contrasenia, AddedDate, LastLogin, Nombre, Apellido, Telefono1, Telefono2, Habilitado)
-    VALUES
-    (${Usuario.TipoUsuario},
-    '${Usuario.Mail}',
-    '${Usuario.Contrasenia}',
-    '${Usuario.AddedDate}',
-    '${Usuario.LastLogin}',
-    '${Usuario.Nombre}',
-    '${Usuario.Apellido}',
-    '${Usuario.Telefono1}',
-    '${Usuario.Telefono2}',
-    ${Usuario.Habilitado});`
-
-    return pool.promise().query(query)
-        .then(([result]) => { return ({ Success: true, InsertId: result.insertId }); })
-        .catch((err) => { return ({ Success: false, Data: err }) });
+        return ({ Success: true, InsertId: newUser.ID });
+    }
+    catch (error) {
+        return ({ Success: false, Data: { message: error.message } });
+    }
 }
 
 export function updateContrasenia(req) {
