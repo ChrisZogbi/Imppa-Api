@@ -65,35 +65,9 @@ export async function getUserByID(req, res) {
 
   UserService.getById(id)
     .then((response) => {
+      if (!response.Success) { return response.status(400).json({ Success: false, error: `Ocurrio un error al buscar el usuario id: ${id}. Error ${response.error} ` }); }
 
-      if (response.Success) {
-        TraerDatosUsuario(id, response.Data.TipoUsuario)
-          .then((usuarioData) => {
-            if (usuarioData.Success) {
-              response.Data.Contrasenia = undefined;
-              let Usuario = {
-                Success: true,
-                DataUsuario: response.Data,
-                DataTipoUsuario: usuarioData.DataTipoUsuario,
-                DataSubcripcion: usuarioData.DataSubcripcion
-              }
-
-              if (usuarioData.DataClasesProfesor) {
-                Usuario.DataClasesProfesor = usuarioData.DataClasesProfesor;
-              }
-
-              res.status(200).json(Usuario);
-            }
-            else {
-              res.status(200).json({
-                Success: false,
-                Message: "Ha ocurrido un error en getById",
-                Data: err.message
-              });
-            }
-
-          });
-      }
+      return res.status(200).json(({ Success: true, data: response.data }));
     })
     .catch((err) => {
       LogError(getUserByID.name, err)
@@ -127,13 +101,13 @@ export async function addUserController(req, res) {
 
   console.log(ETipoUsuario.Profesor);
   if (idTipoUsuario == ETipoUsuario.Profesor) {
-      console.log("Se agrega subcripcion");
-      let responseSubscripcion = await AgregarUserSubcripcion(responseAdd.InsertId, idSubscripcion);
+    console.log("Se agrega subcripcion");
+    let responseSubscripcion = await AgregarUserSubcripcion(responseAdd.InsertId, idSubscripcion);
 
-      if (!responseSubscripcion.Success) {
-        LogError(addUserController.name, responseSubscripcion.Data.message)
-        return res.status(400).json({ Success: false, error: `Ocurrio un error al agregar el usuario. Error ${responseAdd.Data.message} ` });
-      }
+    if (!responseSubscripcion.Success) {
+      LogError(addUserController.name, responseSubscripcion.Data.message)
+      return res.status(400).json({ Success: false, error: `Ocurrio un error al agregar el usuario. Error ${responseAdd.Data.message} ` });
+    }
   }
 
   let idUsuarioInsertado = { query: { Id: responseAdd.InsertId } };

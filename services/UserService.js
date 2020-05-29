@@ -61,11 +61,17 @@ export function getAll() {
 }
 
 export function getById(id) {
-    return User.findByPk(id)
+    return User.findOne({
+        where: { ID: id },
+        attributes: ['ID', 'Mail', 'Nombre', 'Apellido', 'Telefono1'],
+        include: [
+            { model: UserType, attributes: ['Tipo'] },
+            { model: UserSubcription, attributes: ['ID'], include: [{ model: Subcription }] }]
+    })
         .then(usuario => {
-            return ({ Success: true, Data: usuario });
+            return ({ Success: true, data: usuario });
         })
-        .catch((err) => { return ({ Success: false, Data: err }) });
+        .catch((err) => { return ({ Success: false, error: err }) });
 }
 
 export const add = async (data) => {
@@ -105,18 +111,16 @@ export function updateContrasenia(req) {
 }
 
 export function update(UserData) {
-    var query = `UPDATE usuarios
-                    SET
-                    Mail = '${UserData.Mail}'
-                    ,Nombre = '${UserData.Nombre}'
-                    ,Apellido = '${UserData.Apellido}'
-                    ,Telefono1 = ${UserData.Telefono1}
-                    ,Telefono2 = ${UserData.Telefono2}
-                WHERE ID = ${UserData.ID}`;
-    console.log(query);
-    return pool.promise().query(query)
-        .then(() => { return ({ Success: true }); })
-        .catch((err) => { return ({ Success: false, Data: err }) });
+    // try {
+    //     await User.update({
+
+    //     });
+
+    //     return ({ Success: true, InsertId: newUser.ID });
+    // }
+    // catch (error) {
+    //     return ({ Success: false, Data: { message: error.message } });
+    // }
 }
 
 export function remove(req) {

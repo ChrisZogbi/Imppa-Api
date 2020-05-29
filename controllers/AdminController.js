@@ -13,25 +13,6 @@ export async function getAllUsers(req, res) {
     UserService.getAll()
         .then((response) => {
             return res.json(response.Data);
-            if (response.Success) {
-                let Usuarios = response.Data;
-                _.forEach(Usuarios, (value) => {
-                    value.TipoUsuario = {
-                        IdTipoUsuario: value.TipoUsuario,
-                        TUsuario: value.Tipo
-                    }
-                    value.Tipo = value.Contrasenia = undefined;
-                });
-
-                res.status(200).json({
-                    Success: true,
-                    Data: Usuarios
-                });
-            }
-            else {
-                LogError(getAllUsers.name, response.Data.message)
-                res.status(500).json(response);
-            }
         })
         .catch((err) => {
             res.status(500).json({ Success: false, Data: `Error en getAllUsers. Message: ${err.message}` });
