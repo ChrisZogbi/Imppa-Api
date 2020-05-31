@@ -5,7 +5,10 @@ import { response } from 'express';
 import * as UserService from '../services/UserService';
 import { compareSync } from 'bcryptjs';
 import * as UserController from './UserController'
-import { auth } from 'googleapis/build/src/apis/abusiveexperiencereport';
+import { User } from '../models/UserModel'
+import { UserSubcription, Subcription } from '../models/SubscripcionModel'
+import { UserType } from '../models/TipoUsuarioModel'
+
 
 export function googleAuth(req, res) {
     const UserReq = req.body;
@@ -86,68 +89,37 @@ export function googleAuth(req, res) {
         });
 }
 
-export async function loginUser(req, res) {
-    let passIngresada = req.body.Contrasenia;
 
-    UserService.getByMail(req.body.Mail)
-        .then((response) => {
-            if (response.Success) {
-                const result = compareSync(passIngresada, response.Data.Contrasenia);
+export const loginUser = async (req, res) => {
+    let mail = req.body.Mail;
+    let password = req.body.Contrasenia;
 
-                if (result) {
-                    UserController.TraerDatosUsuario(response.Data.ID, response.Data.TipoUsuario)
-                        .then((usuarioData) => {
-
-                            response.Data.Contrasenia = response.Data.TipoUsuario = undefined;
-                            Promise.all([Auth.generateUserToken(response.Data), Auth.generateRefreshToken(response.Data)])
-                                .then((results) => {
-                                    let jToken = results[0];
-                                    let jRToken = results[1];
-                                    if (!jToken.Success || !jRToken.Success) { return res.status(200).json({ Success: false, Data: { Message: `Error al generar los tokens`, Token: jToken.Data, RefreshToken: jRToken.Data } }) }
-                                    let Usuario = {
-                                        Success: true,
-                                        Token: jToken.Token,
-                                        RefreshToken: jRToken.RefreshToken,
-                                        DataUsuario: response.Data,
-                                        DataTipoUsuario: usuarioData.DataTipoUsuario,
-                                        DataSubcripcion: usuarioData.DataSubcripcion
-                                    }
-
-                                    if (usuarioData.DataClasesProfesor) {
-                                        Usuario.DataClasesProfesor = usuarioData.DataClasesProfesor;
-                                    }
-
-                                    console.log(Usuario);
-
-                                    return res.status(200).json(Usuario);
-                                })
-                                .catch((err) => {
-                                    console.log(err);
-                                    LogError('generateUserToken', err);
-                                    return res.status(200).json({ Success: true, Message: "Error en generateUserToken", Data: err.message });
-                                })
-                        })
-                }
-                else {
+    User.findOne({
+        where: { Mail: mail },
+        attributes: ['ID', 'Mail', 'Contrasenia', 'Nombre', 'Apellido', 'Telefono1'],
+        include: [
+            { model: UserType, attributes: ['Tipo'] },
+            { model: UserSubcription, attributes: ['ID'], include: [{ model: Subcription }] }]
+    })
+        .then(usuario => {
+            const result = compareSync(password, usuario.Contrasenia);
+            if (!result) { return res.status(401).json({ Success: false, Message: "Email y contrasenia no coinciden" }); }
+            Promise.all([Auth.generateUserToken(usuario), Auth.generateRefreshToken(usuario)])
+                .then((results) => {
+                    const jToken = results[0];
+                    const jRToken = results[1];
                     return res.status(200).json({
                         Success: true,
-                        Message: "Email y contrasenia no coinciden",
-                        Data: []
+                        data: {
+                            Token: jToken.Token,
+                            RefreshToken: jRToken.RefreshToken,
+                            Usuario: usuario
+                        }
                     });
-                }
-            }
-            else {
-                return res.status(200).json({
-                    Success: true,
-                    Message: "Email o contraseña incorrectos",
-                    Data: []
-                });
-            }
+                })
         })
-        .catch((err) => {
-            console.log(err);
-            LogError(loginUserController.name, response.Data.message)
-        });
+        .catch((err) => { return res.status(500).json({ Success: false, err: `Error en login. Mensaje: ${err.message}` }) });
+
 }
 
 export async function obtenerTokenNuevo(req, res) {

@@ -76,8 +76,8 @@ export const addUser = async (data) => {
 
         let newUser = await User.create(data);
 
-        if (data.idTipoUsuario == Enumns.ETipoUsuario.Profesor) {
-            let newSubcripcionUsuario = await UserSubcription({ usuarioId: newUser.ID, subscripcionId: data.IdSubscripcion });
+        if (data.tipousuarioId == Enumns.ETipoUsuario.Profesor) {
+            await UserSubcription.create({ usuarioId: newUser.ID, subscripcionId: data.IdSubscripcion });
         }
 
         return ({
@@ -92,7 +92,7 @@ export const addUser = async (data) => {
         });
     }
     catch (error) {
-        return ({ Success: false, Data: { message: error.message } });
+        return ({ Success: false, err: error.message });
     }
 }
 
