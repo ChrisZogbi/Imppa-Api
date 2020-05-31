@@ -1,7 +1,6 @@
 import { Model } from 'sequelize'
 import { sequelize } from '../services/index'
-import { UserType } from './TipoUsuarioModel';
-import { UserSubcription } from './SubscripcionModel';
+import { Category } from './CategoriaModel';
 const Sequelize = require('sequelize');
 
 export class UserClass extends Model { }
@@ -19,9 +18,10 @@ Class.init({
     Precio: Sequelize.INTEGER,
     Latitud: Sequelize.FLOAT,
     Longitud: Sequelize.FLOAT,
-    Hablitada: { type: Sequelize.STRING, allowNull: false }
+    Hablitada: { type: Sequelize.BOOLEAN, allowNull: false }
 
 }, { freezeTableName: true, sequelize, timestamps: false, modelName: 'claseprofesor' })
 
 UserClass.hasOne(Class, { as: 'Clase', foreignKey: 'ID', sourceKey: 'claseprofesorId' })
+Class.hasOne(Category, { as: 'Categoria', foreignKey: 'ID', sourceKey: 'categoriaclaseId' })
 

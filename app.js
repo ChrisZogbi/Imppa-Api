@@ -18,8 +18,7 @@ route(app, passport);
 //     console.log('Server is running in ' + port);
 //   });
 
-sequelize
-    .authenticate()
+sequelize.authenticate()
     .then(() => {
         console.log('Connection has been established successfully.');
     })

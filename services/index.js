@@ -7,13 +7,13 @@ export const pool = createPool({
     password: 'Falopa123',
     port: '3306',
     host: 'imppa-svr.mysql.database.azure.com',
-    database : "imppa-svr" ,
-    typeCast: function castField( field, useDefaultTypeCasting ) {
-		if ( ( field.type === "BIT" ) && ( field.length === 1 ) ) {
-			var bytes = field.buffer();
-			return( bytes[ 0 ] === 1 );
-		}
-        return( useDefaultTypeCasting() );
+    database: "imppa-svr",
+    typeCast: function castField(field, useDefaultTypeCasting) {
+        if ((field.type === "BIT") && (field.length === 1)) {
+            var bytes = field.buffer();
+            return (bytes[0] === 1);
+        }
+        return (useDefaultTypeCasting());
     }
 });
 
@@ -23,11 +23,19 @@ export const sequelize = new Sequelize('imppa-svr', 'administrador@imppa-svr', '
     host: 'imppa-svr.mysql.database.azure.com',
     dialect: 'mysql',
     dialectOptions: {
-         encrypt: true 
+        encrypt: true
     },
     pool: {
         max: 10,
         idle: 30000,
         acquire: 60000,
+        typeCast:
+            function castField(field, useDefaultTypeCasting) {
+                if ((field.type === "BIT") && (field.length === 1)) {
+                    var bytes = field.buffer();
+                    return (bytes[0] === 1);
+                }
+                return (useDefaultTypeCasting());
+            }
     }
 });
