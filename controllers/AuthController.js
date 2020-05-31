@@ -7,8 +7,7 @@ import { compareSync } from 'bcryptjs';
 import * as UserController from './UserController'
 import { User } from '../models/UserModel'
 import { UserSubcription, Subcription } from '../models/SubscriptionModel'
-import { UserType } from '../models/UserTypeModel'
-
+import { UserType } from '../models/UserTypeModeln'
 
 export function googleAuth(req, res) {
     const UserReq = req.body;
@@ -88,7 +87,6 @@ export function googleAuth(req, res) {
             LogError(googleAuth.name, response.Data.message)
         });
 }
-
 
 export const loginUser = async (req, res) => {
     let mail = req.body.Mail;
