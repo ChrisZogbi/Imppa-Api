@@ -18,7 +18,7 @@ export async function getUserByID(req, res) {
 
   UserService.getById(id)
     .then((response) => {
-      if (!response.Success) { return response.status(400).json({ Success: false, error: `Ocurrio un error al buscar el usuario id: ${id}. Error ${response.error} ` }); }
+      if (!response.Success) { return res.status(400).json({ Success: false, error: `Ocurrio un error al buscar el usuario id: ${id}. Error ${response.error} ` }); }
       return res.status(200).json(({ Success: true, data: response.data }));
     })
     .catch((err) => {

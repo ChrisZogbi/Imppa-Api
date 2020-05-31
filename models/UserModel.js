@@ -2,6 +2,7 @@ import { Model } from 'sequelize'
 import { sequelize } from '../services/index'
 import { UserType } from './TipoUsuarioModel';
 import { UserSubcription } from './SubscripcionModel';
+import { UserClass } from './ClaseProfesorModel'
 const Sequelize = require('sequelize');
 
 export class User extends Model { }
@@ -20,5 +21,6 @@ User.init({
 
 }, { freezeTableName: true, sequelize, timestamps: false, modelName: 'usuarios' })
 
-User.belongsTo(UserType);
-User.hasOne(UserSubcription);
+User.hasOne(UserType, { foreignKey: 'ID', sourceKey: 'tipousuarioId' });
+User.hasOne(UserSubcription, { foreignKey: { name: 'usuarioId', allowNull: false } });
+User.hasMany(UserClass, { as: 'ClasesUsuario', foreignKey: { name: 'usuarioId', allowNull: false } });

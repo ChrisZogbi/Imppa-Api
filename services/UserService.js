@@ -5,6 +5,7 @@ import { User } from '../models/UserModel'
 import { Subcription, UserSubcription } from "../models/SubscripcionModel.js";
 import { UserType } from "../models/TipoUsuarioModel.js";
 import * as Enumns from '../enum';
+import { Class, UserClass } from "../models/ClaseProfesorModel.js";
 
 export function getByMailContrasenia(req) {
 
@@ -58,7 +59,9 @@ export function getById(id) {
         attributes: ['ID', 'Mail', 'Nombre', 'Apellido', 'Telefono1'],
         include: [
             { model: UserType, attributes: ['Tipo'] },
-            { model: UserSubcription, attributes: ['ID'], include: [{ model: Subcription }] }]
+            { model: UserSubcription, attributes: ['ID'], include: [{ model: Subcription }] },
+            { model: UserClass, as: 'ClasesUsuario', attributes: ['ID'], include: [{ model: Class, as: 'Clase' }] }
+        ],
     })
         .then(usuario => { return ({ Success: true, data: usuario }); })
         .catch((err) => { return ({ Success: false, error: err }) });

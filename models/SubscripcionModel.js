@@ -18,4 +18,4 @@ Subcription.init({
     CantClases: { type: Sequelize.INTEGER, allowNull: false },
 }, { freezeTableName: true, sequelize, timestamps: false, modelName: 'subscripcion' })
 
-UserSubcription.belongsTo(Subcription);
+UserSubcription.hasOne(Subcription, { foreignKey: 'ID', sourceKey: 'subscripcionId' })
