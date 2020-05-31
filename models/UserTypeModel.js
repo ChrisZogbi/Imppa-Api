@@ -7,3 +7,4 @@ UserType.init({
     ID: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
     Tipo: Sequelize.STRING,
 }, { freezeTableName: true, sequelize, timestamps: false, modelName: 'tipousuario' })
+

@@ -2,11 +2,11 @@ import app from "../app.js";
 import { pool } from "./index";
 import { genSaltSync, hashSync, compareSync } from "bcryptjs";
 import { User } from '../models/UserModel'
-import { Subcription, UserSubcription } from "../models/SubscripcionModel.js";
-import { UserType } from "../models/TipoUsuarioModel.js";
+import { Subcription, UserSubcription } from "../models/SubscriptionModel.js";
+import { UserType } from "../models/UserTypeModel.js";
 import * as Enumns from '../enum';
-import { Class, UserClass } from "../models/ClaseProfesorModel.js";
-import { Category } from "../models/CategoriaModel.js";
+import { Class, UserClass } from "../models/ClassModel.js";
+import { Category } from "../models/CategoryModel.js";
 
 export function getByMailContrasenia(req) {
 

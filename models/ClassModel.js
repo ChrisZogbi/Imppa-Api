@@ -1,6 +1,6 @@
 import { Model } from 'sequelize'
 import { sequelize } from '../services/index'
-import { Category } from './CategoriaModel';
+import { Category } from './CategoryModel';
 const Sequelize = require('sequelize');
 
 export class UserClass extends Model { }

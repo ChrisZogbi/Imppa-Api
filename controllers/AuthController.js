@@ -6,8 +6,8 @@ import * as UserService from '../services/UserService';
 import { compareSync } from 'bcryptjs';
 import * as UserController from './UserController'
 import { User } from '../models/UserModel'
-import { UserSubcription, Subcription } from '../models/SubscripcionModel'
-import { UserType } from '../models/TipoUsuarioModel'
+import { UserSubcription, Subcription } from '../models/SubscriptionModel'
+import { UserType } from '../models/UserTypeModel'
 
 
 export function googleAuth(req, res) {

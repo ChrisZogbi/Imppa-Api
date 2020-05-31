@@ -1,8 +1,8 @@
 import { Model } from 'sequelize'
 import { sequelize } from '../services/index'
-import { UserType } from './TipoUsuarioModel';
-import { UserSubcription } from './SubscripcionModel';
-import { UserClass } from './ClaseProfesorModel'
+import { UserType } from './UserTypeModel';
+import { UserSubcription } from './SubscriptionModel';
+import { UserClass } from './ClassModel'
 const Sequelize = require('sequelize');
 
 export class User extends Model { }
