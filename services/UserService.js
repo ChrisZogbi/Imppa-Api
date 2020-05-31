@@ -4,6 +4,7 @@ import { genSaltSync, hashSync, compareSync } from "bcryptjs";
 import { User } from '../models/UserModel'
 import { Subcription, UserSubcription } from "../models/SubscripcionModel.js";
 import { UserType } from "../models/TipoUsuarioModel.js";
+import * as Enumns from '../enum';
 
 export function getByMailContrasenia(req) {
 
@@ -27,36 +28,27 @@ export function getByMailContrasenia(req) {
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
-export function getByMail(Mail) {
+export const existeUsuarioMail = async (mail) => {
+    const response = await getByMail(mail);
+    console.log("resoyeta de getbymail" + response.Success);
+    if (!response.Success) { return response };
+    return (response.data ? true : false)
+}
 
-    var query = `SELECT * FROM usuarios where Mail = '${Mail}'`;
-
-    console.log(Mail);
-
-    return pool.promise().query(query)
-        .then(([rows, fields]) => {
-            console.log("Numero de rows devueltas " + rows.length);
-            if (rows.length >= 1) {
-                return ({ Success: true, Data: rows[0] })
-            }
-            else {
-                return ({ Success: false, Data: rows })
-            }
-        })
-        .catch((err) => { return ({ Success: false, Data: err }) });
+export const getByMail = async (mail) => {
+    return User.findOne({ where: { Mail: mail } })
+        .then(usuario => { return ({ Success: true, data: usuario }); })
+        .catch((err) => { return ({ Success: false, err: err }) });
 }
 
 export function getAll() {
-
     return User.findAll({
         attributes: ['ID', 'Mail', 'Nombre', 'Apellido', 'Telefono1'],
         include: [
             { model: UserType, attributes: ['Tipo'] },
             { model: UserSubcription, attributes: ['ID'], include: [{ model: Subcription }] }]
     })
-        .then(usuarios => {
-            return ({ Success: true, Data: usuarios });
-        })
+        .then((usuarios) => { return ({ Success: true, Data: usuarios }); })
         .catch((err) => { return ({ Success: false, Data: err }) });
 }
 
@@ -68,15 +60,13 @@ export function getById(id) {
             { model: UserType, attributes: ['Tipo'] },
             { model: UserSubcription, attributes: ['ID'], include: [{ model: Subcription }] }]
     })
-        .then(usuario => {
-            return ({ Success: true, data: usuario });
-        })
+        .then(usuario => { return ({ Success: true, data: usuario }); })
         .catch((err) => { return ({ Success: false, error: err }) });
 }
 
-export const add = async (data) => {
+export const addUser = async (data) => {
     try {
-
+        console.log("llego a addUserService");
         var today = new Date();
         var date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
 
@@ -86,7 +76,20 @@ export const add = async (data) => {
 
         let newUser = await User.create(data);
 
-        return ({ Success: true, InsertId: newUser.ID });
+        if (data.idTipoUsuario == Enumns.ETipoUsuario.Profesor) {
+            let newSubcripcionUsuario = await UserSubcription({ usuarioId: newUser.ID, subscripcionId: data.IdSubscripcion });
+        }
+
+        return ({
+            Success: true,
+            data: await User.findOne({
+                where: { ID: newUser.ID },
+                attributes: ['ID', 'Mail', 'Nombre', 'Apellido', 'Telefono1'],
+                include: [
+                    { model: UserType, attributes: ['Tipo'] },
+                    { model: UserSubcription, attributes: ['ID'], include: [{ model: Subcription }] }]
+            })
+        });
     }
     catch (error) {
         return ({ Success: false, Data: { message: error.message } });

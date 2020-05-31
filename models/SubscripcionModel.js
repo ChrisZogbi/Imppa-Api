@@ -19,8 +19,3 @@ Subcription.init({
 }, { freezeTableName: true, sequelize, timestamps: false, modelName: 'subscripcion' })
 
 UserSubcription.belongsTo(Subcription);
-// Subcription.belongsTo(UserSubcription)
-
-
-// Subcription.belongsTo();
-// Subcription.hasOne()

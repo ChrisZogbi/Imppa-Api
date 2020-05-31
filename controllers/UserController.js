@@ -9,25 +9,6 @@ import { ETipoUsuario } from '../enum'
 import * as Auth from '../auth/token_validation'
 import { NText } from 'mssql';
 
-
-const ObtenerTipoUsuario = async (idUsuario) => {
-  return new Promise((resolve, reject) => {
-    resolve(getTipoUsuarioByIdUsuarioService(idUsuario));
-  })
-    .then((result) => {
-      return (result)
-    });
-};
-
-const ObtenerSubcripcionDelUsuario = async (idProfesor) => {
-  return new Promise((resolve, reject) => {
-    resolve(SubscripcionService.getSubcripcionByIdProfesor(idProfesor));
-  })
-    .then((result) => {
-      return (result)
-    });
-};
-
 const AgregarUserSubcripcion = async (idUsuario, idSubscripcion) => {
   return new Promise((resolve, reject) => {
     console
@@ -38,45 +19,17 @@ const AgregarUserSubcripcion = async (idUsuario, idSubscripcion) => {
     });
 };
 
-const TraerDatosUsuario = async (idUsuario, idTipoUsuario) => {
-  return Promise.all([ObtenerTipoUsuario(idUsuario), ObtenerSubcripcionDelUsuario(idUsuario), ClaseProfesorService.getClaseByIdUsuarioService(idUsuario)])
-    .then((results) => {
-      let resultTipoUsuario = results[0];
-      let resultSubcripcion = results[1];
-      let resultClaseProfesor = results[2];
-
-      let UsuarioDatos = {
-        Success: true,
-        DataTipoUsuario: resultTipoUsuario.Data,
-        DataSubcripcion: resultSubcripcion.Data
-      }
-
-      if (idTipoUsuario === ETipoUsuario.Profesor) {
-        UsuarioDatos.DataClasesProfesor = resultClaseProfesor.Data;
-      }
-
-      return UsuarioDatos;
-    })
-};
-
 export async function getUserByID(req, res) {
   const id = req.query.Id;
-  console.log("Id Usuario: " + req.query.id)
 
   UserService.getById(id)
     .then((response) => {
       if (!response.Success) { return response.status(400).json({ Success: false, error: `Ocurrio un error al buscar el usuario id: ${id}. Error ${response.error} ` }); }
-
       return res.status(200).json(({ Success: true, data: response.data }));
     })
     .catch((err) => {
       LogError(getUserByID.name, err)
-      console.log(err);
-      res.status(200).json({
-        Success: false,
-        Message: "Ha ocurrido un error",
-        Data: err.message
-      });
+      return res.status(500).json({ Success: false, Message: "Ha ocurrido un error", Data: err.message });
     });
 }
 
@@ -84,33 +37,21 @@ export async function addUserController(req, res) {
   const idSubscripcion = req.body.IdSubscripcion;
   const idTipoUsuario = req.body.TipoUsuario;
 
-  let response = await UserService.getByMail(req.body.Mail);
+  let existe = await UserService.existeUsuarioMail(req.body.Mail);
 
-  if (response.Success) {
-    LogError(addUserController.name, response.Data.message)
+  console.log("Existe usuario: " + existe);
+  if (existe) {
+    LogError(addUserController.name, existe.err)
     return res.status(400).json({ Success: true, error: "Ya existe un usuario registrado con el mismo Mail" });
   }
 
-  let responseAdd = await UserService.add(req.body);
-
-  console.log("agrego bien");
+  let responseAdd = await UserService.addUser(req.body);
+  return res.json(responseAdd);
   if (!responseAdd.Success || !responseAdd.InsertId) {
     LogError(addUserController.name, responseAdd.Data.message)
     return res.status(400).json({ Success: false, error: `Ocurrio un error al agregar el usuario. Error ${responseAdd.Data.message} ` });
   }
 
-  console.log(ETipoUsuario.Profesor);
-  if (idTipoUsuario == ETipoUsuario.Profesor) {
-    console.log("Se agrega subcripcion");
-    let responseSubscripcion = await AgregarUserSubcripcion(responseAdd.InsertId, idSubscripcion);
-
-    if (!responseSubscripcion.Success) {
-      LogError(addUserController.name, responseSubscripcion.Data.message)
-      return res.status(400).json({ Success: false, error: `Ocurrio un error al agregar el usuario. Error ${responseAdd.Data.message} ` });
-    }
-  }
-
-  let idUsuarioInsertado = { query: { Id: responseAdd.InsertId } };
   return getUserByID(idUsuarioInsertado, res);
 }
 
